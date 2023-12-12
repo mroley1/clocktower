@@ -1,0 +1,16 @@
+{
+    "tokens": [
+        {
+            "id": 0,
+            "role": "amnesiac",
+            "xpos": 200,
+            "ypos": 200
+        },
+        {
+            "id": 1,
+            "role": "pit-hag",
+            "xpos": 400,
+            "ypos": 100
+        }
+    ]
+}
