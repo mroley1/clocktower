@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import './MoveBoard.css';
+import './MoveBoard.scss';
 import { GameContext } from '../App'
 import Token from './token/Token';
 
@@ -13,13 +13,11 @@ function MoveBoard() {
         gameContext.setter(tmp)
     }
     
-    const tokens = gameContext.state.tokens.map((token) => <Token json={token} />)
+    const tokens = gameContext.state.tokens.map((token: any) => <Token key={token.id} json={token} />)
   
   return (
     <>
-        <ul>
-            {tokens}
-        </ul>
+        {tokens}
         <br></br>
         <input type='button' onClick={() => exitContext()} value="make test"></input>
     </>

@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import './App.css';
+import './App.scss';
 import MoveBoard from './moveables/MoveBoard';
 
 const TESTSTATE = require('./testState.json');

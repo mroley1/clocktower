@@ -3,12 +3,14 @@
         {
             "id": 0,
             "role": "amnesiac",
+            "name": "player 1",
             "xpos": 200,
             "ypos": 200
         },
         {
             "id": 1,
             "role": "pit-hag",
+            "name": "player 2",
             "xpos": 400,
             "ypos": 100
         }
