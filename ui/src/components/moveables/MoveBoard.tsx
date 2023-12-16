@@ -21,8 +21,8 @@ function MoveBoard() {
       const movies = movieBoard!.children
       for (let i = 0; i < movies.length; i++) {
         let movie = movies[i]
-        console.log(movie)
-        movie.addEventListener('pointerdown', dragEvent)
+        movie.addEventListener('mousedown', dragEvent)
+        movie.addEventListener('touchstart', dragEvent)
       }
     }
     
@@ -31,10 +31,18 @@ function MoveBoard() {
       
       event.target.style.zIndex = "1"
       
-      event.target.removeEventListener('pointerdown', dragEvent)
-      
-      const xOffset = event.offsetX
-      const yOffset = event.offsetY
+      var xOffset = 0
+      var yOffset = 0
+    
+      if (event.type == "mousedown") {
+        event.target.removeEventListener('mousedown', dragEvent)
+        xOffset = event.offsetX
+        yOffset = event.offsetY
+      } else if (event.type == "touchstart") {
+        event.target.removeEventListener('touchstart', dragEvent)
+        xOffset = event.touches[0].clientX - event.target.getBoundingClientRect().x
+        yOffset = event.touches[0].clientY - event.target.getBoundingClientRect().y
+      }
       
       const elemId = event.target.id
       
@@ -43,6 +51,7 @@ function MoveBoard() {
         if (target == null) {
           console.error("tried to drag nonexistant item")
         }
+        console.log(event.clientY)
         target!.style.top = (event.clientY - yOffset).toString() + "px"
         target!.style.left = (event.clientX - xOffset).toString() + "px"
       })
@@ -69,7 +78,10 @@ function MoveBoard() {
       makeMovable()
     })
     
-    const tokens = gameContext.state.tokens.map((token: any) => <Token key={token.id} json={token} />)
+    const tokens = gameContext.state.tokens.map(
+      (token: any) =>
+        <Token key={token.id} json={token} />
+      )
   
   return (
     <div id='moveBoard'>
