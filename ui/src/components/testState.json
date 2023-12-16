@@ -13,6 +13,13 @@
             "name": "player 2",
             "xpos": 400,
             "ypos": 100
+        },
+        {
+            "id": 2,
+            "role": "bishop",
+            "name": "player 3",
+            "xpos": 370,
+            "ypos": 300
         }
     ]
 }
