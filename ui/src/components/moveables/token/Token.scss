@@ -9,6 +9,7 @@
     aspect-ratio: 1;
     position: absolute;
     cursor: pointer;
+    user-select: none;
     
     * {
         pointer-events: none;

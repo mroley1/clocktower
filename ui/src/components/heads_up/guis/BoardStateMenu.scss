@@ -1,0 +1,36 @@
+
+
+
+div#boardStateMenu {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    height: 120px;
+    width: min-content;
+    padding-left: 30px;
+    background-color: rgba(77, 77, 77, 0.507);
+    border-radius: 10px 0px 0px 10px;
+    display: flex;
+    flex-direction: row;
+    
+    span {
+        color: white;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 100%;
+        width: 60px;
+        border-radius: 10px 0px 0px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    div {
+        z-index: 1;
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        border-radius: 10px;
+    }
+}

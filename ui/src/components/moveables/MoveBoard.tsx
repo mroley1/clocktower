@@ -2,6 +2,8 @@ import { useContext, useEffect } from 'react';
 import './MoveBoard.scss';
 import { GameContext } from '../App'
 import Token from './token/Token';
+import GameStateType from '@/common/GameStateType';
+import { GameMode } from '@/common/GameModes';
 
 function MoveBoard() {
     
@@ -21,24 +23,23 @@ function MoveBoard() {
       const movies = movieBoard!.children
       for (let i = 0; i < movies.length; i++) {
         let movie = movies[i]
-        movie.addEventListener('mousedown', dragEvent)
-        movie.addEventListener('touchstart', dragEvent)
+        movie.addEventListener('mousedown', dragEvent, {passive: true})
+        movie.addEventListener('touchstart', dragEvent, {passive: true})
       }
     }
     
     const dragEvent = (function (event: any) {
-      event.preventDefault()
       
-      event.target.style.zIndex = "1"
+      event.target.style.zIndex = "30"
       
       var xOffset = 0
       var yOffset = 0
     
-      if (event.type == "mousedown") {
+      if (event.type === "mousedown") {
         event.target.removeEventListener('mousedown', dragEvent)
         xOffset = event.offsetX
         yOffset = event.offsetY
-      } else if (event.type == "touchstart") {
+      } else if (event.type === "touchstart") {
         event.target.removeEventListener('touchstart', dragEvent)
         xOffset = event.touches[0].clientX - event.target.getBoundingClientRect().x
         yOffset = event.touches[0].clientY - event.target.getBoundingClientRect().y
@@ -51,7 +52,6 @@ function MoveBoard() {
         if (target == null) {
           console.error("tried to drag nonexistant item")
         }
-        console.log(event.clientY)
         target!.style.top = (event.clientY - yOffset).toString() + "px"
         target!.style.left = (event.clientX - xOffset).toString() + "px"
       })
@@ -59,7 +59,7 @@ function MoveBoard() {
       const dragUp = (function() {
         document.onpointermove = null
         const target = document.getElementById(elemId)
-        if (target == undefined || target == null) {
+        if (target === undefined || target === null) {
           console.error("could not find token to update position")
         }
         target!.style.zIndex = "";
