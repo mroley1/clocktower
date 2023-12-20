@@ -32,11 +32,9 @@ function BoardStateMenu(props: any) {
             gameMode = GameMode.SETUP
         }
         
+        
         document.getElementById('boardStateMenuTab')!.style.backgroundImage = 'linear-gradient(to right, ' + GameMode.color(gameMode).background + ', #00000000)'
         
-        //document.getElementById('boardStateMenu_night')!.style.backgroundColor = gameMode === GameMode.NIGHT? GameMode.color(GameMode.NIGHT).background:"grey";
-        document.getElementById('boardStateMenu_moveable')!.style.backgroundColor = gameMode === GameMode.MOVING? GameMode.color(GameMode.MOVING).background:"grey";
-        document.getElementById('boardStateMenu_setup')!.style.backgroundColor = gameMode === GameMode.SETUP? GameMode.color(GameMode.SETUP).background:"grey";
     })
     
     return (

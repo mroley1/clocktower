@@ -1,6 +1,6 @@
 const NightImg = (props: any) => (
   <svg
-    style={{width: "100%", height: "100%"}}
+    style={{width: "100%", height: "90%"}}
     xmlns="http://www.w3.org/2000/svg"
     width={24}
     height={24}
