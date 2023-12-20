@@ -10,13 +10,13 @@ export enum GameMode {
 }
 
 const map = new Map();
-map.set(GameMode.DAY, "yellow")
-map.set(GameMode.NIGHT, "#142869")
-map.set(GameMode.MOVING, "#2b7252")
-map.set(GameMode.SETUP, "lightred")
-map.set(GameMode.RADIAL, "purple")
-map.set(GameMode.PLAYERSELECT, "purple")
-map.set(GameMode.ROLESELECT, "purple")
+map.set(GameMode.DAY, {"background": "yellow", "foreground": "black"})
+map.set(GameMode.NIGHT, {"background": "#142869", "foreground": "yellow"})
+map.set(GameMode.MOVING, {"background": "#2b7252", "foreground": "black"})
+map.set(GameMode.SETUP, {"background": "red", "foreground": "black"})
+map.set(GameMode.RADIAL, {"background": "purple", "foreground": "white"})
+map.set(GameMode.PLAYERSELECT, {"background": "purple", "foreground": "white"})
+map.set(GameMode.ROLESELECT, {"background": "purple", "foreground": "white"})
 
 export namespace GameMode {
     export function color(gameMode: GameMode) {

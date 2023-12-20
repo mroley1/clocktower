@@ -4,7 +4,8 @@
       "paths": {
         "@/*": ["src/*"],
         "@assets/*": ["src/assets/*"],
-        "@Common/*": ["src/common/*"]
+        "@Common/*": ["src/common/*"],
+        "@HeadsUpAssets/*": ["src/components/heads_up/assets/*"]
       }
     }
   }
