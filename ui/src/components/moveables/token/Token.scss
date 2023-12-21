@@ -1,22 +1,36 @@
 
-.container {
-    background-image: url('./token_backing.webp');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    border-radius: 100%;
-    width: 120px;
-    aspect-ratio: 1;
-    position: absolute;
-    cursor: pointer;
-    user-select: none;
+
+div#moveBoard {
+    --menu_duration: 0.5s;
     
-    * {
-        pointer-events: none;
+    .token_container {
+        background-image: url('./token_backing.webp');
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        border-radius: 100%;
+        width: 120px;
+        aspect-ratio: 1;
+        position: absolute;
+        cursor: pointer;
+        user-select: none;
+        
+        * {
+            pointer-events: none;
+        }
+        
+        img {
+            width: 100%;
+            height: 100%;
+        }
     }
-    
-    img {
-        width: 100%;
-        height: 100%;
+        
+    .token_menu {
+        z-index: 3000;
+        position: absolute;
+        height: 100vh;
+        width: 100vw;
+        cursor: pointer;
+        transition: background-color linear var(--menu_duration);
     }
 }
