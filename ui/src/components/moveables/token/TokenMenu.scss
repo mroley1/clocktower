@@ -1,0 +1,22 @@
+
+@keyframes toggle {
+    from {
+        background-color: #00000000;
+    }
+    to {
+        background-color: #00000040;
+    }
+}
+
+.token_menu {
+    
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    animation: toggle 0.5s linear forwards;
+    
+    
+    
+}

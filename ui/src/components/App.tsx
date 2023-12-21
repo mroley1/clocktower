@@ -13,16 +13,28 @@ export const GameContext = createContext<GameContextType>({
     "tokens": [],
     "gameMode": GameMode.SETUP
   },
-  "setter": () => {}
+  "setter": () => {},
+  "util": {
+    "setMode": () => {}
+  }
 });
 
 function App() {
   
   const [gameState, setGameState] = useState(TESTSTATE)
   
+  function setMode(mode: GameMode) {
+    const tmp = JSON.parse(JSON.stringify(gameContext.state));
+    tmp["gameMode"] = mode
+    gameContext.setter(tmp)
+  }
+  
   const gameContext: GameContextType = {
     "state": gameState,
-    "setter": setGameState
+    "setter": setGameState,
+    "util": {
+      "setMode": setMode
+    }
   }
   
   return (

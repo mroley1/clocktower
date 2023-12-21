@@ -10,14 +10,23 @@ function Token(props: any) {
   const gameContext = useContext(GameContext)
   const json: Player = props.json
   const MENU_OPEN = [GameMode.NIGHT]
+  const MOVABLE = [GameMode.MOVING]
+  const CLICKABLE = [GameMode.NIGHT, GameMode.PLAYERSELECT, GameMode.ROLESELECT]
   const icon = require(`@assets/icons/${json.role}.png`)
   const [menuState, setMenuState] = useState(false)
   
   function getStyles() {
+    if (MOVABLE.includes(gameContext.state.gameMode)) {
+      var cursor = "grab"
+    } else if (CLICKABLE.includes(gameContext.state.gameMode)) {
+      var cursor = "pointer"
+    } else {
+      var cursor = "unset"
+    }
     return {
       left: json.xpos,
       top: json.ypos,
-      transition: menuState?"transition: top linear var(--menu_duration), left linear var(--menu_duration);":""
+      cursor
     }
   }
   
@@ -29,12 +38,13 @@ function Token(props: any) {
   }
   
   function toggleMenuState() {
-    setMenuState(!menuState)
-  }
-  
-  function openMenu() {
-    const token = document.getElementById("token_"+json.id)
-    
+    if (menuState) {
+      setMenuState(false)
+      gameContext.util.setMode(GameMode.NIGHT)
+    } else {
+      setMenuState(true)
+      gameContext.util.setMode(GameMode.RADIAL)
+    }
   }
   
   return (
@@ -48,9 +58,8 @@ function Token(props: any) {
         className='token_container'
         >
           <img src={icon}></img>
+          <TokenMenu json={json} menuState={menuState} toggleMenuState={toggleMenuState} />
       </div>
-      <div style={{pointerEvents: menuState?"inherit":"none", backgroundColor: menuState?"#00000040":"#00000000"}} className='token_menu' onClick={toggleMenuState}>DELETE THIS</div>
-      <TokenMenu />
     </>
   );
 }

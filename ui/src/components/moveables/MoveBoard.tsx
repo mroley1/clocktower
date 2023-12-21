@@ -20,6 +20,7 @@ function MoveBoard() {
           }
           
           event.target.style.zIndex = "30"
+          event.target.style.cursor = "grabbing"
           
           var xOffset = 0
           var yOffset = 0
@@ -38,6 +39,7 @@ function MoveBoard() {
             var target = document.getElementById(elemId)
             if (target == null) {
               console.error("tried to drag nonexistant item")
+              dragUp()
             }
             target!.style.top = (event.clientY - yOffset).toString() + "px"
             target!.style.left = (event.clientX - xOffset).toString() + "px"
@@ -51,6 +53,7 @@ function MoveBoard() {
               console.error("could not find token to update position")
             }
             target!.style.zIndex = "";
+            target!.style.cursor = "grab";
             const tmp = JSON.parse(JSON.stringify(gameContext.state));
             tmp["tokens"][index].xpos = target?.getBoundingClientRect().x
             tmp["tokens"][index].ypos = target?.getBoundingClientRect().y
