@@ -30,7 +30,14 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
     
     return (
         <div style={getStyles()} onClick={toggleMenuState} className='token_menu' id={"token_menu_"+json.id}>
-            <div id={"radial_menu_"+json.id} onClick={stopPropagation} className='radial_menu'></div>
+            <div id={"radial_menu_"+json.id} onClick={stopPropagation} className='radial_menu'>
+                <div className='areas area_0' data-title='area 0'></div>
+                <div className='areas area_1' data-title='action'></div>
+                <div className='areas area_2' data-title='area 2'></div>
+                <div className='areas area_3' data-title='area 3'></div>
+                <div className='areas area_4' data-title='info'></div>
+                <div className='areas area_5' data-title='area 5'></div>
+            </div>
             <div id={"radial_icon_"+json.id} onClick={stopPropagation} style={{left: json.xpos, top: json.ypos}} className='radial_icon'>
                 <img src={icon}></img>
             </div>

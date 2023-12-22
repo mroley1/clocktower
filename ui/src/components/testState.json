@@ -5,21 +5,48 @@
             "role": "amnesiac",
             "name": "player 1",
             "xpos": 200,
-            "ypos": 200
+            "ypos": 200,
+            "notes": "custom role thing",
+            "ailments": [
+                "DRUNK"
+            ],
+            "mad": null,
+            "convinced": "butler",
+            "bluffs": ["chef", "cult_leader", "drunk"],
+            "alignment": "GOOD"
         },
         {
             "id": 1,
             "role": "pit-hag",
             "name": "player 2",
             "xpos": 400,
-            "ypos": 100
+            "ypos": 100,
+            "notes": "Robert",
+            "ailments": [
+                "POISONED",
+                "DRUNK"
+            ],
+            "mad": null,
+            "convinced": null,
+            "bluffs": [],
+            "alignment": "EVIL"
         },
         {
             "id": 2,
             "role": "bishop",
             "name": "player 3",
             "xpos": 370,
-            "ypos": 300
+            "ypos": 300,
+            "notes": "",
+            "ailments": [
+                "MAD",
+                "DRUNK",
+                "POISONED"
+            ],
+            "mad": "farmer",
+            "convinced": null,
+            "bluffs": [],
+            "alignment": "EVIL"
         }
     ]
 }
