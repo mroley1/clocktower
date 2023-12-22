@@ -1,11 +1,28 @@
 
+$radial_dimention: 700px;
+$deploy_speed: 0.25s;
+$spread_speed: 0.25s;
+
 @keyframes toggle {
     from {
         background-color: #00000000;
     }
     to {
-        background-color: #00000040;
+        background-color: #00000060;
     }
+}
+
+@keyframes center {
+    from {}
+    to {
+        left: calc(50vw - 60px);
+        top: calc(50vh - 60px);
+    }
+}
+
+@keyframes splay {
+    from {scale: 0;}
+    to {scale: 1;}
 }
 
 .token_menu {
@@ -15,8 +32,32 @@
     position: fixed;
     top: 0px;
     left: 0px;
-    animation: toggle 0.5s linear forwards;
+    animation: toggle $deploy_speed linear forwards;
+    cursor: default;
     
+    .radial_icon {
+        border-radius: 100%;
+        width: 120px;
+        aspect-ratio: 1;
+        position: absolute;
+        user-select: none;
+        animation: center $deploy_speed linear forwards;
+        background-color: #00000060;
+        border: black 2px solid;
+        transform: translate(-1px, -1px);
+    }
     
+    .radial_menu {
+        --dimention: 700px;
+        background-color: #00000060;
+        position: absolute;
+        left: calc(50vw - calc($radial_dimention / 2));
+        top: calc(50vh - calc($radial_dimention / 2));
+        height: $radial_dimention;
+        width: $radial_dimention;
+        border-radius: 100%;
+        scale: 0;
+        animation: splay $spread_speed ease-out $deploy_speed 1 forwards;
+    }
     
 }

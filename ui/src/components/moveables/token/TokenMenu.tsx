@@ -13,6 +13,8 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
             var pointerEvents = "none"
         }
         return {
+            zIndex: 1000,
+            cursor: "default",
             display,
             pointerEvents
         } as React.CSSProperties
@@ -22,9 +24,14 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
         
     })
     
+    const icon = require(`@assets/icons/${json.role}.png`)
+    
     return (
         <div style={getStyles()} onClick={toggleMenuState} className='token_menu' id={"token_menu_"+json.id}>
-            
+        <div id={"radial_menu_"+json.id} className='radial_menu'></div>
+            <div id={"radial_icon_"+json.id} style={{left: json.xpos, top: json.ypos}} className='radial_icon'>
+                <img src={icon}></img>
+            </div>
         </div>
     );
   
