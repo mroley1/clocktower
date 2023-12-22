@@ -13,11 +13,13 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
             var pointerEvents = "none"
         }
         return {
-            zIndex: 1000,
-            cursor: "default",
             display,
             pointerEvents
         } as React.CSSProperties
+    }
+    
+    function stopPropagation(event: any) {
+        event.stopPropagation()
     }
     
     useEffect(() => {
@@ -28,8 +30,8 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
     
     return (
         <div style={getStyles()} onClick={toggleMenuState} className='token_menu' id={"token_menu_"+json.id}>
-        <div id={"radial_menu_"+json.id} className='radial_menu'></div>
-            <div id={"radial_icon_"+json.id} style={{left: json.xpos, top: json.ypos}} className='radial_icon'>
+            <div id={"radial_menu_"+json.id} onClick={stopPropagation} className='radial_menu'></div>
+            <div id={"radial_icon_"+json.id} onClick={stopPropagation} style={{left: json.xpos, top: json.ypos}} className='radial_icon'>
                 <img src={icon}></img>
             </div>
         </div>

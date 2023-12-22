@@ -1,3 +1,4 @@
+import Action from "./Action"
 import { Alignment } from "./Alignment"
 import { RoleType } from "./RoleType"
 
@@ -10,4 +11,7 @@ export default interface Role {
     firstNight: string
     otherNight: string
     secret: boolean
+    actions: Action[]
+    hardMad: boolean
+    getsBluffs: boolean
 }

@@ -34,6 +34,7 @@ $spread_speed: 0.25s;
     left: 0px;
     animation: toggle $deploy_speed linear forwards;
     cursor: default;
+    z-index: 1000;
     
     .radial_icon {
         border-radius: 100%;

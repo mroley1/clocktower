@@ -47,7 +47,7 @@ function BoardStateMenu(props: any) {
                 <MoveImg fill={colorFind(GameMode.MOVING).color}/>
             </div>
             <div id='boardStateMenu_setup' style={colorFind(GameMode.SETUP)} onClick={() => {setMode(GameMode.SETUP)}}>
-                <MaintainenceImg fill={colorFind(GameMode.MOVING).color}/>
+                <MaintainenceImg fill={colorFind(GameMode.SETUP).color}/>
             </div>
         </div>
     );
