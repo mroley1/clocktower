@@ -1,11 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import './TokenMenu.scss';
 import Player from '@Common/Player'
+import { GameContext } from '@/components/App';
+import { GameMode } from '@/common/GameModes';
 
 function TokenMenu({json, menuState, toggleMenuState}: any) {
+    
+    const gameContext = useContext(GameContext)
   
     function getStyles() {
-        if (menuState) {
+        if (menuState.open) {
             var display = "inherit"
             var pointerEvents = "all"
         } else {
@@ -26,17 +30,46 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
         
     })
     
+    function click() {
+        alert("huh")
+    }
+    
     const icon = require(`@assets/icons/${json.role}.png`)
+    interface radSlice {
+        title: string
+        index: number
+        function: any
+    }
+    const data = new Map<GameMode, radSlice[]>();
+    data.set(GameMode.SETUP, [
+        {"title": "Notes", "index": 0, "function": click},
+        {"title": "Name", "index": 1, "function": click},
+        {"title": "Bluffs", "index": 2, "function": click},
+        {"title": "Conviction", "index": 3, "function": click},
+        {"title": "Role", "index": 4, "function": click},
+        {"title": "Alignment", "index": 5, "function": click}
+    ])
+    data.set(GameMode.NIGHT, [
+        {"title": "Notes", "index": 0, "function": click},
+        {"title": "Action", "index": 1, "function": click},
+        {"title": "Info", "index": 2, "function": click},
+        {"title": "Reminders", "index": 3, "function": click},
+        {"title": "Role", "index": 4, "function": click},
+        {"title": "Alignment", "index": 5, "function": click}
+    ])
+    data.set(GameMode.NOMINATIONS, [
+        {"title": "Nominate", "index": 1, "function": click}
+    ])
+    data.set(GameMode.DAY, [
+        {"title": "Notes", "index": 0, "function": click}
+    ])
+    
+    const slices = data.get(menuState.orgMode)?.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
     
     return (
         <div style={getStyles()} onClick={toggleMenuState} className='token_menu' id={"token_menu_"+json.id}>
             <div id={"radial_menu_"+json.id} onClick={stopPropagation} className='radial_menu'>
-                <div className='areas area_0' data-title='area 0'></div>
-                <div className='areas area_1' data-title='action'></div>
-                <div className='areas area_2' data-title='area 2'></div>
-                <div className='areas area_3' data-title='area 3'></div>
-                <div className='areas area_4' data-title='info'></div>
-                <div className='areas area_5' data-title='area 5'></div>
+                {slices}
             </div>
             <div id={"radial_icon_"+json.id} onClick={stopPropagation} style={{left: json.xpos, top: json.ypos}} className='radial_icon'>
                 <img src={icon}></img>

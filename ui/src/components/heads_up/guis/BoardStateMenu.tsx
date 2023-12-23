@@ -40,8 +40,14 @@ function BoardStateMenu(props: any) {
     return (
         <div id='boardStateMenu'>
             <span id='boardStateMenuTab'></span>
+            <div id='boardStateMenu_nominate' style={colorFind(GameMode.NOMINATIONS)} onClick={() => {setMode(GameMode.NOMINATIONS)}}>
+                <MaintainenceImg fill={colorFind(GameMode.NOMINATIONS).color}/>
+            </div>
             <div id='boardStateMenu_night' style={colorFind(GameMode.NIGHT)} onClick={() => {setMode(GameMode.NIGHT)}}>
                 <NightImg fill={colorFind(GameMode.NIGHT).color}/>
+            </div>
+            <div id='boardStateMenu_nominate' style={colorFind(GameMode.DAY)} onClick={() => {setMode(GameMode.DAY)}}>
+                <MaintainenceImg fill={colorFind(GameMode.DAY).color}/>
             </div>
             <div id='boardStateMenu_moveable' style={colorFind(GameMode.MOVING)} onClick={() => {setMode(GameMode.MOVING)}}>
                 <MoveImg fill={colorFind(GameMode.MOVING).color}/>

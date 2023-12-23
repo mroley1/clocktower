@@ -6,15 +6,21 @@ import { GameMode } from '@/common/GameModes';
 import TokenMenu from './TokenMenu';
 
 export const MOVABLE = [GameMode.MOVING]
-export const CLICKABLE = [GameMode.NIGHT, GameMode.PLAYERSELECT, GameMode.ROLESELECT, GameMode.SETUP]
+export const CLICKABLE = [GameMode.NIGHT, GameMode.PLAYERSELECT, GameMode.ROLESELECT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
 
 function Token(props: any) {
   
   const gameContext = useContext(GameContext)
   const json: Player = props.json
-  const MENU_OPEN = [GameMode.NIGHT, GameMode.SETUP]
+  const MENU_OPEN = [GameMode.NIGHT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
   const icon = require(`@assets/icons/${json.role}.png`)
-  const [menuState, setMenuState] = useState(false)
+  
+  interface MenuState {
+    open: boolean
+    orgMode: GameMode
+  }
+  const startingMenuState: MenuState = {"open": false, "orgMode": GameMode.NIGHT}
+  const [menuState, setMenuState] = useState(startingMenuState)
   
   function getStyles() {
     if (MOVABLE.includes(gameContext.state.gameMode)) {
@@ -39,13 +45,16 @@ function Token(props: any) {
   }
   
   function toggleMenuState() {
-    if (menuState) {
-      setMenuState(false)
-      gameContext.util.setMode(GameMode.NIGHT)
+    var tmp: MenuState = JSON.parse(JSON.stringify(menuState));
+    if (menuState.open) {
+      tmp.open = false
+      gameContext.util.setMode(tmp.orgMode)
     } else {
-      setMenuState(true)
+      tmp.open = true
+      tmp.orgMode = gameContext.state.gameMode
       gameContext.util.setMode(GameMode.RADIAL)
     }
+    setMenuState(tmp)
   }
   
   return (
