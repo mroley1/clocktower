@@ -1,12 +1,34 @@
-import { useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import './Token.scss';
+import TokenContextType from '@Common/TokenContextType';
 import Player from '@Common/Player'
 import { GameContext } from '@/components/App';
 import { GameMode } from '@/common/GameModes';
 import TokenMenu from './TokenMenu';
+import { Alignment } from '@/common/Alignment';
+import GameStateType from '@/common/GameStateType';
 
 export const MOVABLE = [GameMode.MOVING]
 export const CLICKABLE = [GameMode.NIGHT, GameMode.PLAYERSELECT, GameMode.ROLESELECT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
+export const TokenContext = createContext<TokenContextType>({
+  json: {
+    id: -1,
+    role: undefined,
+    name: "",
+    xpos: 0,
+    ypos: 0,
+    pubNotes: "",
+    privNotes: "",
+    ailments: [],
+    mad: null,
+    convinced: null,
+    bluffs: [],
+    alignment: Alignment.STORYTELLER
+  },
+  util: {
+    setPlayerData: () => {},
+  }
+});
 
 function Token(props: any) {
   
@@ -57,20 +79,34 @@ function Token(props: any) {
     setMenuState(tmp)
   }
   
+  function setPlayerData(json: Player) {
+    var tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
+    tmp.tokens[json.id] = json
+    gameContext.setter(tmp)
+  }
+  
+  
+  const tokenContext: TokenContextType = {
+    json,
+    util: {
+      setPlayerData
+    }
+  }
+  
   return (
-    <>
+    <TokenContext.Provider value={tokenContext}>
       <div
-        id={"token_"+json.id}
-        onMouseDown={props.createDragEvent(json.id)}
-        onTouchStart={props.createDragEvent(json.id)}
+        id={"token_"+tokenContext.json.id}
+        onMouseDown={props.createDragEvent(tokenContext.json.id)}
+        onTouchStart={props.createDragEvent(tokenContext.json.id)}
         onClick={handleClick}
         style={getStyles()}
         className='token_container'
         >
           <img src={icon}></img>
-          <TokenMenu json={json} menuState={menuState} toggleMenuState={toggleMenuState} />
+          <TokenMenu menuState={menuState} toggleMenuState={toggleMenuState} />
       </div>
-    </>
+    </TokenContext.Provider>
   );
 }
 

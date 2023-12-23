@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
 import './TokenMenu.scss';
-import { GameContext } from '@/components/App';
 import { GameMode } from '@/common/GameModes';
 import React from 'react';
 import None from './menus/None';
@@ -14,12 +13,12 @@ import Alignment from './menus/Alignment';
 import Info from './menus/Info';
 import Reminders from './menus/Reminders';
 import Nominate from './menus/Nominate';
+import { TokenContext } from './Token';
 
-function TokenMenu({json, menuState, toggleMenuState}: any) {
-    
-    const gameContext = useContext(GameContext)
+function TokenMenu({menuState, toggleMenuState}: any) {
     
     const [dilogueName, setDialogueName] = useState("none")
+    const tokenContext = useContext(TokenContext)
   
     function getStyles() {
         if (menuState.open) {
@@ -43,7 +42,7 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
         setDialogueName(type)
     }
     
-    const icon = require(`@assets/icons/${json.role}.png`)
+    const icon = require(`@assets/icons/${tokenContext.json.role}.png`)
     interface radSlice {
         title: string
         index: number
@@ -77,27 +76,27 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
     
     const dialogues = new Map()
     dialogues.set("none", <None />)
-    dialogues.set("notes", <Notes json={json} toggleMenuState={toggleMenuState} />)
-    dialogues.set("name", Name)
-    dialogues.set("bluffs", Bluffs)
-    dialogues.set("conviction", Conviction)
-    dialogues.set("role", Role)
-    dialogues.set("alignment", Alignment)
-    dialogues.set("action", Action)
-    dialogues.set("info", Info)
-    dialogues.set("reminders", Reminders)
-    dialogues.set("nominate", Nominate)
+    dialogues.set("notes", <Notes toggleMenuState={toggleMenuState} orgMode={menuState.orgMode} />)
+    dialogues.set("name", <Name />)
+    dialogues.set("bluffs", <Bluffs />)
+    dialogues.set("conviction", <Conviction />)
+    dialogues.set("role", <Role />)
+    dialogues.set("alignment", <Alignment />)
+    dialogues.set("action", <Action />)
+    dialogues.set("info", <Info />)
+    dialogues.set("reminders", <Reminders />)
+    dialogues.set("nominate", <Nominate />)
     
     useEffect(()=>{
         setDialogueName("none")
     }, [menuState])
     
     return (
-        <div style={getStyles()} onClick={toggleMenuState} className='token_menu' id={"token_menu_"+json.id}>
-            <div id={"radial_menu_"+json.id} onClick={stopPropagation} className='radial_menu'>
+        <div style={getStyles()} onClick={toggleMenuState} className='token_menu' id={"token_menu_"+tokenContext.json.id}>
+            <div id={"radial_menu_"+tokenContext.json.id} onClick={stopPropagation} className='radial_menu'>
                 {slices}
             </div>
-            <div id={"radial_icon_"+json.id} onClick={stopPropagation} style={{left: json.xpos, top: json.ypos}} className='radial_icon'>
+            <div id={"radial_icon_"+tokenContext.json.id} onClick={stopPropagation} style={{left: tokenContext.json.xpos, top: tokenContext.json.ypos}} className='radial_icon'>
                 <img src={icon}></img>
             </div>
             <div onClick={stopPropagation}>

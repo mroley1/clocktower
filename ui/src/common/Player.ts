@@ -4,15 +4,15 @@ import Role from './Role'
 
 export default interface Player {
     id: number
-    role: Role
+    role: Role | undefined
     name: string
     xpos: number
     ypos: number
     pubNotes: string
     privNotes: string
     ailments: Ailment[]
-    mad: Role
-    convinced: Role
+    mad: Role | null
+    convinced: Role | null
     bluffs: Role[]
     alignment: Alignment
 }

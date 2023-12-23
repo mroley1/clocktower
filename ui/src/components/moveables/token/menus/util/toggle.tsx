@@ -1,4 +1,5 @@
-
+import { useRef } from "react"
+import { CSSTransition } from "react-transition-group"
 
 function Toggle(props: any) {
     
@@ -7,13 +8,17 @@ function Toggle(props: any) {
         props.toggle()
     }
     
+    const nodeRef = useRef(null)
+    
     return (
         <div className='toggle' onClick={props.toggle}>
-            <div className='movement' data-isPublic={props.right}>
-                <div className='left'></div>
-                <div className='right'></div>
-                <div className='handle'></div>
-            </div>
+            <CSSTransition nodeRef={nodeRef} in={props.selected} timeout={150} classNames='movement'>
+                <div ref={nodeRef} className='movement'>
+                    <div className='left'></div>
+                    <div className='right'></div>
+                    <div className='handle'></div>
+                </div>
+            </CSSTransition>
         </div>
     )
 }

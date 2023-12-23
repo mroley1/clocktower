@@ -40,10 +40,31 @@
         
         .movement {
             position: relative;
-            transition: left ease-in-out 0.25s;
             
-            &[data-isPublic="true"] {
+            &-enter {
+                left: 0px;
+            }
+            
+            &-enter-active {
                 left: calc(100% - 30px);
+                transition: left ease-in-out 0.15s;
+            }
+            
+            &-enter-done {
+                left: calc(100% - 30px);
+            }
+            
+            &-exit {
+                left: calc(100% - 30px);
+            }
+            
+            &-exit-active {
+                left: 0px;
+                transition: left ease-in-out 0.15s;
+            }
+            
+            &-exit-done {
+                left: 0px;
             }
             
             .left{
