@@ -6,7 +6,8 @@
             "name": "player 1",
             "xpos": 200,
             "ypos": 200,
-            "notes": "custom role thing",
+            "pubNotes": "buffs?",
+            "privNotes": "custom role thing",
             "ailments": [
                 "DRUNK"
             ],
@@ -21,7 +22,8 @@
             "name": "player 2",
             "xpos": 400,
             "ypos": 100,
-            "notes": "Robert",
+            "pubNotes": "somebody",
+            "privNotes": "Robert",
             "ailments": [
                 "POISONED",
                 "DRUNK"
@@ -37,7 +39,8 @@
             "name": "player 3",
             "xpos": 370,
             "ypos": 300,
-            "notes": "",
+            "pubNotes": "",
+            "privNotes": "",
             "ailments": [
                 "MAD",
                 "DRUNK",

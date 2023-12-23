@@ -1,0 +1,67 @@
+
+@keyframes baseFade {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+#radialMenuActionSolidBase {
+    width: 100%;
+    height: 100%;
+    background-image: url(./assets/vines.png);
+    position: absolute;
+    animation: baseFade 0.5s ease-out forwards;
+    
+    .center {
+        width: 100%;
+        text-align: center;
+        margin: 50px 0px 0px 0px;
+        color: white;
+    }
+    
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        height: 75px;
+        width: 75px;
+        cursor: pointer;
+        background: no-repeat center/contain url(./assets/close.svg);
+    }
+    
+    .toggle {
+        width: 80px;
+        height: 30px;
+        border-radius: 15px;
+        background-color: rgb(21, 84, 179);
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        
+        .movement {
+            position: relative;
+            transition: left ease-in-out 0.25s;
+            
+            &[data-isPublic="true"] {
+                left: calc(100% - 30px);
+            }
+            
+            .left{
+                height: 30px;
+                width: 100%;
+                position: relative;
+                left: 15px;
+                background-color: lightgray;
+            }
+            .handle {
+                height: 30px;
+                aspect-ratio: 1;
+                border-radius: 100%;
+                top: 0px;
+                position: absolute;
+                background-color: gray;
+            }
+        }
+    }
+    
+}

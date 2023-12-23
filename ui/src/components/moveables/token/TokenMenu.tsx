@@ -1,12 +1,25 @@
-import { useEffect, useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import './TokenMenu.scss';
-import Player from '@Common/Player'
 import { GameContext } from '@/components/App';
 import { GameMode } from '@/common/GameModes';
+import React from 'react';
+import None from './menus/None';
+import Notes from './menus/Notes';
+import Action from './menus/Action';
+import Name from './menus/Name';
+import Bluffs from './menus/Bluffs';
+import Conviction from './menus/Conviction';
+import Role from './menus/Role';
+import Alignment from './menus/Alignment';
+import Info from './menus/Info';
+import Reminders from './menus/Reminders';
+import Nominate from './menus/Nominate';
 
 function TokenMenu({json, menuState, toggleMenuState}: any) {
     
     const gameContext = useContext(GameContext)
+    
+    const [dilogueName, setDialogueName] = useState("none")
   
     function getStyles() {
         if (menuState.open) {
@@ -26,12 +39,8 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
         event.stopPropagation()
     }
     
-    useEffect(() => {
-        
-    })
-    
-    function click() {
-        alert("huh")
+    function setDialogue(type: string) {
+        setDialogueName(type)
     }
     
     const icon = require(`@assets/icons/${json.role}.png`)
@@ -42,29 +51,46 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
     }
     const data = new Map<GameMode, radSlice[]>();
     data.set(GameMode.SETUP, [
-        {"title": "Notes", "index": 0, "function": click},
-        {"title": "Name", "index": 1, "function": click},
-        {"title": "Bluffs", "index": 2, "function": click},
-        {"title": "Conviction", "index": 3, "function": click},
-        {"title": "Role", "index": 4, "function": click},
-        {"title": "Alignment", "index": 5, "function": click}
+        {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}},
+        {"title": "Name", "index": 1, "function": ()=>{setDialogue("name")}},
+        {"title": "Bluffs", "index": 2, "function": ()=>{setDialogue("buffs")}},
+        {"title": "Conviction", "index": 3, "function": ()=>{setDialogue("conviction")}},
+        {"title": "Role", "index": 4, "function": ()=>{setDialogue("role")}},
+        {"title": "Alignment", "index": 5, "function": ()=>{setDialogue("alignment")}}
     ])
     data.set(GameMode.NIGHT, [
-        {"title": "Notes", "index": 0, "function": click},
-        {"title": "Action", "index": 1, "function": click},
-        {"title": "Info", "index": 2, "function": click},
-        {"title": "Reminders", "index": 3, "function": click},
-        {"title": "Role", "index": 4, "function": click},
-        {"title": "Alignment", "index": 5, "function": click}
+        {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}},
+        {"title": "Action", "index": 1, "function": ()=>{setDialogue("action")}},
+        {"title": "Info", "index": 2, "function": ()=>{setDialogue("info")}},
+        {"title": "Reminders", "index": 3, "function": ()=>{setDialogue("reminders")}},
+        {"title": "Role", "index": 4, "function": ()=>{setDialogue("role")}},
+        {"title": "Alignment", "index": 5, "function": ()=>{setDialogue("alignment")}}
     ])
     data.set(GameMode.NOMINATIONS, [
-        {"title": "Nominate", "index": 1, "function": click}
+        {"title": "Nominate", "index": 1, "function": ()=>{setDialogue("nominate")}}
     ])
     data.set(GameMode.DAY, [
-        {"title": "Notes", "index": 0, "function": click}
+        {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}}
     ])
     
     const slices = data.get(menuState.orgMode)?.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
+    
+    const dialogues = new Map()
+    dialogues.set("none", <None />)
+    dialogues.set("notes", <Notes json={json} toggleMenuState={toggleMenuState} />)
+    dialogues.set("name", Name)
+    dialogues.set("bluffs", Bluffs)
+    dialogues.set("conviction", Conviction)
+    dialogues.set("role", Role)
+    dialogues.set("alignment", Alignment)
+    dialogues.set("action", Action)
+    dialogues.set("info", Info)
+    dialogues.set("reminders", Reminders)
+    dialogues.set("nominate", Nominate)
+    
+    useEffect(()=>{
+        setDialogueName("none")
+    }, [menuState])
     
     return (
         <div style={getStyles()} onClick={toggleMenuState} className='token_menu' id={"token_menu_"+json.id}>
@@ -73,6 +99,9 @@ function TokenMenu({json, menuState, toggleMenuState}: any) {
             </div>
             <div id={"radial_icon_"+json.id} onClick={stopPropagation} style={{left: json.xpos, top: json.ypos}} className='radial_icon'>
                 <img src={icon}></img>
+            </div>
+            <div onClick={stopPropagation}>
+                {dialogues.get(dilogueName)}
             </div>
         </div>
     );

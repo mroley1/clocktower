@@ -8,7 +8,8 @@ export default interface Player {
     name: string
     xpos: number
     ypos: number
-    notes: string
+    pubNotes: string
+    privNotes: string
     ailments: Ailment[]
     mad: Role
     convinced: Role

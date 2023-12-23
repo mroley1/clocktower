@@ -6,6 +6,8 @@ import GameStateType from '@/common/GameStateType';
 import MaintainenceImg from '@HeadsUpAssets/board_state/maintainance';
 import MoveImg from '../assets/board_state/move';
 import NightImg from '../assets/board_state/night';
+import DayImg from '../assets/board_state/day';
+import VoteImg from '../assets/board_state/vote';
 
 function BoardStateMenu(props: any) {
     
@@ -41,13 +43,13 @@ function BoardStateMenu(props: any) {
         <div id='boardStateMenu'>
             <span id='boardStateMenuTab'></span>
             <div id='boardStateMenu_nominate' style={colorFind(GameMode.NOMINATIONS)} onClick={() => {setMode(GameMode.NOMINATIONS)}}>
-                <MaintainenceImg fill={colorFind(GameMode.NOMINATIONS).color}/>
+                <VoteImg fill={colorFind(GameMode.NOMINATIONS).color}/>
             </div>
             <div id='boardStateMenu_night' style={colorFind(GameMode.NIGHT)} onClick={() => {setMode(GameMode.NIGHT)}}>
                 <NightImg fill={colorFind(GameMode.NIGHT).color}/>
             </div>
             <div id='boardStateMenu_nominate' style={colorFind(GameMode.DAY)} onClick={() => {setMode(GameMode.DAY)}}>
-                <MaintainenceImg fill={colorFind(GameMode.DAY).color}/>
+                <DayImg fill={colorFind(GameMode.DAY).color}/>
             </div>
             <div id='boardStateMenu_moveable' style={colorFind(GameMode.MOVING)} onClick={() => {setMode(GameMode.MOVING)}}>
                 <MoveImg fill={colorFind(GameMode.MOVING).color}/>
