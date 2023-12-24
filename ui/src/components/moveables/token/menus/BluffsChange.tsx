@@ -1,6 +1,6 @@
 import './Menus.scss';
 
-function Reminders(props: any) {
+function BluffsChange(props: any) {
     
     return (
         <></>
@@ -8,4 +8,4 @@ function Reminders(props: any) {
   
 }
 
-export default Reminders;
+export default BluffsChange;

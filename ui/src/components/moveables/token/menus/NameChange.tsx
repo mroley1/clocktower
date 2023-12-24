@@ -1,6 +1,6 @@
 import './Menus.scss';
 
-function Alignment(props: any) {
+function NameChange(props: any) {
     
     return (
         <></>
@@ -8,4 +8,4 @@ function Alignment(props: any) {
   
 }
 
-export default Alignment;
+export default NameChange;

@@ -1,11 +1,10 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import './Menus.scss';
-import Toggle from './util/toggle';
-import { GameContext } from '@/components/App';
+import Toggle from './util/Toggle';
 import { TokenContext } from '../Token';
 import { GameMode } from '@/common/GameModes';
 
-function Notes(props: any) {
+function NotesChange(props: any) {
     
     const tokenContext = useContext(TokenContext)
     
@@ -51,4 +50,4 @@ function Notes(props: any) {
   
 }
 
-export default Notes;
+export default NotesChange;

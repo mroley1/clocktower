@@ -3,15 +3,15 @@ import './TokenMenu.scss';
 import { GameMode } from '@/common/GameModes';
 import React from 'react';
 import None from './menus/None';
-import Notes from './menus/Notes';
+import NotesChange from './menus/NotesChange';
 import Action from './menus/Action';
-import Name from './menus/Name';
-import Bluffs from './menus/Bluffs';
-import Conviction from './menus/Conviction';
-import Role from './menus/Role';
-import Alignment from './menus/Alignment';
+import NameChange from './menus/NameChange';
+import BluffsChange from './menus/BluffsChange';
+import ConvictionChange from './menus/ConvictionChange';
+import RoleChange from './menus/RoleChange';
+import AlignmentChange from './menus/AlignmentChange';
 import Info from './menus/Info';
-import Reminders from './menus/Reminders';
+import RemindersChange from './menus/RemindersChange';
 import Nominate from './menus/Nominate';
 import { TokenContext } from './Token';
 
@@ -76,15 +76,15 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     
     const dialogues = new Map()
     dialogues.set("none", <None />)
-    dialogues.set("notes", <Notes toggleMenuState={toggleMenuState} orgMode={menuState.orgMode} />)
-    dialogues.set("name", <Name />)
-    dialogues.set("bluffs", <Bluffs />)
-    dialogues.set("conviction", <Conviction />)
-    dialogues.set("role", <Role />)
-    dialogues.set("alignment", <Alignment />)
+    dialogues.set("notes", <NotesChange toggleMenuState={toggleMenuState} orgMode={menuState.orgMode} />)
+    dialogues.set("name", <NameChange />)
+    dialogues.set("bluffs", <BluffsChange />)
+    dialogues.set("conviction", <ConvictionChange />)
+    dialogues.set("role", <RoleChange />)
+    dialogues.set("alignment", <AlignmentChange />)
     dialogues.set("action", <Action />)
     dialogues.set("info", <Info />)
-    dialogues.set("reminders", <Reminders />)
+    dialogues.set("reminders", <RemindersChange />)
     dialogues.set("nominate", <Nominate />)
     
     useEffect(()=>{
