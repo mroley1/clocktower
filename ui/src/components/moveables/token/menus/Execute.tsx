@@ -1,6 +1,6 @@
 import './Menus.scss';
 
-function None(props: any) {
+function Execute(props: any) {
     
     return (
         <></>
@@ -8,4 +8,4 @@ function None(props: any) {
   
 }
 
-export default None;
+export default Execute;

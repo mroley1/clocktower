@@ -4,13 +4,13 @@ import Toggle from './util/Toggle';
 import { TokenContext } from '../Token';
 import { GameMode } from '@/common/GameModes';
 
-function NotesChange(props: any) {
+function NotesChange() {
     
     const tokenContext = useContext(TokenContext)
     
     const LOCKED_PUBLIC = [GameMode.DAY]
     
-    const [isPublic, setIsPublic] = useState(LOCKED_PUBLIC.includes(props.orgMode)?true:false)
+    const [isPublic, setIsPublic] = useState(LOCKED_PUBLIC.includes(tokenContext.menuState.orgMode)?true:false)
     
     function toggleIsPublic() {
         setIsPublic(!isPublic)
@@ -28,12 +28,16 @@ function NotesChange(props: any) {
         tokenContext.util.setPlayerData(tmp)
     }
     
+    const closeMenu = () => {
+        tokenContext.util.closeMenu()
+    }
+    
     return (
         <div id='radialMenuActionSolidBase'>
-            <div className='close' onClick={props.toggleMenuState}></div>
+            <div className='close' onClick={closeMenu}></div>
             <div className='center'>
                 <h1>Notes for {tokenContext.json.name}</h1>
-                <div style={{display: LOCKED_PUBLIC.includes(props.orgMode)?"none":"inherit"}}>
+                <div style={{display: LOCKED_PUBLIC.includes(tokenContext.menuState.orgMode)?"none":"inherit"}}>
                     <Toggle selected={isPublic} toggle={toggleIsPublic} />
                 </div>
                 <h2 style={{color: isPublic?"red":"white"}}>

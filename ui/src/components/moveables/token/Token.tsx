@@ -7,6 +7,8 @@ import { GameMode } from '@/common/GameModes';
 import TokenMenu from './TokenMenu';
 import { Alignment } from '@/common/Alignment';
 import GameStateType from '@/common/GameStateType';
+import RadialMenuState from '@/common/RadialMenuState';
+
 
 export const MOVABLE = [GameMode.MOVING]
 export const CLICKABLE = [GameMode.NIGHT, GameMode.PLAYERSELECT, GameMode.ROLESELECT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
@@ -25,8 +27,15 @@ export const TokenContext = createContext<TokenContextType>({
     bluffs: [],
     alignment: Alignment.STORYTELLER
   },
+  menuState: {
+    open: false,
+    orgMode: GameMode.SETUP,
+    dialogue: "none"
+  },
   util: {
     setPlayerData: () => {},
+    toggleMenuState: () => {},
+    closeMenu: () => {}
   }
 });
 
@@ -37,11 +46,7 @@ function Token(props: any) {
   const MENU_OPEN = [GameMode.NIGHT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
   const icon = require(`@assets/icons/${json.role}.png`)
   
-  interface MenuState {
-    open: boolean
-    orgMode: GameMode
-  }
-  const startingMenuState: MenuState = {"open": false, "orgMode": GameMode.NIGHT}
+  const startingMenuState: RadialMenuState = {"open": false, "orgMode": GameMode.NIGHT, dialogue: "none"}
   const [menuState, setMenuState] = useState(startingMenuState)
   
   function getStyles() {
@@ -66,16 +71,24 @@ function Token(props: any) {
     toggleMenuState()
   }
   
-  function toggleMenuState() {
-    var tmp: MenuState = JSON.parse(JSON.stringify(menuState));
+  function toggleMenuState(dialogueName = "none") {
+    var tmp: RadialMenuState = JSON.parse(JSON.stringify(menuState));
     if (menuState.open) {
       tmp.open = false
       gameContext.util.setMode(tmp.orgMode)
     } else {
       tmp.open = true
+      tmp.dialogue = dialogueName
       tmp.orgMode = gameContext.state.gameMode
       gameContext.util.setMode(GameMode.RADIAL)
     }
+    setMenuState(tmp)
+  }
+  
+  function closeMenu() {
+    var tmp: RadialMenuState = JSON.parse(JSON.stringify(menuState));
+    tmp.open = false
+    gameContext.util.setMode(tmp.orgMode)
     setMenuState(tmp)
   }
   
@@ -88,8 +101,11 @@ function Token(props: any) {
   
   const tokenContext: TokenContextType = {
     json,
+    menuState,
     util: {
-      setPlayerData
+      setPlayerData,
+      toggleMenuState,
+      closeMenu
     }
   }
   
@@ -116,6 +132,14 @@ function Token(props: any) {
     }
   })()
   
+  const onBlock = (() => {
+    if (gameContext.state.gameMode === GameMode.NOMINATIONS && gameContext.state.onBlock === json.id) {
+      return <div className='on_block'></div>
+    } else {
+      return <></>
+    }
+  })()
+  
   return (
     <TokenContext.Provider value={tokenContext}>
       <div
@@ -130,6 +154,7 @@ function Token(props: any) {
           {ailments}
           {alignment}
           {convinced}
+          {onBlock}
           <div className='token_nametag'>{json.name}</div>
           <TokenMenu menuState={menuState} toggleMenuState={toggleMenuState} />
       </div>

@@ -12,11 +12,13 @@ export const GameContext = createContext<GameContextType>({
   "state": {
     "tokens": [],
     "script": {},
+    "onBlock": null,
     "gameMode": GameMode.SETUP
   },
   "setter": () => {},
   "util": {
-    "setMode": () => {}
+    "setMode": () => {},
+    "setOnBlock": () => {}
   }
 });
 
@@ -30,11 +32,19 @@ function App() {
     gameContext.setter(tmp)
   }
   
+  function setOnBlock(index: number) {
+    const tmp = JSON.parse(JSON.stringify(gameContext.state));
+    tmp["onBlock"] = index
+    gameContext.setter(tmp)
+  }
+  
+  
   const gameContext: GameContextType = {
     "state": gameState,
     "setter": setGameState,
     "util": {
-      "setMode": setMode
+      "setMode": setMode,
+      "setOnBlock": setOnBlock
     }
   }
   

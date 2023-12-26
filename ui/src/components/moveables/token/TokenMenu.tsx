@@ -2,7 +2,6 @@ import { useContext, useState, useEffect } from 'react';
 import './TokenMenu.scss';
 import { GameMode } from '@/common/GameModes';
 import React from 'react';
-import None from './menus/None';
 import NotesChange from './menus/NotesChange';
 import Action from './menus/Action';
 import NameChange from './menus/NameChange';
@@ -14,11 +13,21 @@ import Info from './menus/Info';
 import RemindersChange from './menus/RemindersChange';
 import Nominate from './menus/Nominate';
 import { TokenContext } from './Token';
+import OnBlockSet from './menus/OnBlockSet';
+import Execute from './menus/Execute';
+import { GameContext } from '@/components/App';
 
 function TokenMenu({menuState, toggleMenuState}: any) {
     
     const [dilogueName, setDialogueName] = useState("none")
+    const gameContext = useContext(GameContext)
     const tokenContext = useContext(TokenContext)
+    
+    
+    function onBlockSelect() {
+        tokenContext.util.toggleMenuState()
+        gameContext.util.setOnBlock(tokenContext.json.id)
+    }
   
     function getStyles() {
         if (menuState.open) {
@@ -39,6 +48,10 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     }
     
     function setDialogue(type: string) {
+        // let func = dialogues.get(type).function
+        // if (func !== null) {
+        //     func()
+        // }
         setDialogueName(type)
     }
     
@@ -66,7 +79,9 @@ function TokenMenu({menuState, toggleMenuState}: any) {
         {"title": "Alignment", "index": 5, "function": ()=>{setDialogue("alignment")}}
     ])
     data.set(GameMode.NOMINATIONS, [
-        {"title": "Nominate", "index": 1, "function": ()=>{setDialogue("nominate")}}
+        {"title": "Nominate", "index": 1, "function": ()=>{setDialogue("nominate")}},
+        {"title": "On Block", "index": 3, "function": ()=>{setDialogue("onblock")}},
+        {"title": "Execute", "index": 5, "function": ()=>{setDialogue("execute")}}
     ])
     data.set(GameMode.DAY, [
         {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}}
@@ -74,9 +89,10 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     
     const slices = data.get(menuState.orgMode)?.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
     
+    
     const dialogues = new Map()
-    dialogues.set("none", <None />)
-    dialogues.set("notes", <NotesChange toggleMenuState={toggleMenuState} orgMode={menuState.orgMode} />)
+    dialogues.set("none", <></>)
+    dialogues.set("notes", <NotesChange />)
     dialogues.set("name", <NameChange />)
     dialogues.set("bluffs", <BluffsChange />)
     dialogues.set("conviction", <ConvictionChange />)
@@ -86,6 +102,8 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     dialogues.set("info", <Info />)
     dialogues.set("reminders", <RemindersChange />)
     dialogues.set("nominate", <Nominate />)
+    dialogues.set("onblock", <OnBlockSet />)
+    dialogues.set("execute", <Execute />)
     
     useEffect(()=>{
         setDialogueName("none")

@@ -4,6 +4,7 @@ export default interface GameContextType {
     state: GameStateType
     setter: Function
     util: {
-        setMode: Function
+        setMode: Function,
+        setOnBlock: Function
     }
 }

@@ -52,5 +52,6 @@
             "alignment": "STORYTELLER"
         }
     ],
-    "gameMode": 3
+    "gameMode": 3,
+    "onBlock": null
 }

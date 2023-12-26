@@ -9,7 +9,7 @@ function HeadsUp(props: any) {
   return (
     <div id='heads_up'>
         <BoardStateMenu />
-        <span style={{position: "absolute"}}>{gameContext.state.gameMode}</span>
+        <span style={{position: "absolute"}}>{gameContext.state.onBlock}</span>
     </div>
   );
 }

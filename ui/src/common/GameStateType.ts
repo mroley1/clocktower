@@ -5,5 +5,6 @@ import Script from "./Script";
 export default interface GameStateType {
     tokens: Player[]
     script: Script
+    onBlock: number | null
     gameMode: GameMode
 }

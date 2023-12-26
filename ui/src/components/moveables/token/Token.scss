@@ -114,5 +114,19 @@ div#moveBoard {
             top: 0px;
             background-color: rgb(150, 150, 150);
         }
+        
+        .on_block {
+            background-image: url('./assets/onBlock.png');
+            background-position: center;
+            background-size: 70%;
+            background-repeat: no-repeat;
+            border-radius: 100%;
+            width: 120px;
+            aspect-ratio: 1;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            opacity: 0.8;
+        }
     }
 }
