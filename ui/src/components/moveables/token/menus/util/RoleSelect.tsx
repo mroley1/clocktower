@@ -1,8 +1,8 @@
-import './Role.scss';
+import './RoleSelect.scss';
 
-function Role() {
+function Role(props: any) {
   return (
-    <></>
+    <div></div>
   )
 }
 

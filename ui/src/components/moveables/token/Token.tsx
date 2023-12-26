@@ -93,6 +93,16 @@ function Token(props: any) {
     }
   }
   
+  const ailments = json.ailments.map((ailment)=><div key={ailment} className={'ailment '+ ailment.toString().toLowerCase()}></div>)
+  
+  const alignment = (() => {
+    if (json.alignment === json.alignment) {
+      return <div className={'alignment '+ json.alignment.toString().toLowerCase()}></div>
+    } else {
+      return <></>
+    }
+  })()
+  
   return (
     <TokenContext.Provider value={tokenContext}>
       <div
@@ -104,6 +114,8 @@ function Token(props: any) {
         className='token_container'
         >
           <img src={icon}></img>
+          {ailments}
+          {alignment}
           <TokenMenu menuState={menuState} toggleMenuState={toggleMenuState} />
       </div>
     </TokenContext.Provider>

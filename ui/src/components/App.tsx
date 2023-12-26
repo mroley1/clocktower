@@ -11,6 +11,7 @@ const TESTSTATE = require('./testState.json');
 export const GameContext = createContext<GameContextType>({
   "state": {
     "tokens": [],
+    "script": {},
     "gameMode": GameMode.SETUP
   },
   "setter": () => {},

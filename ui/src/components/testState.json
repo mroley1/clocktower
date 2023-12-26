@@ -51,5 +51,6 @@
             "bluffs": [],
             "alignment": "EVIL"
         }
-    ]
+    ],
+    "gameMode": 3
 }
