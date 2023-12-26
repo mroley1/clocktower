@@ -93,11 +93,24 @@ function Token(props: any) {
     }
   }
   
-  const ailments = json.ailments.map((ailment)=><div key={ailment} className={'ailment '+ ailment.toString().toLowerCase()}></div>)
+  const ailments = json.ailments.map((ailment) => {
+    return <div key={ailment} className={'ailment '+ ailment.toString().toLowerCase()}></div>
+  })
   
   const alignment = (() => {
     if (json.alignment === json.alignment) {
       return <div className={'alignment '+ json.alignment.toString().toLowerCase()}></div>
+    } else {
+      return <></>
+    }
+  })()
+  
+  const convinced = (() => {
+    if (json.convinced !== null) {
+      const icon = require(`@assets/icons/${json.convinced}.png`)
+      return <div className='convinced'>
+        <img src={icon}></img>
+      </div>
     } else {
       return <></>
     }
@@ -116,6 +129,8 @@ function Token(props: any) {
           <img src={icon}></img>
           {ailments}
           {alignment}
+          {convinced}
+          <div className='token_nametag'>{json.name}</div>
           <TokenMenu menuState={menuState} toggleMenuState={toggleMenuState} />
       </div>
     </TokenContext.Provider>

@@ -20,6 +20,15 @@ div#moveBoard {
             height: 100%;
         }
         
+        .token_nametag {
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            text-align: center;
+            font-size: 16pt;
+            pointer-events: none;
+        }
+        
         .ailment {
             position: absolute;
             width: 30px;
@@ -86,12 +95,24 @@ div#moveBoard {
             }
             
             &.storyteller {
-                background-color: rgb(253, 255, 200);
+                background-color: rgb(255, 255, 0);
                 background-image: url('./assets/storyteller.png');
                 background-position: center;
-                background-size: 100%;
+                background-size: 120%;
                 background-repeat: no-repeat;
             }
+        }
+        
+        .convinced {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border-radius: 100%;
+            border: black 1px solid;
+            pointer-events: none;
+            left: 90px;
+            top: 0px;
+            background-color: rgb(150, 150, 150);
         }
     }
 }
