@@ -8,6 +8,7 @@
             "ypos": 200,
             "pubNotes": "buffs?",
             "privNotes": "custom role thing",
+            "viability": 0,
             "ailments": [
                 "DRUNK"
             ],
@@ -24,6 +25,7 @@
             "ypos": 100,
             "pubNotes": "somebody",
             "privNotes": "Robert",
+            "viability": 0,
             "ailments": [
                 "POISONED",
                 "DRUNK"
@@ -41,6 +43,7 @@
             "ypos": 300,
             "pubNotes": "",
             "privNotes": "",
+            "viability": 0,
             "ailments": [
                 "MAD",
                 "DRUNK",

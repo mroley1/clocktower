@@ -4,20 +4,56 @@ div#moveBoard {
     --menu_duration: 0.5s;
     
     .token_container {
-        background-image: url('./assets/token_backing.webp');
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
         border-radius: 100%;
         width: 120px;
-        aspect-ratio: 1;
+        height: 120px;
         position: absolute;
         user-select: none;
+        
+        .vote {
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            background-image: url('./assets/vote_token.png');
+            background-position: center;
+            background-size: 100%;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            display: none;
+        }
+        
+        &.night {
+            background-image: url('./assets/token_backing.webp');
+        }
+        
+        &.alive {
+            background-image: url('./assets/alive_token.png');
+        }
+        
+        &.deadvote {
+            background-image: url('./assets/dead_token.png');
+            .vote {
+                display: inherit;
+            }
+        }
+        
+        &.dead {
+            background-image: url('./assets/dead_token.png');
+        }
         
         img {
             pointer-events: none;
             width: 100%;
             height: 100%;
+            
+            &.dead {
+                filter: brightness(0) invert(1);
+            }
         }
         
         .token_nametag {
@@ -27,6 +63,30 @@ div#moveBoard {
             text-align: center;
             font-size: 16pt;
             pointer-events: none;
+        }
+        
+        .vote_button {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 100%;
+            border: black 2px solid;
+            pointer-events: none;
+            background-position: center;
+            background-size: 85%;
+            background-repeat: no-repeat;
+            left: -2px;
+            top: -2px;
+            
+            &.yes {
+                background-color: rgb(100, 255, 255);
+                background-image: url('./assets/yes.png');
+            }
+            
+            &.no {
+                background-color: rgb(255, 100, 100);
+                background-image: url('./assets/no.png');
+            }
         }
         
         .ailment {
@@ -75,8 +135,8 @@ div#moveBoard {
             border-radius: 100%;
             border: black 1px solid;
             pointer-events: none;
-            left: 0px;
-            top: 90px;
+            left: -5px;
+            top: 80px;
             
             &.good {
                 background-color: rgb(200, 200, 255);

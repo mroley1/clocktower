@@ -15,6 +15,7 @@ import Nominate from './menus/Nominate';
 import { TokenContext } from './Token';
 import OnBlockSet from './menus/OnBlockSet';
 import Execute from './menus/Execute';
+import Vote from './menus/Vote';
 import { GameContext } from '@/components/App';
 
 function TokenMenu({menuState, toggleMenuState}: any) {
@@ -22,20 +23,13 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     const [dilogueName, setDialogueName] = useState("none")
     const gameContext = useContext(GameContext)
     const tokenContext = useContext(TokenContext)
-    
-    
-    function onBlockSelect() {
-        tokenContext.util.toggleMenuState()
-        gameContext.util.setOnBlock(tokenContext.json.id)
-    }
   
     function getStyles() {
+        var display = "none"
+        var pointerEvents = "none"
         if (menuState.open) {
-            var display = "inherit"
-            var pointerEvents = "all"
-        } else {
-            var display = "none"
-            var pointerEvents = "none"
+            display = "inherit"
+            pointerEvents = "all"
         }
         return {
             display,
@@ -56,6 +50,7 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     }
     
     const icon = require(`@assets/icons/${tokenContext.json.role}.png`)
+    
     interface radSlice {
         title: string
         index: number
@@ -81,6 +76,7 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     data.set(GameMode.NOMINATIONS, [
         {"title": "Nominate", "index": 1, "function": ()=>{setDialogue("nominate")}},
         {"title": "On Block", "index": 3, "function": ()=>{setDialogue("onblock")}},
+        {"title": "Voted", "index": 4, "function": ()=>{setDialogue("vote")}},
         {"title": "Execute", "index": 5, "function": ()=>{setDialogue("execute")}}
     ])
     data.set(GameMode.DAY, [
@@ -103,11 +99,20 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     dialogues.set("reminders", <RemindersChange />)
     dialogues.set("nominate", <Nominate />)
     dialogues.set("onblock", <OnBlockSet />)
+    dialogues.set("vote", <Vote />)
     dialogues.set("execute", <Execute />)
     
     useEffect(()=>{
         setDialogueName("none")
     }, [menuState])
+    
+    const centerIcon = (()=>{
+        if (gameContext.state.gameMode === GameMode.RADIAL) {
+            return <img src={icon}></img>
+        } else {
+            return <></>
+        }
+    })()
     
     return (
         <div style={getStyles()} onClick={toggleMenuState} className='token_menu' id={"token_menu_"+tokenContext.json.id}>
@@ -115,7 +120,7 @@ function TokenMenu({menuState, toggleMenuState}: any) {
                 {slices}
             </div>
             <div id={"radial_icon_"+tokenContext.json.id} onClick={stopPropagation} style={{left: tokenContext.json.xpos, top: tokenContext.json.ypos}} className='radial_icon'>
-                <img src={icon}></img>
+                {centerIcon}
             </div>
             <div onClick={stopPropagation}>
                 {dialogues.get(dilogueName)}

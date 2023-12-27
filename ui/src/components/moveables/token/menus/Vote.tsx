@@ -1,21 +1,20 @@
 import { useContext, useEffect } from 'react';
 import './Menus.scss';
-import { GameContext } from '@/components/App';
 import { TokenContext } from '../Token';
 import { Viability } from '@/common/Viability';
 
-function Execute(props: any) {
+function Vote(props: any) {
     
-    const gameContext = useContext(GameContext)
     const tokenContext = useContext(TokenContext)
     
     useEffect(() => {
         tokenContext.util.closeMenu()
         return () => {
-            let tmp = tokenContext.json
-            tmp["viability"] = Viability.DEADVOTE
-            tokenContext.util.setPlayerData(tmp)
-            gameContext.util.setOnBlock(null)
+            if (tokenContext.json.viability === Viability.DEADVOTE) {
+                let tmp = tokenContext.json
+                tmp["viability"] = Viability.DEAD
+                tokenContext.util.setPlayerData(tmp)
+            }
         }
     })
     
@@ -25,4 +24,4 @@ function Execute(props: any) {
   
 }
 
-export default Execute;
+export default Vote;

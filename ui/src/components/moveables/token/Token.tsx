@@ -8,6 +8,7 @@ import TokenMenu from './TokenMenu';
 import { Alignment } from '@/common/Alignment';
 import GameStateType from '@/common/GameStateType';
 import RadialMenuState from '@/common/RadialMenuState';
+import { Viability } from '@/common/Viability';
 
 
 export const MOVABLE = [GameMode.MOVING]
@@ -21,6 +22,7 @@ export const TokenContext = createContext<TokenContextType>({
     ypos: 0,
     pubNotes: "",
     privNotes: "",
+    viability: Viability.ALIVE,
     ailments: [],
     mad: null,
     convinced: null,
@@ -44,18 +46,20 @@ function Token(props: any) {
   const gameContext = useContext(GameContext)
   const json: Player = props.json
   const MENU_OPEN = [GameMode.NIGHT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
+  const IS_NIGHT = [GameMode.NIGHT, GameMode.RADIAL, GameMode.SETUP, GameMode.MARK, GameMode.MOVING]
+  const IS_ALIVE = [Viability.ALIVE, Viability.DEADFAINT]
+  const CAN_VOTE = [Viability.ALIVE, Viability.DEADFAINT, Viability.DEADVOTE]
   const icon = require(`@assets/icons/${json.role}.png`)
   
   const startingMenuState: RadialMenuState = {"open": false, "orgMode": GameMode.NIGHT, dialogue: "none"}
   const [menuState, setMenuState] = useState(startingMenuState)
   
   function getStyles() {
+    var cursor = "unset"
     if (MOVABLE.includes(gameContext.state.gameMode)) {
-      var cursor = "grab"
+      cursor = "grab"
     } else if (CLICKABLE.includes(gameContext.state.gameMode)) {
-      var cursor = "pointer"
-    } else {
-      var cursor = "unset"
+      cursor = "pointer"
     }
     return {
       left: json.xpos,
@@ -80,7 +84,11 @@ function Token(props: any) {
       tmp.open = true
       tmp.dialogue = dialogueName
       tmp.orgMode = gameContext.state.gameMode
-      gameContext.util.setMode(GameMode.RADIAL)
+      if (IS_NIGHT.includes(gameContext.state.gameMode)) {
+        gameContext.util.setMode(GameMode.RADIAL)
+      } else {
+        gameContext.util.setMode(GameMode.BLINDRADIAL)
+      }
     }
     setMenuState(tmp)
   }
@@ -109,9 +117,45 @@ function Token(props: any) {
     }
   }
   
+  const tokenVisibility = (()=>{
+    if (IS_NIGHT.includes(gameContext.state.gameMode)) {
+      return "night"
+    } else {
+      return "day"
+    }
+  })()
+  
+  const playerViability = (()=>{
+    if (tokenVisibility === "day") {
+      return Viability[tokenContext.json.viability].toString().toLowerCase()
+    } else {
+      return ""
+    }
+  })()
+  
+  const viability = (()=>{
+    if (IS_ALIVE.includes(tokenContext.json.viability)) {
+      return "alive"
+    } else {
+      return "dead"
+    }
+  })()
+  
   const ailments = json.ailments.map((ailment) => {
     return <div key={ailment} className={'ailment '+ ailment.toString().toLowerCase()}></div>
   })
+  
+  const canVote = (()=>{
+    if (gameContext.state.gameMode===GameMode.NOMINATIONS) {
+      if (CAN_VOTE.includes(tokenContext.json.viability)) {
+        return <div className='vote_button yes'></div>
+      } else {
+        return <div className='vote_button no'></div>
+      }
+    } else {
+      return <></>
+    }
+  })()
   
   const alignment = (() => {
     if (json.alignment === json.alignment) {
@@ -148,12 +192,16 @@ function Token(props: any) {
         onTouchStart={props.createDragEvent(tokenContext.json.id)}
         onClick={handleClick}
         style={getStyles()}
-        className='token_container'
+        className={`token_container ${tokenVisibility} ${playerViability}`}
         >
-          <img src={icon}></img>
-          {ailments}
-          {alignment}
-          {convinced}
+          <div className='vote'></div>
+          {canVote}
+          <div style={{display: tokenVisibility === "night" ? "inherit" : "none", pointerEvents: "none"}}>
+            <img src={icon} className={viability}></img>
+            {ailments}
+            {alignment}
+            {convinced}
+          </div>
           {onBlock}
           <div className='token_nametag'>{json.name}</div>
           <TokenMenu menuState={menuState} toggleMenuState={toggleMenuState} />
