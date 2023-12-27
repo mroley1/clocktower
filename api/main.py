@@ -1,23 +1,24 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
+from dotenv import dotenv_values
 from pymongo import MongoClient
+from api.role_routes import router as role_routes
+
+config = dotenv_values(".env")
 
 app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hell World"}
-
-@app.get("/log")
-def get_log(request: Request):
-    logs = list(request.app.database["startup_log"].find(limit=100))
-    return logs
+    return {"message": "API for clocktower data"}
 
 @app.on_event("startup")
 def startup_db_client():
-    app.mongodb_client = MongoClient("mongodb://localhost:27017")
-    app.database = app.mongodb_client["local"]
+    app.mongodb_client = MongoClient(config["ATLAS_URI"])
+    app.database = app.mongodb_client[config["DB_NAME"]]
     print("Connected to the MongoDB database!")
 
 @app.on_event("shutdown")
 def shutdown_db_client():
     app.mongodb_client.close()
+
+app.include_router(role_routes, tags=["roles"], prefix="/role")
