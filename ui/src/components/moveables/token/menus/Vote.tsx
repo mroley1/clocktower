@@ -15,6 +15,11 @@ function Vote(props: any) {
                 tmp["viability"] = Viability.DEAD
                 tokenContext.util.setPlayerData(tmp)
             }
+            if (tokenContext.json.viability === Viability.DEAD) {
+                let tmp = tokenContext.json
+                tmp["viability"] = Viability.DEADVOTE
+                tokenContext.util.setPlayerData(tmp)
+            }
         }
     })
     

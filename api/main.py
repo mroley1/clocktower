@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from dotenv import dotenv_values
 from pymongo import MongoClient
-from api.role_routes import router as role_routes
+from role_routes import router as role_routes
 
 config = dotenv_values(".env")
 
