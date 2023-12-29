@@ -2,8 +2,7 @@ import { useContext, useEffect } from 'react';
 import './MoveBoard.scss';
 import { GameContext } from '../App'
 import Token from './token/Token';
-import GameStateType from '@/common/GameStateType';
-import { GameMode, MOVABLE } from '@/common/GameModes';
+import { MOVABLE } from '@/common/GameModes';
 
 function MoveBoard() {
     
@@ -25,14 +24,9 @@ function MoveBoard() {
           var xOffset = 0
           var yOffset = 0
         
-          // determine event type and calculate offesets
-          if (event.type === "mousedown") {
-            xOffset = event.clientX - event.target.getBoundingClientRect().x
-            yOffset = event.clientY - event.target.getBoundingClientRect().y
-          } else if (event.type === "touchstart") {
-            xOffset = event.touches[0].clientX - event.target.getBoundingClientRect().x
-            yOffset = event.touches[0].clientY - event.target.getBoundingClientRect().y
-          }
+          // calculate offesets
+          xOffset = event.clientX - event.target.getBoundingClientRect().x
+          yOffset = event.clientY - event.target.getBoundingClientRect().y
           
           const elemId = event.target.id
           
@@ -44,13 +38,14 @@ function MoveBoard() {
               dragUp()
             }
             // set position of token
-            target!.style.top = (event.clientY - yOffset).toString() + "px"
             target!.style.left = (event.clientX - xOffset).toString() + "px"
+            target!.style.top = (event.clientY - yOffset).toString() + "px"
           })
           
           const dragUp = (function() {
             // remove listeners
             document.onpointermove = null
+            document.onpointercancel = null
             document.onpointerup = null
             // error catching
             const target = document.getElementById(elemId)
@@ -84,6 +79,7 @@ function MoveBoard() {
           
           // set listeners
           document.onpointermove = drag
+          document.onpointercancel = dragUp
           document.onpointerup = dragUp
         }
       }

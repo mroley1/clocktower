@@ -186,8 +186,7 @@ function Token(props: any) {
     <TokenContext.Provider value={tokenContext}>
       <div
         id={"token_"+tokenContext.json.id}
-        onMouseDown={props.createDragEvent(tokenContext.json.id)}
-        onTouchStart={props.createDragEvent(tokenContext.json.id)}
+        onPointerDown={props.createDragEvent(tokenContext.json.id)}
         onClick={handleClick}
         style={getStyles()}
         className={`token_container ${tokenVisibility} ${playerViability}`}
