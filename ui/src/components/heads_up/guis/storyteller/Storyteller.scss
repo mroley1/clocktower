@@ -29,18 +29,20 @@
     .backing {
         position: absolute;
         background-color: gray;
-        border: 2px solid black;
+        border-width: 0px 2px 2px 0px;
+        border-color: black;
+        border-style: solid;
         border-radius: 0px 0px 20px 0px;
         
         &#storytellerMenuBackingTop {
-            top: -2px;
-            left: -2px;
+            top: 0px;
+            left: 0px;
             width: 170px;
             height: 170px;
         }
         
         &#storytellerMenuBackingBottom {
-            top: 169px;
+            top: 170px;
             left: -2px;
             width: 70px;
             display: flex;
