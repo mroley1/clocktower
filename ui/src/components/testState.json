@@ -2,7 +2,23 @@
     "tokens": [
         {
             "id": 0,
-            "role": "amnesiac",
+            "role": {
+                "id": "amnesiac",
+                "name": "Amnesiac",
+                "description": "You do not know what your ability is. Each day, privately guess what it is: you learn how accurate you are.",
+                "alignment": "GOOD",
+                "type": "TOWNSFOLK",
+                "firstNight": "Decide the Amnesiac's entire ability. If the Amnesiac's ability causes them to wake tonight: Wake the Amnesiac and run their ability.",
+                "otherNight": "If the Amnesiac's ability causes them to wake tonight: Wake the Amnesiac and run their ability.",
+                "changeMakeup": [],
+                "secret": true,
+                "actions": [],
+                "hardMad": false,
+                "getsBluffs": false,
+                "reminders": [
+                    "amnesiac_question_mark"
+                ]
+            },
             "name": "player 1",
             "xpos": 200,
             "ypos": 200,
@@ -19,7 +35,21 @@
         },
         {
             "id": 1,
-            "role": "pit-hag",
+            "role": {
+                "id": "pit-hag",
+                "name": "Pit-Hag",
+                "description": "Each night*, choose a player & a character they become (if not-in-play). If a Demon is made, deaths tonight are arbitrary.",
+                "alignment": "EVIL",
+                "type": "MINION",
+                "firstNight": "",
+                "otherNight": "The Pit-Hag points to a player and a character on the sheet. If this character is not in play, wake that player and show them the 'You are' card and the relevant character token. If the character is in play, nothing happens.",
+                "changeMakeup": [],
+                "secret": true,
+                "actions": [],
+                "hardMad": false,
+                "getsBluffs": false,
+                "reminders": []
+            },
             "name": "player 2",
             "xpos": 400,
             "ypos": 100,
@@ -37,7 +67,24 @@
         },
         {
             "id": 2,
-            "role": "bishop",
+            "role": {
+                "id": "bishop",
+                "name": "Bishop",
+                "description": "Only the Storyteller can nominate. At least 1 opposing player must be nominated each day.",
+                "alignment": "STORYTELLER",
+                "type": "TRAVELER",
+                "firstNight": "",
+                "otherNight": "",
+                "changeMakeup": [],
+                "secret": false,
+                "actions": [],
+                "hardMad": false,
+                "getsBluffs": false,
+                "reminders": [
+                    "bishop_nominate_good",
+                    "bishop_nominate_evil"
+                ]
+            },
             "name": "player 3",
             "xpos": 370,
             "ypos": 300,

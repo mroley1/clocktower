@@ -17,6 +17,7 @@ import OnBlockSet from './menus/OnBlockSet';
 import Execute from './menus/Execute';
 import Vote from './menus/Vote';
 import { GameContext } from '@/components/App';
+import { Viability } from '@/common/Viability';
 
 function TokenMenu({menuState, toggleMenuState}: any) {
     
@@ -42,14 +43,10 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     }
     
     function setDialogue(type: string) {
-        // let func = dialogues.get(type).function
-        // if (func !== null) {
-        //     func()
-        // }
         setDialogueName(type)
     }
     
-    const icon = require(`@assets/icons/${tokenContext.json.role}.png`)
+    const icon = require(`@assets/icons/${tokenContext.json.role?.id}.png`)
     
     interface radSlice {
         title: string
@@ -76,7 +73,7 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     data.set(GameMode.NOMINATIONS, [
         {"title": "Nominate", "index": 1, "function": ()=>{setDialogue("nominate")}},
         {"title": "On Block", "index": 3, "function": ()=>{setDialogue("onblock")}},
-        {"title": "Voted", "index": 4, "function": ()=>{setDialogue("vote")}},
+        {"title": "Vote", "index": 4, "function": ()=>{setDialogue("vote")}},
         {"title": "Execute", "index": 5, "function": ()=>{setDialogue("execute")}}
     ])
     data.set(GameMode.DAY, [
@@ -99,7 +96,7 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     dialogues.set("reminders", <RemindersChange />)
     dialogues.set("nominate", <Nominate />)
     dialogues.set("onblock", <OnBlockSet />)
-    dialogues.set("vote", <Vote />)
+    dialogues.set("vote", <Vote restore={tokenContext.json.viability===Viability.DEAD} />)
     dialogues.set("execute", <Execute />)
     
     useEffect(()=>{

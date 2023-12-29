@@ -1,0 +1,58 @@
+
+
+#storytellerMenu {
+    
+    .button_container {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        width: 150px;
+        height: 150px;
+        border-radius: 100%;
+        background-color: #ffde18;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+        border: 2px solid black;
+        cursor: pointer;
+        
+        .icon {
+            height: 100%;
+            width: 100%;
+            background-image: url('../../assets/storyteller/all-seeing-eye.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 85%;
+        }
+    }
+    
+    .backing {
+        position: absolute;
+        background-color: gray;
+        border: 2px solid black;
+        border-radius: 0px 0px 20px 0px;
+        
+        &#storytellerMenuBackingTop {
+            top: -2px;
+            left: -2px;
+            width: 170px;
+            height: 170px;
+        }
+        
+        &#storytellerMenuBackingBottom {
+            top: 169px;
+            left: -2px;
+            width: 70px;
+            display: flex;
+            flex-direction: column;
+            
+            .button {
+                width: 50px;
+                height: 50px;
+                border-radius: 100%;
+                background-color: blue;
+                margin: 10px;
+            }
+        }
+    }
+}

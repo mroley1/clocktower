@@ -3,8 +3,7 @@ import './MoveBoard.scss';
 import { GameContext } from '../App'
 import Token from './token/Token';
 import GameStateType from '@/common/GameStateType';
-import { GameMode } from '@/common/GameModes';
-import { MOVABLE as MOVABLE_TOKENS } from './token/Token';
+import { GameMode, MOVABLE } from '@/common/GameModes';
 
 function MoveBoard() {
     
@@ -15,7 +14,7 @@ function MoveBoard() {
         return function (event: any) {
           
           // check that game mode is one that allows items to be moved
-          if (!MOVABLE_TOKENS.includes(gameContext.state.gameMode)) {
+          if (!MOVABLE.includes(gameContext.state.gameMode)) {
             return
           }
           

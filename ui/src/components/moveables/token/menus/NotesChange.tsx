@@ -10,7 +10,7 @@ function NotesChange() {
     
     const LOCKED_PUBLIC = [GameMode.DAY]
     
-    const [isPublic, setIsPublic] = useState(LOCKED_PUBLIC.includes(tokenContext.menuState.orgMode)?true:false)
+    const [isPublic, setIsPublic] = useState(LOCKED_PUBLIC.includes(tokenContext.menuState.orgMode!)?true:false)
     
     function toggleIsPublic() {
         setIsPublic(!isPublic)
@@ -37,7 +37,7 @@ function NotesChange() {
             <div className='close' onClick={closeMenu}></div>
             <div className='center'>
                 <h1>Notes for {tokenContext.json.name}</h1>
-                <div style={{display: LOCKED_PUBLIC.includes(tokenContext.menuState.orgMode)?"none":"inherit"}}>
+                <div style={{display: LOCKED_PUBLIC.includes(tokenContext.menuState.orgMode!)?"none":"inherit"}}>
                     <Toggle selected={isPublic} toggle={toggleIsPublic} />
                 </div>
                 <h2 style={{color: isPublic?"red":"white"}}>

@@ -1,6 +1,6 @@
 
 $radial_dimention: 700px;
-$deploy_speed: 0.25s;
+$deploy_speed: 0s;
 $spread_speed: 0.25s;
 
 @keyframes toggle {
@@ -25,8 +25,8 @@ $spread_speed: 0.25s;
     to {scale: 1;}
 }
 
-.token_container {
-    .token_menu {
+#storytellerMenu {
+    .storyteller_menu {
         width: 100vw;
         height: 100vh;
         position: fixed;
@@ -43,9 +43,14 @@ $spread_speed: 0.25s;
             position: absolute;
             user-select: none;
             animation: center $deploy_speed linear forwards;
-            background-color: #00000060;
+            background-color: #FFFFFF60;
             border: black 2px solid;
             transform: translate(-1px, -1px);
+            
+            img {
+                height: 100%;
+                width: 100%;
+            }
         }
         
         .radial_menu {
@@ -133,7 +138,8 @@ $spread_speed: 0.25s;
                     width: 45%;
                     text-align: center;
                 }
-            }
+            }  
         }
     }
 }
+

@@ -3,16 +3,15 @@ import './Token.scss';
 import TokenContextType from '@Common/TokenContextType';
 import Player from '@Common/Player'
 import { GameContext } from '@/components/App';
-import { GameMode } from '@/common/GameModes';
+import { CLICKABLE, GameMode, IS_NIGHT, MENU_OPEN, MOVABLE } from '@/common/GameModes';
 import TokenMenu from './TokenMenu';
 import { Alignment } from '@/common/Alignment';
 import GameStateType from '@/common/GameStateType';
 import RadialMenuState from '@/common/RadialMenuState';
-import { Viability } from '@/common/Viability';
+import { CAN_VOTE, IS_ALIVE, Viability } from '@/common/Viability';
 
 
-export const MOVABLE = [GameMode.MOVING]
-export const CLICKABLE = [GameMode.NIGHT, GameMode.PLAYERSELECT, GameMode.ROLESELECT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
+
 export const TokenContext = createContext<TokenContextType>({
   json: {
     id: -1,
@@ -45,13 +44,12 @@ function Token(props: any) {
   
   const gameContext = useContext(GameContext)
   const json: Player = props.json
-  const MENU_OPEN = [GameMode.NIGHT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
-  const IS_NIGHT = [GameMode.NIGHT, GameMode.RADIAL, GameMode.SETUP, GameMode.MARK, GameMode.MOVING]
-  const IS_ALIVE = [Viability.ALIVE, Viability.DEADFAINT]
-  const CAN_VOTE = [Viability.ALIVE, Viability.DEADFAINT, Viability.DEADVOTE]
-  const icon = require(`@assets/icons/${json.role}.png`)
   
-  const startingMenuState: RadialMenuState = {"open": false, "orgMode": GameMode.NIGHT, dialogue: "none"}
+  
+
+  const icon = require(`@assets/icons/${json.role?.id}.png`)
+  
+  const startingMenuState: RadialMenuState = {"open": false, "orgMode": null, dialogue: "none"}
   const [menuState, setMenuState] = useState(startingMenuState)
   
   function getStyles() {
@@ -158,7 +156,7 @@ function Token(props: any) {
   })()
   
   const alignment = (() => {
-    if (json.alignment === json.alignment) {
+    if (json.alignment !== json.role?.alignment) {
       return <div className={'alignment '+ json.alignment.toString().toLowerCase()}></div>
     } else {
       return <></>

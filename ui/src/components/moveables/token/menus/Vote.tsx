@@ -10,15 +10,17 @@ function Vote(props: any) {
     useEffect(() => {
         tokenContext.util.closeMenu()
         return () => {
-            if (tokenContext.json.viability === Viability.DEADVOTE) {
-                let tmp = tokenContext.json
-                tmp["viability"] = Viability.DEAD
-                tokenContext.util.setPlayerData(tmp)
-            }
-            if (tokenContext.json.viability === Viability.DEAD) {
-                let tmp = tokenContext.json
-                tmp["viability"] = Viability.DEADVOTE
-                tokenContext.util.setPlayerData(tmp)
+            if (tokenContext.menuState.open === true) {
+                if (props.restore) {
+                    let tmp = tokenContext.json
+                    tmp["viability"] = Viability.DEADVOTE
+                    tokenContext.util.setPlayerData(tmp)
+                }
+                else if (tokenContext.json.viability === Viability.DEADVOTE) {
+                    let tmp = tokenContext.json
+                    tmp["viability"] = Viability.DEAD
+                    tokenContext.util.setPlayerData(tmp)
+                }
             }
         }
     })
