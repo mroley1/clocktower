@@ -8,6 +8,7 @@ import { GameMode } from '@Common/GameModes';
 
 const TESTSTATE = require('./testState.json');
 
+// create gamemode context
 export const GameContext = createContext<GameContextType>({
   "state": {
     "tokens": [],
@@ -24,21 +25,24 @@ export const GameContext = createContext<GameContextType>({
 
 function App() {
   
+  // initialize game state
   const [gameState, setGameState] = useState(TESTSTATE)
   
+  // set game mode, takes game mode
   function setMode(mode: GameMode) {
     const tmp = JSON.parse(JSON.stringify(gameContext.state));
     tmp["gameMode"] = mode
     gameContext.setter(tmp)
   }
   
+  // set user that is on the block, takes index of user token in gamestate
   function setOnBlock(index: number) {
     const tmp = JSON.parse(JSON.stringify(gameContext.state));
     tmp["onBlock"] = index
     gameContext.setter(tmp)
   }
   
-  
+  // set game context
   const gameContext: GameContextType = {
     "state": gameState,
     "setter": setGameState,
