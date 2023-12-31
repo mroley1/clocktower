@@ -21,10 +21,13 @@ import { Viability } from '@/common/Viability';
 
 function TokenMenu({menuState, toggleMenuState}: any) {
     
+    // initilize state of dialogue to display
     const [dilogueName, setDialogueName] = useState("none")
+    // import contexts
     const gameContext = useContext(GameContext)
     const tokenContext = useContext(TokenContext)
   
+    // returns CSSProperties for container element based on menu state
     function getStyles() {
         var display = "none"
         var pointerEvents = "none"
@@ -38,21 +41,26 @@ function TokenMenu({menuState, toggleMenuState}: any) {
         } as React.CSSProperties
     }
     
+    // prevents event from propogating to parent elements
     function stopPropagation(event: any) {
         event.stopPropagation()
     }
     
+    // sets dialogueName state, takes string
     function setDialogue(type: string) {
         setDialogueName(type)
     }
     
+    // import image for center of menu
     const icon = require(`@assets/icons/${tokenContext.json.role?.id}.png`)
     
+    // interface that defines information for each slice of menu
     interface radSlice {
         title: string
         index: number
         function: any
     }
+    // data map that stores list of slices for each game mode
     const data = new Map<GameMode, radSlice[]>();
     data.set(GameMode.SETUP, [
         {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}},
@@ -80,9 +88,10 @@ function TokenMenu({menuState, toggleMenuState}: any) {
         {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}}
     ])
     
+    // maps slices from data to html elements
     const slices = data.get(menuState.orgMode)?.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
     
-    
+    // maps dialogue names to dialogue html elements
     const dialogues = new Map()
     dialogues.set("none", <></>)
     dialogues.set("notes", <NotesChange />)
@@ -99,10 +108,12 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     dialogues.set("vote", <Vote restore={tokenContext.json.viability===Viability.DEAD} />)
     dialogues.set("execute", <Execute />)
     
+    // sets dialogueName to "none" on entrance and exit of radial menu
     useEffect(()=>{
         setDialogueName("none")
     }, [menuState])
     
+    // removes center icon if gamemode is not RADIAL (probaly BLINDRADIAL)
     const centerIcon = (()=>{
         if (gameContext.state.gameMode === GameMode.RADIAL) {
             return <img src={icon}></img>

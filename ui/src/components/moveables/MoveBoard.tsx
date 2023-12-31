@@ -17,14 +17,14 @@ function MoveBoard() {
             return
           }
           
-          // set high z- index and grabbing cursor
+          // set high z-index and grabbing cursor
           event.target.style.zIndex = "30"
           event.target.style.cursor = "grabbing"
           
           var xOffset = 0
           var yOffset = 0
         
-          // calculate offesets
+          // calculate offsets
           xOffset = event.clientX - event.target.getBoundingClientRect().x
           yOffset = event.clientY - event.target.getBoundingClientRect().y
           
