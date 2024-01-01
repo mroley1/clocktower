@@ -1,7 +1,8 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './Menus.scss';
 import { GameContext } from '@/components/App';
 import { HeadsUpContext } from '@/components/heads_up/HeadsUp';
+import ScriptType from '@/common/ScriptType';
 
 declare const window: any;
 
@@ -10,12 +11,14 @@ function Script(props: any) {
     const gameContext = useContext(GameContext)
     const headsUpContext = useContext(HeadsUpContext)
     
+    const [scriptData, setScriptData] = useState();
+    
     const pickerOpts = {
         types: [
           {
             description: "application/json",
             accept: {
-              "data/*": [".json"],
+              "data/*": [".ctsc", ".json"],
             },
           },
         ],
@@ -25,13 +28,16 @@ function Script(props: any) {
       
     async function getTheFile() {
     try {
+      
+        const textDecoder = new TextDecoder();
+      
         const [fileHandle]: FileSystemFileHandle[] = await window.showOpenFilePicker(pickerOpts);
         const fileData = await fileHandle.getFile();
-        //const accessor = await fileHandle.createWritable();
-        //let data = accessor.data
-        console.log(window.isSecureContext)
-        console.log(fileHandle)
-        //accessor.close()
+        const fileArray = await fileData.stream().getReader().read();
+        const fileString = textDecoder.decode(fileArray.value);
+        const fileJSON:ScriptType = JSON.parse(fileString);
+        console.log(fileJSON);
+        
     } catch (error: any) {
         if (error.name === "AbortError") {return}
         console.error(error)

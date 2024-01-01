@@ -12,7 +12,17 @@ const TESTSTATE = require('./testState.json');
 export const GameContext = createContext<GameContextType>({
   "state": {
     "tokens": [],
-    "script": {},
+    "script": {
+      "meta": {
+        "author": "",
+        "description": "",
+        "difficulty": 0,
+        "gameType": "NORMAL",
+        "name": ""
+      },
+      "roles": [],
+      "recommendedFabled": []
+    },
     "onBlock": null,
     "gameMode": GameMode.SETUP
   },
