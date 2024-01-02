@@ -6,9 +6,12 @@ from models import Role
 
 router = APIRouter()
 
-@router.get("/", response_description="List all roles", response_model=List[Role])
+@router.get("/", response_description="List all roles")
 def list_roles(request: Request):
-    roles = list(request.app.database["roles"].find())
+    roles = []
+    collection = request.app.database["roles"].find({}, {"id": 1, "_id": 0})
+    for entry in collection:
+        roles.append(entry["id"])
     return roles
 
 @router.get("/{id}", response_description="List a single role /{id}", response_model=Role)

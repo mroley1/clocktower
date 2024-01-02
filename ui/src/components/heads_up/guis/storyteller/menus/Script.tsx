@@ -22,26 +22,25 @@ function Script(props: any) {
             },
           },
         ],
-        excludeAcceptAllOption: true,
         multiple: false,
       };
       
     async function getTheFile() {
-    try {
-      
-        const textDecoder = new TextDecoder();
-      
-        const [fileHandle]: FileSystemFileHandle[] = await window.showOpenFilePicker(pickerOpts);
-        const fileData = await fileHandle.getFile();
-        const fileArray = await fileData.stream().getReader().read();
-        const fileString = textDecoder.decode(fileArray.value);
-        const fileJSON:ScriptType = JSON.parse(fileString);
-        console.log(fileJSON);
+        try {
         
-    } catch (error: any) {
-        if (error.name === "AbortError") {return}
-        console.error(error)
-    }
+            const textDecoder = new TextDecoder();
+        
+            const [fileHandle]: FileSystemFileHandle[] = await window.showOpenFilePicker(pickerOpts);
+            const fileData = await fileHandle.getFile();
+            const fileArray = await fileData.stream().getReader().read();
+            const fileString = textDecoder.decode(fileArray.value);
+            const fileJSON:ScriptType = JSON.parse(fileString);
+            console.log(fileJSON);
+            
+        } catch (error: any) {
+            if (error.name === "AbortError") {return}
+            console.error(error)
+        }
     }
     
     useEffect(() => {
@@ -53,9 +52,9 @@ function Script(props: any) {
     return (
         <div id='radialMenuActionSolidBase'>
             <div className='close' onClick={()=>{headsUpContext.util.toggleRadialMenuState(false)}}></div>
-            <div className='center'></div>
-            <input type='button' value='test' onClick={getTheFile}></input>
-                
+            <div className='center'>
+                <input type='button' value='test' onClick={getTheFile}></input>
+            </div>
         </div>
     );
   

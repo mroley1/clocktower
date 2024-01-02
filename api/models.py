@@ -18,4 +18,11 @@ class Role(BaseModel):
     hardMad: bool = Field(...)
     getsBluffs: bool = Field(...)
     reminders: list = Field(...)
+
+
+class Script(BaseModel):
+    meta: dict = Field(...)
+    roles: list = Field(...)
+    recommendedTravellers: list = Field(...)
+    customJinxes: list = Field(...)
     
