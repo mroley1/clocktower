@@ -53,16 +53,9 @@ function Token(props: any) {
   const [menuState, setMenuState] = useState(startingMenuState)
   
   function getStyles() {
-    var cursor = "unset"
-    if (MOVABLE.includes(gameContext.state.gameMode)) {
-      cursor = "grab"
-    } else if (CLICKABLE.includes(gameContext.state.gameMode)) {
-      cursor = "pointer"
-    }
     return {
       left: json.xpos,
-      top: json.ypos,
-      cursor
+      top: json.ypos
     }
   }
   
@@ -131,6 +124,14 @@ function Token(props: any) {
     }
   })()
   
+  const tokenCursor = (()=>{
+    if (MOVABLE.includes(gameContext.state.gameMode)) {
+      return "grabbable"
+    } else if (CLICKABLE.includes(gameContext.state.gameMode)) {
+      return "clickable"
+    }
+  })()
+  
   const viability = (()=>{
     if (IS_ALIVE.includes(tokenContext.json.viability)) {
       return "alive"
@@ -189,7 +190,7 @@ function Token(props: any) {
         onPointerDown={props.createDragEvent(tokenContext.json.id)}
         onClick={handleClick}
         style={getStyles()}
-        className={`token_container ${tokenVisibility} ${playerViability}`}
+        className={`token_container ${tokenVisibility} ${playerViability} ${tokenCursor}`}
         >
           <div className='vote'></div>
           {canVote}

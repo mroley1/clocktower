@@ -46,6 +46,17 @@ div#moveBoard {
             background-image: url('./assets/dead_token.png');
         }
         
+        &.grabbable {
+            cursor: grab;
+            &:active{
+                cursor: grabbing;
+            }
+        }
+        
+        &.clickable {
+            cursor: pointer;
+        }
+        
         img {
             pointer-events: none;
             width: 100%;

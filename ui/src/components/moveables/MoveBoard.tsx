@@ -19,7 +19,6 @@ function MoveBoard() {
           
           // set high z-index and grabbing cursor
           event.target.style.zIndex = "30"
-          event.target.style.cursor = "grabbing"
           
           var xOffset = 0
           var yOffset = 0
@@ -55,7 +54,6 @@ function MoveBoard() {
             }
             // reset z index and cursor type
             target!.style.zIndex = "";
-            target!.style.cursor = "grab";
             // correct tokens to keep them on the page
             let boundingRect = target.getBoundingClientRect()
             let width = window.innerWidth
