@@ -22,7 +22,13 @@ def list_scripts(request: Request):
                 },
                 "name": {
                     "$first": "$meta.name"
-                    },
+                },
+                "difficulty": {
+                    "$first": "$meta.difficulty"
+                },
+                "description": {
+                    "$first": "$meta.description"
+                },
                 "scripts": {
                     "$push": "$$ROOT",
                 }

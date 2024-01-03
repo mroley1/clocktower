@@ -1,0 +1,105 @@
+
+
+.center:has(.script_content_container) {
+    height: 100%;
+}
+
+.script_content_container {
+    width: 80%;
+    height: calc(100% - 140px);
+    margin: 20px 10% 0px 10%;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-rows: 100%;
+    grid-template-areas: "selection viewing";
+    
+    .selection_pane {
+        grid-area: selection;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: rgba(155, 155, 155, 0.199);
+        
+        .item {
+            width: 90%;
+            height: 105px;
+            margin: 10px 0px 0px 0px;
+            border-radius: 5px;
+            background-color: rgba(206, 206, 206, 0.658);
+            color: black;
+            position: relative;
+            
+            .title {
+                position: absolute;
+                left: 10px;
+                top: 10px;
+                width: 80%;
+                text-align: left;
+                white-space: nowrap;
+                
+                .title_text {
+                    font-size: 20pt;
+                    display: inline-block;
+                    max-width: 90%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                
+                .version {
+                    display: inline-block;
+                    position: relative;
+                    bottom: 5pt;
+                    left: 5pt;
+                    font-size: 10pt;
+                    
+                    &::before {
+                        content: "v";
+                    }
+                }
+            }
+                
+            .title_author {
+                position: absolute;
+                text-align: left;
+                width: calc(90% - 20px);
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                left: 10px;
+                top: 40px;
+                font-size: 10pt;
+                color: rgb(87, 0, 0);
+            }
+            
+            .difficulty {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+            }
+            
+            .description {
+                text-align: left;
+                position: absolute;
+                left: 10px;
+                top: 60px;
+                width: calc(100% - 20px);
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                        line-clamp: 2; 
+                -webkit-box-orient: vertical;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+    
+    .viewing_pane {
+        grid-area: viewing;
+        height: 100%;
+        width: 100%;
+        background-color: aqua;
+    }
+}
