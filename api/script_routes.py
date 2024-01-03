@@ -10,6 +10,11 @@ router = APIRouter()
 def list_scripts(request: Request):
     pipeline = [
         {
+            "$sort": {
+                "meta.version": -1
+            }
+        },
+        {
             "$group": {
                 "_id": {
                     "$concat": [
@@ -28,6 +33,9 @@ def list_scripts(request: Request):
                 },
                 "description": {
                     "$first": "$meta.description"
+                },
+                "version": {
+                    "$first": "$meta.version"
                 },
                 "scripts": {
                     "$push": "$$ROOT",

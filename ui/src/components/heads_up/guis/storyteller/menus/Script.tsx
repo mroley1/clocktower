@@ -16,6 +16,9 @@ function Script(props: any) {
     
     const [loading, setLoading] = useState("loading");
     const [scriptData, setScriptData] = useState([]);
+    const [sortBy, setSortBy] = useState("name");
+    const [orderDir, setOrderDir] = useState("asc");
+    const [currentScript, setCurrentScript] = useState(gameContext.state.script);
     
     const pickerOpts = {
         types: [
@@ -71,34 +74,55 @@ function Script(props: any) {
         function Item(props: any) {
             return (
                 <div className='item'>
-                        <div className='title'>
-                            <span className='title_text'>{props.entry.name}</span>
-                            <span className='version'>1.0</span>
-                        </div>
-                        <span className='title_author'>{props.entry.author}</span>
-                        <span className='difficulty'>{props.entry.difficulty}</span>
-                        <span className='description'>{props.entry.description}</span>
+                    <div className='title'>
+                        <span className='title_text'>{props.entry.name}</span>
+                        <span className='version'>{props.entry.version}</span>
                     </div>
+                    <span className='title_author'>{props.entry.author}</span>
+                    <span className='difficulty'>{props.entry.difficulty}</span>
+                    <span className='description'>{props.entry.description}</span>
+                </div>
+            )
+        }
+        
+        function ViewingPane(props: any) {
+            return (
+                <>
+                    <span className='title'>{currentScript.meta.name}</span>
+                </>
             )
         }
         
         // ! WHAT I WANT: 
         // * sorting options for list
         // ? done client side
-        // * retreive latest version number for each script
-        // * retrive latest difficulty and description
-        // ? sort the mongo query before grabbing values
+        // #* retreive latest version number for each script
+        // #* retrive latest difficulty and description
+        // #? sort the mongo query before grabbing values
         
         // ! WHAT SHOULD HAPPEN WHEN SCRIPT IS CLICKED
         // * clicking each will load most recent script of that type
         // * options to load older scripts
         
+        function order(a:any, b:any): number {
+            let negate = orderDir==="asc"?1:-1
+            if (a[sortBy] < b[sortBy]) {
+                return -1*negate
+            } else if (a[sortBy] > b[sortBy]) {
+                return 1*negate
+            } else {
+                return 0
+            }
+        }
+        
         return (
             <div className='script_content_container'>
                 <div className='selection_pane'>
-                    {scriptData.map((entry)=><Item entry={entry}></Item>)}
+                    {scriptData.sort((a,b)=>order(a,b)).map((entry)=><Item key={entry["name"]+entry["author"]} entry={entry}></Item>)}
                 </div>
-                <div className='viewing_pane'></div>
+                <div className='viewing_pane'>
+                    <ViewingPane></ViewingPane>
+                </div>
             </div>
             )
     }

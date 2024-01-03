@@ -18,10 +18,12 @@ export const GameContext = createContext<GameContextType>({
         "description": "",
         "difficulty": 0,
         "gameType": "NORMAL",
-        "name": ""
+        "name": "",
+        "date": ""
       },
       "roles": [],
-      "recommendedFabled": []
+      "recommendedFabled": [],
+      "customJinxes": []
     },
     "onBlock": null,
     "gameMode": GameMode.SETUP

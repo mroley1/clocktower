@@ -6,8 +6,10 @@ export default interface ScriptType {
         name: string,
         description: string,
         gameType: string,
-        difficulty: number
+        difficulty: number,
+        date: string
     }
     roles: string[]
     recommendedFabled: string[]
+    customJinxes: string[]
 }

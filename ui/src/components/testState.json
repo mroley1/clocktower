@@ -103,5 +103,18 @@
         }
     ],
     "gameMode": 3,
-    "onBlock": null
+    "onBlock": null,
+    "script": {
+        "meta": {
+          "author": "Test User",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sed nisi ut mauris tincidunt posuere. Suspendisse ut maximus dui.",
+          "difficulty": 10,
+          "gameType": "NORMAL",
+          "name": "Test Script",
+          "date": ""
+        },
+        "roles": [],
+        "recommendedFabled": [],
+        "customJinxes": []
+      }
 }
