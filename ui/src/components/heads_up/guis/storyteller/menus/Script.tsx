@@ -92,17 +92,42 @@ function Script(props: any) {
         }
         
         function ViewingPane(props: any) {
+            
+            const [scriptDetails, setScriptDetails] = useState([])
+            const [loading, setLoading] = useState("loading")
+            
             function Role(props: any) {
-                const icon = require(`@assets/icons/${props.role}.png`)
+                const icon = require(`@assets/icons/${props.role.id}.png`)
                 return (
                     <div className='role'>
-                        <img src={icon}></img>
-                        <span>{props.role}</span>
+                        <img title={props.role.description} src={icon}></img>
+                        <span>{props.role.name}</span>
                     </div>
                 )
             }
             
-            const roles = currentScript.roles.map((role)=><Role role={role}></Role>)
+            useEffect(() => {
+                if (currentScript.roles.length === 0) {return}
+                fetch(`http://localhost:8000/role/multi/?roleList=${JSON.stringify(currentScript.roles)}`).then((response)=>{
+                    if (response.status === 200) {
+                        return (response.json());
+                    } else {
+                        throw new Error("HTTP Error: " + response.status + ": " + response.statusText);
+                    }
+                }).then((jsonOutput)=>{
+                    return setScriptDetails(jsonOutput)
+                }).finally(()=>{
+                    setLoading("done")
+                }).catch((error)=>{
+                    console.error(error)
+                    setLoading("error")
+                })
+            }, [])
+            
+            var roles = [<Loading key={0}></Loading>]
+            if (loading === "done") {
+                roles = scriptDetails.map((role)=><Role key={role["id"]} role={role}></Role>)
+            }
             
             return (
                 <>
