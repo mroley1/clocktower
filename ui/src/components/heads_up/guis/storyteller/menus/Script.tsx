@@ -18,6 +18,7 @@ function Script(props: any) {
     const [scriptData, setScriptData] = useState([]);
     const [sortBy, setSortBy] = useState("name");
     const [orderDir, setOrderDir] = useState("asc");
+    const [isEditing, setIsEditing] = useState(false);
     const [currentScript, setCurrentScript] = useState(gameContext.state.script);
     
     const pickerOpts = {
@@ -71,9 +72,14 @@ function Script(props: any) {
     
     function ScriptContent() {
         
+        function selectScript(script: ScriptType) {
+            setIsEditing(false)
+            setCurrentScript(script)
+        }
+        
         function Item(props: any) {
             return (
-                <div className='item'>
+                <div onClick={()=>{selectScript(props.entry.scripts[0])}} className='item'>
                     <div className='title'>
                         <span className='title_text'>{props.entry.name}</span>
                         <span className='version'>{props.entry.version}</span>
@@ -86,10 +92,33 @@ function Script(props: any) {
         }
         
         function ViewingPane(props: any) {
+            function Role(props: any) {
+                const icon = require(`@assets/icons/${props.role}.png`)
+                return (
+                    <div className='role'>
+                        <img src={icon}></img>
+                        <span>{props.role}</span>
+                    </div>
+                )
+            }
+            
+            const roles = currentScript.roles.map((role)=><Role role={role}></Role>)
+            
             return (
                 <>
                     <span className='title'>{currentScript.meta.name}</span>
+                    <br></br>
+                    <span className='description'>{currentScript.meta.description}</span>
+                    <div className='roles'>
+                        {roles}
+                    </div>
                 </>
+            )
+        }
+        
+        function ViewingPaneEdit(props: any) {
+            return (
+                <></>
             )
         }
         
@@ -115,6 +144,14 @@ function Script(props: any) {
             }
         }
         
+        const viewing = (()=>{
+            if (isEditing) {
+                return <ViewingPaneEdit></ViewingPaneEdit>
+            } else {
+                return <ViewingPane></ViewingPane>
+            }
+        })()
+        
         return (
             <div className='script_content_container'>
                 <div className='selection_pane'>
@@ -124,7 +161,7 @@ function Script(props: any) {
                     <ViewingPane></ViewingPane>
                 </div>
             </div>
-            )
+        )
     }
     
     let content = (():ReactNode=>{

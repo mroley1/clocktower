@@ -30,6 +30,7 @@
             background-color: rgba(206, 206, 206, 0.658);
             color: black;
             position: relative;
+            cursor: pointer;
             
             .title {
                 position: absolute;
@@ -97,9 +98,44 @@
     }
     
     .viewing_pane {
+        color: white;
         grid-area: viewing;
-        height: 100%;
-        width: 100%;
-        background-color: aqua;
+        height: calc(100% - 60px);
+        width: calc(100% - 60px);
+        padding: 30px;
+        background-color: rgba(131, 131, 131, 0.651);
+        
+        .title {
+            font-size: 30pt;
+        }
+        
+        .roles {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            
+            .role {
+                width: 100px;
+                height: 100px;
+                margin: 5px;
+                background-color: rgba(0, 0, 0, 0.329);
+                border-radius: 5px;
+                position: relative;
+                
+                img {
+                    height: 100%;
+                    width: 100%;
+                }
+                
+                span {
+                    position: absolute;
+                    left: 0px;
+                    bottom: 3px;
+                    width: 100%;
+                }
+            }
+        }
     }
 }
