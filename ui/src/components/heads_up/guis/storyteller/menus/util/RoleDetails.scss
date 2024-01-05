@@ -1,0 +1,54 @@
+
+
+.script_role_details_modal_container {
+    pointer-events: all;
+    position: fixed;
+    z-index: 1000;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(59, 59, 59, 0.438);
+    cursor: pointer;
+    
+    .dialogue_box {
+        cursor: default;
+        width: 70%;
+        height: 70%;
+        position: absolute;
+        top: 15%;
+        left: 15%;
+        border-radius: 30px;
+        background-color: rgba(27, 27, 27, 0.9);
+        display: flex;
+        flex-direction: row;
+        
+        
+        .icon {
+            width: 250px;
+            height: 250px;
+            padding: 20px;
+            
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 100%;
+                background-color: rgb(22, 22, 22);
+            }
+        }
+        
+        div.content {
+            width: calc(100% - 290px);
+            min-width: 400px;
+            height: 100%;
+            
+            h1.title {
+                font-size: 35pt;
+            }
+            h3.description {
+                font-size: 15pt;
+                padding: 0px 50px 0px 50px;
+            }
+        }
+    }
+}

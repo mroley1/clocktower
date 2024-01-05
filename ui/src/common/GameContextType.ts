@@ -5,6 +5,7 @@ export default interface GameContextType {
     setter: Function
     util: {
         setMode: Function,
-        setOnBlock: Function
+        setOnBlock: Function,
+        setScript: Function
     }
 }

@@ -6,6 +6,8 @@ import { HeadsUpContext } from '@/components/heads_up/HeadsUp';
 import ScriptType from '@/common/ScriptType';
 import Loading from './util/Loading';
 import * as ErrorScreen from './util/Error';
+import RoleDetails from './util/RoleDetails';
+import { RoleTypeList } from '@/common/RoleType';
 
 declare const window: any;
 
@@ -49,6 +51,11 @@ function Script(props: any) {
             if (error.name === "AbortError") {return}
             console.error(error)
         }
+    }
+    
+    function setNewScript(json: any) {
+        gameContext.util.setScript(json)
+        headsUpContext.util.toggleRadialMenuState(false)
     }
     
     useEffect(() => {
@@ -97,11 +104,15 @@ function Script(props: any) {
             const [loading, setLoading] = useState("loading")
             
             function Role(props: any) {
+                const [isOpen, setIsOpen] = useState(false)
+                function open() {setIsOpen(true)}
+                function close() {setIsOpen(false)}
                 const icon = require(`@assets/icons/${props.role.id}.png`)
                 return (
-                    <div className='role'>
-                        <img title={props.role.description} src={icon}></img>
-                        <span>{props.role.name}</span>
+                    <div className='role' onClick={open}>
+                        <img title={props.role.description} src={icon} className='role_icon'></img>
+                        <span className='role_name'>{props.role.name}</span>
+                        <RoleDetails isOpen={isOpen} close={close} role={props.role}></RoleDetails>
                     </div>
                 )
             }
@@ -124,9 +135,42 @@ function Script(props: any) {
                 })
             }, [])
             
-            var roles = [<Loading key={0}></Loading>]
+            var roles = <Loading></Loading>
             if (loading === "done") {
-                roles = scriptDetails.map((role)=><Role key={role["id"]} role={role}></Role>)
+                const roleElements = RoleTypeList
+                .map(
+                    (type)=>{
+                        return {
+                            title: type,
+                            roles: scriptDetails
+                            .filter(
+                                (role) => role["type"] === type
+                            ).map(
+                                (role) => <Role key={role["id"]} role={role}></Role>
+                            )
+                        }
+                    }
+                ).filter(
+                    (cat) => cat.roles.length !== 0
+                ).map(
+                    (cat) => 
+                        <div key={cat.title}>
+                            <h3>
+                                {cat.title}
+                            </h3>
+                            <div className='roles'>
+                                {cat.roles}
+                            </div>
+                        </div>
+                )
+                
+                roles = (
+                    <div className='roles_container'>
+                        {
+                            roleElements
+                        }
+                    </div>
+                )
             }
             
             return (
@@ -134,8 +178,10 @@ function Script(props: any) {
                     <span className='title'>{currentScript.meta.name}</span>
                     <br></br>
                     <span className='description'>{currentScript.meta.description}</span>
-                    <div className='roles'>
-                        {roles}
+                    {roles}
+                    <div className='bottom_menu'>
+                        <div className='cancel' onClick={()=>{headsUpContext.util.toggleRadialMenuState(false)}}>Cancel</div>
+                        <div className='load' onClick={()=>{setNewScript(currentScript)}}>Load Script</div>
                     </div>
                 </>
             )

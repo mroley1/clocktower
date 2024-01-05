@@ -74,7 +74,7 @@ function StorytellerMenu({menuState, toggleMenuState}: any) {
     
     
     const dialogues = new Map()
-    dialogues.set("none", <></>)
+    dialogues.set("none", null)
     dialogues.set("kill", <Kill></Kill>)
     dialogues.set("script", <Script></Script>)
     

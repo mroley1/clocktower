@@ -5,6 +5,8 @@ import GameContextType from '@Common/GameContextType';
 import Background from './Background';
 import HeadsUp from './heads_up/HeadsUp';
 import { GameMode } from '@Common/GameModes';
+import ScriptType from '@/common/ScriptType';
+import GameStateType from '@/common/GameStateType';
 
 const TESTSTATE = require('./testState.json');
 
@@ -31,7 +33,8 @@ export const GameContext = createContext<GameContextType>({
   "setter": () => {},
   "util": {
     "setMode": () => {},
-    "setOnBlock": () => {}
+    "setOnBlock": () => {},
+    "setScript": () => {}
   }
 });
 
@@ -42,15 +45,22 @@ function App() {
   
   // set game mode, takes game mode
   function setMode(mode: GameMode) {
-    const tmp = JSON.parse(JSON.stringify(gameContext.state));
-    tmp["gameMode"] = mode
+    const tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
+    tmp.gameMode = mode
     gameContext.setter(tmp)
   }
   
   // set user that is on the block, takes index of user token in gamestate
   function setOnBlock(index: number) {
-    const tmp = JSON.parse(JSON.stringify(gameContext.state));
-    tmp["onBlock"] = index
+    const tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
+    tmp.onBlock = index
+    gameContext.setter(tmp)
+  }
+  
+  // sets the script to be used gamewide
+  function setScript(json: ScriptType) {
+    const tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
+    tmp.script = json
     gameContext.setter(tmp)
   }
   
@@ -60,7 +70,8 @@ function App() {
     "setter": setGameState,
     "util": {
       "setMode": setMode,
-      "setOnBlock": setOnBlock
+      "setOnBlock": setOnBlock,
+      "setScript": setScript
     }
   }
   

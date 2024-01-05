@@ -7,3 +7,11 @@ export enum RoleType {
     TRAVELLER,
     STORYTELLER
 }
+
+export const RoleTypeList = [
+    "TOWNSFOLK",
+    "OUTSIDER",
+    "MINION",
+    "DEMON",
+    "TRAVELLER",
+    "STORYTELLER"]
