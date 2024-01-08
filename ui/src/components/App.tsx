@@ -28,14 +28,17 @@ export const GameContext = createContext<GameContextType>({
       "customJinxes": []
     },
     "onBlock": null,
-    "gameMode": GameMode.SETUP
+    "gameMode": GameMode.SETUP,
+    "quickAccessSettings": {
+      "nominationHelp": true
+    }
   },
   "setter": () => {},
   "util": {
     "setMode": () => {},
     "setOnBlock": () => {},
     "setScript": () => {}
-  }
+  },
 });
 
 function App() {

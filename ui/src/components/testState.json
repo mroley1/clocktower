@@ -116,5 +116,8 @@
         "roles": [],
         "recommendedFabled": [],
         "customJinxes": []
+      },
+      "quickAccessSettings": {
+        "nominationHelp": true
       }
 }

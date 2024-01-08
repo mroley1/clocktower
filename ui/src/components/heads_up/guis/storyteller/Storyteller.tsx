@@ -3,6 +3,7 @@ import './Storyteller.scss'
 import { GameContext } from '@/components/App';
 import StorytellerMenu from './StorytellerMenu';
 import { HeadsUpContext } from '../../HeadsUp';
+import QuickAccess from './QuickAccess';
 
 function Storyteller(props: any) {
     
@@ -22,9 +23,7 @@ function Storyteller(props: any) {
                 </div>
               </div>
               <div id='storytellerMenuBackingBottom' className='backing'>
-                <div className='button'></div>
-                <div className='button'></div>
-                <div className='button'></div>
+                <QuickAccess></QuickAccess>
               </div>
             </div>
           <StorytellerMenu />

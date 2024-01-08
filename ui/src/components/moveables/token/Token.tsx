@@ -145,7 +145,7 @@ function Token(props: any) {
   })
   
   const canVote = (()=>{
-    if (gameContext.state.gameMode===GameMode.NOMINATIONS) {
+    if (gameContext.state.gameMode===GameMode.NOMINATIONS && gameContext.state.quickAccessSettings.nominationHelp) {
       if (CAN_VOTE.includes(tokenContext.json.viability)) {
         return <div className='vote_button yes'></div>
       } else {

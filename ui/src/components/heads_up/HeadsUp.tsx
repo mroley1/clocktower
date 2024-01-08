@@ -60,7 +60,6 @@ function HeadsUp(props: any) {
       <div id='heads_up'>
           <BoardStateMenu />
           <Storyteller />
-          <span style={{position: "absolute"}}>{gameContext.state.onBlock}</span>
       </div>
     </HeadsUpContext.Provider>
   );
