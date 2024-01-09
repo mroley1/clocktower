@@ -7,6 +7,7 @@ function NominationHelp(props: any) {
     
     const gameContext = useContext(GameContext)
     
+    // handle toggling nominationHelp in game state when clicked
     function onClick() {
         const tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
         tmp.quickAccessSettings.nominationHelp = !tmp.quickAccessSettings.nominationHelp

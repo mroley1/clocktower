@@ -23,6 +23,8 @@ function Script(props: any) {
     const [isEditing, setIsEditing] = useState(false);
     const [currentScript, setCurrentScript] = useState(gameContext.state.script);
     
+    // defines what files types are accepted when uploading scripts
+    // also defines that only one file may be chosen
     const pickerOpts = {
         types: [
           {
@@ -35,6 +37,7 @@ function Script(props: any) {
         multiple: false,
       };
       
+    // used to upload a script into script dialogue, deploys filePicker dialogue
     async function uploadScript() {
         try {
         
@@ -53,11 +56,13 @@ function Script(props: any) {
         }
     }
     
+    // sets a new script in gamemode and closes script menu
     function setNewScript(json: any) {
         gameContext.util.setScript(json)
         headsUpContext.util.toggleRadialMenuState(false)
     }
     
+    // fetches list of scripts from database
     useEffect(() => {
         fetch('http://localhost:8000/script/').then((response)=>{
             if (response.status === 200) {
@@ -76,14 +81,16 @@ function Script(props: any) {
     }, [])
     
     
-    
+    // component that displays scripts
     function ScriptContent() {
         
+        // sets currently inspected script
         function selectScript(script: ScriptType) {
             setIsEditing(false)
             setCurrentScript(script)
         }
         
+        // renders script listing in left column
         function Item(props: any) {
             return (
                 <div onClick={()=>{selectScript(props.entry.scripts[0])}} className='item'>
@@ -98,6 +105,7 @@ function Script(props: any) {
             )
         }
         
+        // 
         function ViewingPane(props: any) {
             
             const [scriptDetails, setScriptDetails] = useState([])
@@ -135,35 +143,34 @@ function Script(props: any) {
                 })
             }, [])
             
+            // default view when loading script
             var roles = <Loading></Loading>
             if (loading === "done") {
                 const roleElements = RoleTypeList
+                // convert list of role types to a list of those roles in current script
                 .map(
                     (type)=>{
-                        return {
-                            title: type,
-                            roles: scriptDetails
-                            .filter(
-                                (role) => role["type"] === type
-                            ).map(
-                                (role) => <Role key={role["id"]} role={role}></Role>
-                            )
-                        }
-                    }
-                ).filter(
-                    (cat) => cat.roles.length !== 0
-                ).map(
-                    (cat) => 
-                        <div key={cat.title}>
-                            <h3>
-                                {cat.title}
-                            </h3>
-                            <div className='roles'>
-                                {cat.roles}
+                        return (
+                            <div key={type}>
+                                <h3>
+                                    {type}
+                                </h3>
+                                <div className='roles'>
+                                    {scriptDetails
+                                    // select only roles that match type currently being mapped
+                                    .filter(
+                                        (role) => role["type"] === type
+                                    // map role element for each role json
+                                    ).map(
+                                        (role) => <Role key={role["id"]} role={role}></Role>
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                        )
+                    }
                 )
                 
+                // wrap role elements in container element
                 roles = (
                     <div className='roles_container'>
                         {
@@ -235,6 +242,7 @@ function Script(props: any) {
         )
     }
     
+    // sets content based on what stage of loading the app is in
     let content = (():ReactNode=>{
         if (loading === "loading") {
             return <Loading></Loading>

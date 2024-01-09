@@ -7,9 +7,9 @@ import QuickAccess from './QuickAccess';
 
 function Storyteller(props: any) {
     
-    const gameContext = useContext(GameContext)
     const headsUpContext = useContext(HeadsUpContext)
     
+    // open radial menu in heads up context
     const handleClick = (event: object) => {
         headsUpContext.util.toggleRadialMenuState(true)
       }

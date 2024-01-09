@@ -116,6 +116,10 @@
             overflow-y: auto;
             height: calc(100% - 120px);
             
+            :not(div:has(.role > img)) > h3 {
+                display: none;
+            }
+            
             > span {
                 display: block;
                 font-size: 20pt;

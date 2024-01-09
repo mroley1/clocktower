@@ -79,6 +79,7 @@ function TokenMenu({menuState, toggleMenuState}: any) {
         {"title": "Alignment", "index": 5, "function": ()=>{setDialogue("alignment")}}
     ])
     data.set(GameMode.NOMINATIONS, [
+        {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}},
         {"title": "Nominate", "index": 1, "function": ()=>{setDialogue("nominate")}},
         {"title": "On Block", "index": 3, "function": ()=>{setDialogue("onblock")}},
         {"title": "Vote", "index": 4, "function": ()=>{setDialogue("vote")}},

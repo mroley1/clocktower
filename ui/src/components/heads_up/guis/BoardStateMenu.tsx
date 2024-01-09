@@ -13,12 +13,14 @@ function BoardStateMenu(props: any) {
     
     const gameContext = useContext(GameContext)
     
+    // sets game mode
     function setMode(mode: GameMode) {
         const tmp:GameStateType = JSON.parse(JSON.stringify(gameContext.state));
         tmp.gameMode = mode
         gameContext.setter(tmp)
     }
     
+    // finds foreground and background colors of specific gamemodes 
     function colorFind(mode: GameMode) {
         if (gameContext.state.gameMode === mode) {
             let color = GameMode.color(mode)
@@ -28,13 +30,12 @@ function BoardStateMenu(props: any) {
         }
     }
     
+    // sets linear gradiant behind gamemodes based on currently selected gamemode background color
     useEffect(() => {
         let gameMode = gameContext.state.gameMode
         if (gameMode === undefined) {
             gameMode = GameMode.SETUP
         }
-        
-        
         document.getElementById('boardStateMenuTab')!.style.backgroundImage = 'linear-gradient(to right, ' + GameMode.color(gameMode).background + ', #00000000)'
         
     })

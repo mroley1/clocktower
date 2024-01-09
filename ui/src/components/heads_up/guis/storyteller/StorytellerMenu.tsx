@@ -13,6 +13,7 @@ function StorytellerMenu({menuState, toggleMenuState}: any) {
     const gameContext = useContext(GameContext)
     const headsUpContext = useContext(HeadsUpContext)
   
+    // define custom styles for when the radial menu should be visible
     function getStyles() {
         var display = "none"
         var pointerEvents = "none"
@@ -26,25 +27,31 @@ function StorytellerMenu({menuState, toggleMenuState}: any) {
         } as React.CSSProperties
     }
     
+    // when called stops event propogation so parent elements do not receive event
     function stopPropagation(event: any) {
         event.stopPropagation()
     }
     
+    // sets which dialogue should be opened
     function setDialogue(type: string) {
         setDialogueName(type)
     }
     
+    // closes radial menu
     function closeMenu() {
         headsUpContext.util.toggleRadialMenuState(false)
     }
     
+    // fetches sroryteller eye graphic
     const icon = require('../../assets/storyteller/all-seeing-eye.png')
     
+    // defines what information is needed for each slice of a radial menu
     interface radSlice {
         title: string
         index: number
         function: any
     }
+    // defines what radial menu options are availible during each game mode from the storyteller menu
     const data = new Map<GameMode, radSlice[]>();
     data.set(GameMode.SETUP, [
         {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}},
@@ -67,17 +74,19 @@ function StorytellerMenu({menuState, toggleMenuState}: any) {
         {"title": "Notes", "index": 0, "function": ()=>{setDialogue("notes")}},
     ])
     
+    // populates radial menu with slices for current game mode
     var slices: any[] = []
     if (headsUpContext.state.menuState.orgMode !== null) {
         slices = data.get(headsUpContext.state.menuState.orgMode!)!.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
     }
     
-    
+    // maps dialogue names with their respective components for when they are selected
     const dialogues = new Map()
     dialogues.set("none", null)
     dialogues.set("kill", <Kill></Kill>)
     dialogues.set("script", <Script></Script>)
     
+    // sets dialogue to none when component is loaded
     useEffect(()=>{
         setDialogueName("none")
     }, [headsUpContext.state.menuState])
