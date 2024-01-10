@@ -21,13 +21,13 @@ function RoleSelect(props: Props) {
     function onClick() {
       let tmp = props.selections.slice()
       if (tmp.includes(buttonProps.role.id)) {
-        tmp.splice(tmp.indexOf(buttonProps.role.id), 1)
+        tmp.splice(tmp.indexOf(buttonProps.role), 1)
       } else {
         if (tmp.length !< props.max) {
-          tmp.push(buttonProps.role.id)
+          tmp.push(buttonProps.role)
         } else {
           tmp.shift()
-          tmp.push(buttonProps.role.id)
+          tmp.push(buttonProps.role)
         }
       }
       props.setSelections(tmp)
@@ -36,7 +36,7 @@ function RoleSelect(props: Props) {
     const icon = require(`@assets/icons/${buttonProps.role.id}.png`)
     
     var classes = ""
-    if (props.selections.includes(buttonProps.role.id)) {
+    if (props.selections.includes(buttonProps.role)) {
       classes = "selected"
     }
     
@@ -76,7 +76,7 @@ function RoleSelect(props: Props) {
   
   const buttons = (()=> {
     if (query.data.length === 0) {
-      return <div className='error'>No roles found</div>
+      return <div className='error'>No roles found<br></br>Make sure a script is selected</div>
     } else {
       return query.data.sort((a:Role, b:Role)=>order(a,b)).map((role: Role)=><RoleButton key={role.id} role={role}></RoleButton>)
     }

@@ -6,18 +6,22 @@ import { GameContext } from '@/components/App';
 
 function RoleChange(props: any) {
     
-    const gameContext = useContext(GameContext)
     const tokenContext = useContext(TokenContext)
+    
+    const roleSelectMax = 1
+    const roleSelectMin = 1
     
     const closeMenu = () => {
         tokenContext.util.closeMenu()
     }
     
-    const style = {
-        width: "80%",
-        height: "70vh",
-        margin: "0% 10% 0% 10%"
-    } as React.CSSProperties
+    const changeRole = () => {
+        if (selections.length<roleSelectMin) {return}
+        let tmp = tokenContext.json
+        tmp.role = selections[0]
+        tokenContext.util.setPlayerData(tmp)
+        closeMenu()
+    }
     
     const [selections, setSelections] = useState([])
     
@@ -26,8 +30,12 @@ function RoleChange(props: any) {
             <div className='close' onClick={closeMenu}></div>
             <div className='center'>
                 <h1>Select New Role</h1>
-                <div style={style}>
-                    <RoleSelect max={1} selections={selections} setSelections={setSelections} />
+                <div className='focus'>
+                    <RoleSelect max={roleSelectMax} selections={selections} setSelections={setSelections} />
+                    <div className='bottomTray'>
+                        <div className='cancel' onClick={closeMenu}>Cancel</div>
+                        <div className='select' onClick={changeRole} aria-disabled={selections.length<roleSelectMin}>Select</div>
+                    </div>
                 </div>
             </div>
         </div>
