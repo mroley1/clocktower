@@ -76,9 +76,8 @@ function StorytellerMenu({menuState, toggleMenuState}: any) {
     
     // populates radial menu with slices for current game mode
     var slices: any[] = []
-    if (headsUpContext.state.menuState.orgMode !== null) {
-        slices = data.get(headsUpContext.state.menuState.orgMode!)!.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
-    }
+    slices = data.get(gameContext.state.gameMode)!.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
+    
     
     // maps dialogue names with their respective components for when they are selected
     const dialogues = new Map()

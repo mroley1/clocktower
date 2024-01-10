@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import './TokenMenu.scss';
-import { GameMode } from '@/common/GameModes';
+import { GameMode, IS_NIGHT } from '@/common/GameModes';
 import React from 'react';
 import NotesChange from './menus/NotesChange';
 import Action from './menus/Action';
@@ -90,7 +90,7 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     ])
     
     // maps slices from data to html elements
-    const slices = data.get(menuState.orgMode)?.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
+    const slices = data.get(gameContext.state.gameMode)?.map((radSlice) => <div className={"areas area_" + radSlice.index} key={radSlice.index} data-title={radSlice.title} onClick={radSlice.function}></div>)
     
     // maps dialogue names to dialogue html elements
     const dialogues = new Map()
@@ -114,9 +114,9 @@ function TokenMenu({menuState, toggleMenuState}: any) {
         setDialogueName("none")
     }, [menuState])
     
-    // removes center icon if gamemode is not RADIAL (probaly BLINDRADIAL)
+    // removes center icon if gamemode is not one marked as nightime
     const centerIcon = (()=>{
-        if (gameContext.state.gameMode === GameMode.RADIAL) {
+        if (IS_NIGHT.includes(gameContext.state.gameMode)) {
             return <img src={icon}></img>
         } else {
             return <></>

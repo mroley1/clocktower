@@ -8,7 +8,7 @@ import RadialMenuState from '@/common/RadialMenuState';
 import { IS_NIGHT, GameMode } from '@/common/GameModes';
 
 
-const startingMenuState: RadialMenuState = {"open": false, "orgMode": null, dialogue: "none"}
+const startingMenuState: RadialMenuState = {"open": false, dialogue: "none"}
 export const HeadsUpContext = createContext<HeadsUpContextType>({
   state: {
     menuState: startingMenuState
@@ -31,16 +31,9 @@ function HeadsUp(props: any) {
         }
         if (tmp.open) {
             tmp.open = false
-            gameContext.util.setMode(tmp.orgMode)
           } else {
             tmp.open = true
             tmp.dialogue = dialogueName
-            tmp.orgMode = gameContext.state.gameMode
-            if (IS_NIGHT.includes(gameContext.state.gameMode)) {
-              gameContext.util.setMode(GameMode.RADIAL)
-            } else {
-              gameContext.util.setMode(GameMode.BLINDRADIAL)
-            }
           }
           setMenuState(tmp)
     }

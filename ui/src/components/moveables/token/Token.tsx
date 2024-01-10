@@ -30,7 +30,6 @@ export const TokenContext = createContext<TokenContextType>({
   },
   menuState: {
     open: false,
-    orgMode: GameMode.SETUP,
     dialogue: "none"
   },
   util: {
@@ -49,7 +48,7 @@ function Token(props: any) {
 
   const icon = require(`@assets/icons/${json.role?.id}.png`)
   
-  const startingMenuState: RadialMenuState = {"open": false, "orgMode": null, dialogue: "none"}
+  const startingMenuState: RadialMenuState = {"open": false, dialogue: "none"}
   const [menuState, setMenuState] = useState(startingMenuState)
   
   function getStyles() {
@@ -70,16 +69,9 @@ function Token(props: any) {
     var tmp: RadialMenuState = JSON.parse(JSON.stringify(menuState));
     if (menuState.open) {
       tmp.open = false
-      gameContext.util.setMode(tmp.orgMode)
     } else {
       tmp.open = true
       tmp.dialogue = dialogueName
-      tmp.orgMode = gameContext.state.gameMode
-      if (IS_NIGHT.includes(gameContext.state.gameMode)) {
-        gameContext.util.setMode(GameMode.RADIAL)
-      } else {
-        gameContext.util.setMode(GameMode.BLINDRADIAL)
-      }
     }
     setMenuState(tmp)
   }
@@ -87,7 +79,6 @@ function Token(props: any) {
   function closeMenu() {
     var tmp: RadialMenuState = JSON.parse(JSON.stringify(menuState));
     tmp.open = false
-    gameContext.util.setMode(tmp.orgMode)
     setMenuState(tmp)
   }
   

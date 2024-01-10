@@ -21,18 +21,20 @@ function SetupNewPlayer(props: any) {
         setDialogueOpen(true)
     }
     
+    // stop event propogation
     function stopPropagation(event: any) {
         event.stopPropagation()
     }
     
+    // once role is selected add it to the game state in the center
     const onSelect = () => {
         const tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
         tmp.tokens.push({
             id: crypto.randomUUID(),
             role: selections[0],
             name: "",
-            xpos: 600,
-            ypos: 600,
+            xpos: (Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) / 2) - 60,
+            ypos: (Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) / 2) - 60,
             pubNotes: "",
             privNotes: "",
             viability: Viability.ALIVE,
@@ -46,19 +48,15 @@ function SetupNewPlayer(props: any) {
         closeMenu()
     }
     
+    // close dialogue menu
     const closeMenu = () => {
         setDialogueOpen(false)
     }
     
-    // grey out token if diabled
-    // ! not implemented
-    const style = {
-        filter: ""
-    } as React.CSSProperties
-    
     // fetch image for token
     const image = require("@HeadsUpAssets/storyteller/person_add_button.png")
     
+    // dialogue menu renderes when clicked
     const dialogue = (() => {
         if (dialogueOpen) {
             return (
@@ -82,7 +80,7 @@ function SetupNewPlayer(props: any) {
     })()
     
     return (
-        <div className='button' style={style} onClick={onClick} title="Adds new Player">
+        <div className='button' onClick={onClick} title="Adds new Player">
             <img src={image}></img>
             {dialogue}
         </div>
