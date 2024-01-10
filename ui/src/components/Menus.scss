@@ -5,10 +5,13 @@
 }
 
 #radialMenuActionSolidBase {
-    width: 100%;
-    height: 100%;
-    background-image: url(./assets/vines.png);
-    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0px;
+    left: 0px;
+    background-image: url(../assets/menus/vines.png);
+    position: fixed;
+    z-index: 1000;
     animation: baseFade 0.5s ease-out forwards;
     
     .center {
@@ -80,6 +83,6 @@
         height: 75px;
         width: 75px;
         cursor: pointer;
-        background: no-repeat center/contain url(./assets/close.svg);
+        background: no-repeat center/contain url(../assets/menus/close.svg);
     }
 }

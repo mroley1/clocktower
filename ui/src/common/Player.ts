@@ -4,8 +4,8 @@ import Role from './Role'
 import { Viability } from './Viability'
 
 export default interface Player {
-    id: number
-    role: Role | undefined
+    id: string
+    role: Role | null
     name: string
     xpos: number
     ypos: number

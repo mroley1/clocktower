@@ -15,6 +15,7 @@ function NominationHelp(props: any) {
     }
     
     // grey out token if diabled
+    // ! not implemented yet
     const style = {
         filter: ""
     } as React.CSSProperties

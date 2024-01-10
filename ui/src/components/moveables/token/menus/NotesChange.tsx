@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
-import './Menus.scss';
-import Toggle from './util/Toggle';
+import '@/components/Menus.scss';
+import Toggle from '@util/Toggle';
 import { TokenContext } from '../Token';
 import { GameMode } from '@/common/GameModes';
 

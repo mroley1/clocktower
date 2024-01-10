@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import './Menus.scss';
+import '@/components/Menus.scss';
 import { TokenContext } from '../Token';
 
 function NameChange() {

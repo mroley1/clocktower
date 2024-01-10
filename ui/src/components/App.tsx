@@ -56,9 +56,9 @@ function App() {
   }
   
   // set user that is on the block, takes index of user token in gamestate
-  function setOnBlock(index: number) {
+  function setOnBlock(id: string) {
     const tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
-    tmp.onBlock = index
+    tmp.onBlock = id
     gameContext.setter(tmp)
   }
   

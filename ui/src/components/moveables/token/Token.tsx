@@ -14,8 +14,8 @@ import { CAN_VOTE, IS_ALIVE, Viability } from '@/common/Viability';
 
 export const TokenContext = createContext<TokenContextType>({
   json: {
-    id: -1,
-    role: undefined,
+    id: "",
+    role: null,
     name: "",
     xpos: 0,
     ypos: 0,
@@ -93,7 +93,7 @@ function Token(props: any) {
   
   function setPlayerData(json: Player) {
     var tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
-    tmp.tokens[json.id] = json
+    tmp.tokens[tmp.tokens.findIndex((token)=>token.id === json.id)] = json
     gameContext.setter(tmp)
   }
   

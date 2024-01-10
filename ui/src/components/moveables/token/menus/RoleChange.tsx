@@ -1,8 +1,7 @@
 import { useContext, useState } from 'react';
-import RoleSelect from './util/RoleSelect'
-import './Menus.scss';
+import RoleSelect from '@util/RoleSelect'
+import '@/components/Menus.scss';
 import { TokenContext } from '../Token';
-import { GameContext } from '@/components/App';
 
 function RoleChange(props: any) {
     

@@ -3,13 +3,14 @@ import './MoveBoard.scss';
 import { GameContext } from '../App'
 import Token from './token/Token';
 import { MOVABLE } from '@/common/GameModes';
+import GameStateType from '@/common/GameStateType';
 
 function MoveBoard() {
     
     const gameContext = useContext(GameContext)
     
     const createDragEvent = (
-      function (index: number) {
+      function (id: string) {
         return function (event: any) {
           
           // check that game mode is one that allows items to be moved
@@ -69,9 +70,10 @@ function MoveBoard() {
               target.style.top = (height - boundingRect.height) + "px"
             }
             // save to state
-            const tmp = JSON.parse(JSON.stringify(gameContext.state));
-            tmp["tokens"][index].xpos = target?.getBoundingClientRect().x
-            tmp["tokens"][index].ypos = target?.getBoundingClientRect().y
+            var tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
+            let index = tmp.tokens.findIndex((token)=>token.id === id)
+            tmp.tokens[index].xpos = target?.getBoundingClientRect().x
+            tmp.tokens[index].ypos = target?.getBoundingClientRect().y
             gameContext.setter(tmp)
           })
           

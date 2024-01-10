@@ -1,4 +1,4 @@
-import './Menus.scss';
+import '@/components/Menus.scss';
 
 function RemindersChange(props: any) {
     

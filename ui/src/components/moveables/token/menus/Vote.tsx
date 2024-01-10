@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import './Menus.scss';
+import '@/components/Menus.scss';
 import { TokenContext } from '../Token';
 import { Viability } from '@/common/Viability';
 

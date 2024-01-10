@@ -5,7 +5,8 @@
         "@/*": ["src/*"],
         "@assets/*": ["src/assets/*"],
         "@Common/*": ["src/common/*"],
-        "@HeadsUpAssets/*": ["src/components/heads_up/assets/*"]
+        "@HeadsUpAssets/*": ["src/components/heads_up/assets/*"],
+        "@util/*": ["src/components/util/*"]
       }
     }
   }

@@ -6,7 +6,7 @@ import ScriptType from "./ScriptType";
 export default interface GameStateType {
     tokens: Player[]
     script: ScriptType
-    onBlock: number | null
+    onBlock: string | null
     gameMode: GameMode
     quickAccessSettings: QuickAccessSettingsType
 }

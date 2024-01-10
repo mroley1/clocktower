@@ -1,12 +1,12 @@
 import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
-import './Menus.scss';
+import '@/components/Menus.scss';
 import './Script.scss';
 import { GameContext } from '@/components/App';
 import { HeadsUpContext } from '@/components/heads_up/HeadsUp';
 import ScriptType from '@/common/ScriptType';
-import Loading from './util/Loading';
-import * as ErrorScreen from './util/Error';
-import RoleDetails from './util/RoleDetails';
+import Loading from '@util/Loading';
+import * as ErrorScreen from '@util/Error';
+import RoleDetails from '@util/RoleDetails';
 import { RoleTypeList } from '@/common/RoleType';
 
 declare const window: any;
