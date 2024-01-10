@@ -10,6 +10,6 @@ export default interface ScriptType {
         date: string
     }
     roles: string[]
-    recommendedFabled: string[]
+        recommendedFabled: string[]
     customJinxes: string[]
 }

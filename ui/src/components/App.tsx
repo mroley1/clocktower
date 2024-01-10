@@ -1,4 +1,5 @@
 import { createContext, useState } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import './App.scss';
 import MoveBoard from './moveables/MoveBoard';
 import GameContextType from '@Common/GameContextType';
@@ -9,6 +10,7 @@ import ScriptType from '@/common/ScriptType';
 import GameStateType from '@/common/GameStateType';
 
 const TESTSTATE = require('./testState.json');
+const queryClient = new QueryClient({})
 
 // create gamemode context
 export const GameContext = createContext<GameContextType>({
@@ -24,7 +26,7 @@ export const GameContext = createContext<GameContextType>({
         "date": ""
       },
       "roles": [],
-      "recommendedFabled": [],
+            "recommendedFabled": [],
       "customJinxes": []
     },
     "onBlock": null,
@@ -79,11 +81,13 @@ function App() {
   }
   
   return (
-    <GameContext.Provider value={gameContext}>
-      <Background />
-      <MoveBoard />
-      <HeadsUp />
-    </GameContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <GameContext.Provider value={gameContext}>
+        <Background />
+        <MoveBoard />
+        <HeadsUp />
+      </GameContext.Provider>
+    </QueryClientProvider>
   );
 }
 

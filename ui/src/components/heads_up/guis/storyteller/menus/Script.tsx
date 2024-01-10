@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import './Menus.scss';
 import './Script.scss';
 import { GameContext } from '@/components/App';
@@ -22,6 +22,7 @@ function Script(props: any) {
     const [orderDir, setOrderDir] = useState("asc");
     const [isEditing, setIsEditing] = useState(false);
     const [currentScript, setCurrentScript] = useState(gameContext.state.script);
+    var writeScript = useRef(gameContext.state.script)
     
     // defines what files types are accepted when uploading scripts
     // also defines that only one file may be chosen
@@ -57,8 +58,8 @@ function Script(props: any) {
     }
     
     // sets a new script in gamemode and closes script menu
-    function setNewScript(json: any) {
-        gameContext.util.setScript(json)
+    async function setNewScript(json: any) {
+        writeScript.current = json
         headsUpContext.util.toggleRadialMenuState(false)
     }
     
@@ -84,7 +85,7 @@ function Script(props: any) {
     // component that displays scripts
     function ScriptContent() {
         
-        // sets currently inspected script
+        // sets script to be inspected
         function selectScript(script: ScriptType) {
             setIsEditing(false)
             setCurrentScript(script)
@@ -236,11 +237,19 @@ function Script(props: any) {
                     {scriptData.sort((a,b)=>order(a,b)).map((entry)=><Item key={entry["name"]+entry["author"]} entry={entry}></Item>)}
                 </div>
                 <div className='viewing_pane'>
-                    <ViewingPane></ViewingPane>
+                    {viewing}
                 </div>
             </div>
         )
     }
+    
+    useEffect(()=>{
+        return ()=>{
+            if (!headsUpContext.state.menuState.open) {
+                gameContext.util.setScript(writeScript.current)
+            }
+        }
+    })
     
     // sets content based on what stage of loading the app is in
     let content = (():ReactNode=>{
