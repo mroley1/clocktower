@@ -25,9 +25,7 @@ function Vote(props: any) {
         }
     })
     
-    return (
-        <></>
-    );
+    return null;
   
 }
 

@@ -43,8 +43,6 @@ function Token(props: any) {
   
   const gameContext = useContext(GameContext)
   const json: Player = props.json
-  
-  
 
   const icon = require(`@assets/icons/${json.role?.id}.png`)
   
@@ -143,15 +141,15 @@ function Token(props: any) {
         return <div className='vote_button no'></div>
       }
     } else {
-      return <></>
+      return null
     }
   })()
   
   const alignment = (() => {
     if (json.alignment !== json.role?.alignment) {
-      return <div className={'alignment '+ json.alignment.toString().toLowerCase()}></div>
+      return <div className={'alignment '+ Alignment[json.alignment].toString().toLowerCase()}></div>
     } else {
-      return <></>
+      return null
     }
   })()
   
@@ -162,7 +160,7 @@ function Token(props: any) {
         <img src={icon}></img>
       </div>
     } else {
-      return <></>
+      return null
     }
   })()
   
@@ -170,7 +168,7 @@ function Token(props: any) {
     if (gameContext.state.gameMode === GameMode.NOMINATIONS && gameContext.state.onBlock === json.id) {
       return <div className='on_block'></div>
     } else {
-      return <></>
+      return null
     }
   })()
   

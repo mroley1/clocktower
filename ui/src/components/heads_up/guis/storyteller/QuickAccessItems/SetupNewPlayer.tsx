@@ -28,6 +28,7 @@ function SetupNewPlayer(props: any) {
     
     // once role is selected add it to the game state in the center
     const onSelect = () => {
+        if (selections.length<roleSelectMin) {return}
         const tmp: GameStateType = JSON.parse(JSON.stringify(gameContext.state));
         tmp.tokens.push({
             id: crypto.randomUUID(),

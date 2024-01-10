@@ -29,5 +29,4 @@ export namespace GameMode {
 export const MENU_OPEN = [GameMode.NIGHT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
 export const IS_NIGHT = [GameMode.NIGHT, GameMode.SETUP, GameMode.MARK, GameMode.MOVING]
 export const MOVABLE = [GameMode.MOVING]
-export const CLICKABLE = [GameMode.NIGHT, GameMode.PLAYERSELECT, GameMode.ROLESELECT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
-
+export const CLICKABLE = [GameMode.NIGHT, GameMode.PLAYERSELECT, GameMode.MARK, GameMode.ROLESELECT, GameMode.SETUP, GameMode.NOMINATIONS, GameMode.DAY]
