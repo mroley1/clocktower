@@ -9,6 +9,7 @@ import { Alignment } from '@/common/Alignment';
 import GameStateType from '@/common/GameStateType';
 import RadialMenuState from '@/common/RadialMenuState';
 import { CAN_VOTE, IS_ALIVE, Viability } from '@/common/Viability';
+import { AilmentTypes } from '@/common/AilmentTypes';
 
 
 
@@ -130,7 +131,7 @@ function Token(props: any) {
   })()
   
   const ailments = json.ailments.map((ailment) => {
-    return <div key={ailment} className={'ailment '+ ailment.toString().toLowerCase()}></div>
+    return <div key={ailment.type} className={'ailment '+ ailment.type.toString().toLowerCase()}></div>
   })
   
   const canVote = (()=>{

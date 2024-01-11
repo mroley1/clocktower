@@ -26,7 +26,7 @@
             "privNotes": "custom role thing",
             "viability": 0,
             "ailments": [
-                "DRUNK"
+                {"type":"DRUNK", "duration": 0}
             ],
             "mad": null,
             "convinced": "butler",
@@ -57,8 +57,8 @@
             "privNotes": "Robert",
             "viability": 0,
             "ailments": [
-                "POISONED",
-                "DRUNK"
+                {"type":"DRUNK", "duration": 0},
+                {"type":"POISONED", "duration": 0}
             ],
             "mad": null,
             "convinced": null,
@@ -92,9 +92,9 @@
             "privNotes": "",
             "viability": 0,
             "ailments": [
-                "MAD",
-                "DRUNK",
-                "POISONED"
+                {"type":"MAD", "duration": 0},
+                {"type":"DRUNK", "duration": 0},
+                {"type":"POISONED", "duration": 0}
             ],
             "mad": "farmer",
             "convinced": null,

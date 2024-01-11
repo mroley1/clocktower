@@ -1,4 +1,4 @@
-import { Ailment } from './Ailment'
+import Ailment from './Ailment'
 import { Alignment } from './Alignment'
 import Role from './Role'
 import { Viability } from './Viability'

@@ -106,7 +106,7 @@ function TokenMenu({menuState, toggleMenuState}: any) {
     dialogues.set("reminders", <RemindersChange />)
     dialogues.set("nominate", <Nominate />)
     dialogues.set("onblock", <OnBlockSet />)
-    dialogues.set("vote", <Vote restore={tokenContext.json.viability===Viability.DEAD} />)
+    dialogues.set("vote", <Vote restore={tokenContext.json.viability===Viability.DEAD || tokenContext.json.viability===Viability.DEADFAINT} />)
     dialogues.set("execute", <Execute />)
     
     // sets dialogueName to "none" on entrance and exit of radial menu
