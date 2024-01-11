@@ -27,7 +27,8 @@ export const TokenContext = createContext<TokenContextType>({
     mad: null,
     convinced: null,
     bluffs: [],
-    alignment: Alignment.STORYTELLER
+    alignment: Alignment.STORYTELLER,
+    usedActions: []
   },
   menuState: {
     open: false,

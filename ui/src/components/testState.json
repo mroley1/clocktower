@@ -12,7 +12,52 @@
                 "otherNight": "If the Amnesiac's ability causes them to wake tonight: Wake the Amnesiac and run their ability.",
                 "changeMakeup": [],
                 "secret": true,
-                "actions": [],
+                "actions": [
+                    {
+                        "title": "test",
+                        "choices": [
+                            {
+                                "title": "select two roles",
+                                "type": 4,
+                                "quantity": 2,
+                                "exposeRoles": false,
+                                "typeRestriction": [],
+                                "alignmentRestriction": []
+                            }
+                        ],
+                        "possibleAilments": [
+                            {
+                                "ailmentType": 4,
+                                "duration": -1
+                            },
+                            {
+                                "ailmentType": 0,
+                                "duration": 2
+                            }
+                        ],
+                        "singleton": true
+                    },
+                    {
+                        "title": "test2",
+                        "choices": [
+                            {
+                                "title": "select one player",
+                                "type": 3,
+                                "quantity": 1,
+                                "exposeRoles": false,
+                                "typeRestriction": [],
+                                "alignmentRestriction": []
+                            }
+                        ],
+                        "possibleAilments": [
+                            {
+                                "ailmentType": 7,
+                                "duration": -1
+                            }
+                        ],
+                        "singleton": false
+                    }
+                ],
                 "hardMad": false,
                 "getsBluffs": false,
                 "reminders": [

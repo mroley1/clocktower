@@ -43,8 +43,9 @@ function SetupNewPlayer(props: any) {
             mad: null,
             convinced: null,
             bluffs: [],
-            alignment: selections[0]["alignment"]}
-        )
+            alignment: selections[0]["alignment"],
+            usedActions: []
+        })
         gameContext.setter(tmp)
         closeMenu()
     }

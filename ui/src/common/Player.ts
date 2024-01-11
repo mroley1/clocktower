@@ -17,4 +17,5 @@ export default interface Player {
     convinced: Role | null
     bluffs: Role[]
     alignment: Alignment
+    usedActions: string[]
 }
