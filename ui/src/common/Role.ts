@@ -1,4 +1,4 @@
-import Action from "./action/Action"
+import Action from "./action/ActionType"
 import { Alignment } from "./Alignment"
 import MakeupMod from "./MakeupMod"
 import { RoleType } from "./RoleType"

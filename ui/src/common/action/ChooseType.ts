@@ -4,5 +4,6 @@ export enum ChooseType {
     NUMBER,
     YESNO,
     PLAYER,
+    SELF,
     ROLE,
 }

@@ -17,6 +17,14 @@
                         "title": "test",
                         "choices": [
                             {
+                                "title": "Do You Want To Use Your Ability?",
+                                "type": 2,
+                                "quantity": 1,
+                                "exposeRoles": false,
+                                "typeRestriction": [],
+                                "alignmentRestriction": []
+                            },
+                            {
                                 "title": "select two roles",
                                 "type": 4,
                                 "quantity": 2,
@@ -76,7 +84,8 @@
             "mad": null,
             "convinced": "butler",
             "bluffs": ["chef", "cult_leader", "drunk"],
-            "alignment": "GOOD"
+            "alignment": "GOOD",
+            "usedActions": ["test"]
         },
         {
             "id": 1,
@@ -90,7 +99,28 @@
                 "otherNight": "The Pit-Hag points to a player and a character on the sheet. If this character is not in play, wake that player and show them the 'You are' card and the relevant character token. If the character is in play, nothing happens.",
                 "changeMakeup": [],
                 "secret": true,
-                "actions": [],
+                "actions": [
+                    {
+                        "title": "test2",
+                        "choices": [
+                            {
+                                "title": "select one player",
+                                "type": 3,
+                                "quantity": 1,
+                                "exposeRoles": false,
+                                "typeRestriction": [],
+                                "alignmentRestriction": []
+                            }
+                        ],
+                        "possibleAilments": [
+                            {
+                                "ailmentType": 7,
+                                "duration": -1
+                            }
+                        ],
+                        "singleton": false
+                    }
+                ],
                 "hardMad": false,
                 "getsBluffs": false,
                 "reminders": []
@@ -108,7 +138,8 @@
             "mad": null,
             "convinced": null,
             "bluffs": [],
-            "alignment": "EVIL"
+            "alignment": "EVIL",
+            "usedActions": []
         },
         {
             "id": 2,
@@ -144,7 +175,8 @@
             "mad": "farmer",
             "convinced": null,
             "bluffs": [],
-            "alignment": "STORYTELLER"
+            "alignment": "STORYTELLER",
+            "usedActions": []
         }
     ],
     "gameMode": 3,
