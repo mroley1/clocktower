@@ -7,6 +7,7 @@ import ActionType from '@/common/action/ActionType';
 import { ChooseType } from '@/common/action/ChooseType';
 import Player from '@/common/Player';
 import Role from '@/common/Role';
+import RoleSelect from '@/components/util/RoleSelect';
 
 function Action(props: any) {
     
@@ -20,9 +21,9 @@ function Action(props: any) {
         goodEvil: AilmentTypes | null
         number: number | null
         yesNo: boolean | null
-        player: Player | null
+        player: Player[]
         self: Player | null
-        role: Role | null
+        role: Role[]
     }
     const init: SelectionsType[] = []
     const [selectionsMade, setSelectionsMade] = useState(false)
@@ -73,7 +74,7 @@ function Action(props: any) {
             }
         }
         
-        function GoodEvilSelect() {
+        function GoodEvilSelectPiece() {
             const relevant = action.choices.find((choice) => choice.type===ChooseType.GOODEVIL)
             if (relevant) {
                 return <div className='item'>{relevant.title}</div>
@@ -82,7 +83,7 @@ function Action(props: any) {
             }
         }
         
-        function NumberSelect() {
+        function NumberSelectPiece() {
             const relevant = action.choices.find((choice) => choice.type===ChooseType.NUMBER)
             if (relevant) {
                 return <div className='item'>{relevant.title}</div>
@@ -91,7 +92,7 @@ function Action(props: any) {
             }
         }
         
-        function PlayerSelect() {
+        function PlayerSelectPiece() {
             const relevant = action.choices.find((choice) => choice.type===ChooseType.PLAYER)
             if (relevant) {
                 return <div className='item'>{relevant.title}</div>
@@ -100,16 +101,34 @@ function Action(props: any) {
             }
         }
         
-        function RoleSelect() {
-            const relevant = action.choices.find((choice) => choice.type===ChooseType.ROLE)
+        function RoleSelectPiece({val, mutator}:{val: SelectionsType, mutator: (newVal: SelectionsType)=>void}) {
+            
+            const relevant = action.choices[val.id]
+            
+            const setRoles = (newVal: Role[]) => {
+                const tmp = {...val}
+                tmp.role = newVal
+                mutator(tmp)
+            }
+            
+            const max = relevant.quantity
+            const min = relevant.quantity
+            
             if (relevant) {
-                return <div className='item'>{relevant.title}</div>
+                return (
+                    <div className='item'>
+                        <div className='title'>{relevant.title}</div>
+                        <div className='content'>
+                            <RoleSelect max={max} selections={val.role} setSelections={setRoles}></RoleSelect>
+                        </div>
+                    </div>
+                )
             } else {
                 return null
             }
         }
         
-        function SelfSelect() {
+        function SelfSelectPiece() {
             const relevant = action.choices.find((choice) => choice.type===ChooseType.SELF)
             if (relevant) {
                 return <div className='item'>{relevant.title}</div>
@@ -118,7 +137,7 @@ function Action(props: any) {
             }
         }
         
-        function YesNoSelect({val, mutator}:{val: SelectionsType, mutator: (newVal: SelectionsType)=>void}) {
+        function YesNoSelectPiece({val, mutator}:{val: SelectionsType, mutator: (newVal: SelectionsType)=>void}) {
             
             const relevant = action.choices[val.id]
             
@@ -135,14 +154,24 @@ function Action(props: any) {
             }
             
             if (relevant) {
-                console.log(selections[1])
-                console.log(val)
                 return (
                     <div className='item'>
                         <div className='title'>{relevant.title}</div>
                         <div className='content'>
-                            <div className='item' style={{backgroundColor: val.yesNo===false?"rgb(170, 43, 43)":"rgb(130, 43, 43)"}} onClick={no}>No</div> // ! LOGIC HERE OFF
-                            <div className='item' style={{backgroundColor: val.yesNo===true?"rgb(43, 170, 43)":"rgb(43, 130, 43)"}} onClick={yes}>Yes</div>
+                            <div
+                                className={`item ${val.yesNo===false?"selected":""}`}
+                                style={{backgroundColor: val.yesNo===false?"rgb(170, 43, 43)":"rgb(130, 43, 43)"}}
+                                onClick={no}
+                            >
+                                No
+                            </div>
+                            <div
+                                className={`item ${val.yesNo===true?"selected":""}`}
+                                style={{backgroundColor: val.yesNo===true?"rgb(43, 170, 43)":"rgb(43, 130, 43)"}}
+                                onClick={yes}
+                            >
+                                Yes
+                            </div>
                         </div>
                     </div>
                 )
@@ -151,53 +180,61 @@ function Action(props: any) {
             }
         }
         
-        
+        // mapping from chooseTypes to their cooresponding element to display dialogue
         const selectionMap = new Map<ChooseType, ElementType>()
-        selectionMap.set(ChooseType.GOODEVIL, GoodEvilSelect)
-        selectionMap.set(ChooseType.NUMBER, NumberSelect)
-        selectionMap.set(ChooseType.PLAYER, PlayerSelect)
-        selectionMap.set(ChooseType.ROLE, RoleSelect)
-        selectionMap.set(ChooseType.SELF, SelfSelect)
-        selectionMap.set(ChooseType.YESNO, YesNoSelect)
+        selectionMap.set(ChooseType.GOODEVIL, GoodEvilSelectPiece)
+        selectionMap.set(ChooseType.NUMBER, NumberSelectPiece)
+        selectionMap.set(ChooseType.PLAYER, PlayerSelectPiece)
+        selectionMap.set(ChooseType.ROLE, RoleSelectPiece)
+        selectionMap.set(ChooseType.SELF, SelfSelectPiece)
+        selectionMap.set(ChooseType.YESNO, YesNoSelectPiece)
         
-        const selectionElements = action.choices.map((choice, index) => {
-            const Element = selectionMap.get(choice.type)!
-            // ! THIS NEEDS TO BE AN INITILIZING VALUE NOT ONE THAT IS REDEFINED
-            const val: SelectionsType = {
-                id: index,
-                type: choice.type,
-                goodEvil: null,
-                number: null,
-                yesNo: null,
-                player: null,
-                role: null,
-                self: null
-            }
+        // construct selection options from selectionMap
+        const selectionElements = selections.map((selection, index) => {
+            // type of selection
+            const Element = selectionMap.get(selection.type)!
+            // mutator to change own state
             const mutator = (newVal: SelectionsType) => {
                 let tmp = Array.from(selections)
                 let selectionIndex = tmp.findIndex((entry)=>entry.id===index)
                 tmp[selectionIndex] = newVal
                 setSelections(tmp)
             }
-            if (!selections.find((selection)=>selection.id === index)) {
-                let tmp = Array.from(selections)
-                tmp.push(val)
+            return <Element key={index} val={selections[index]} mutator={mutator}></Element>
+        })
+        
+        // initialize selections
+        useEffect(() => {
+            // only initilize selections when they have not been initilized yet
+            if (selections.length===0) {
+                let tmp: SelectionsType[] = []
+                action.choices.map((choice, index) => {
+                    tmp[index] = {
+                        id: index,
+                        type: choice.type,
+                        goodEvil: null,
+                        number: null,
+                        yesNo: null,
+                        player: [],
+                        role: [],
+                        self: null
+                    }
+                })
                 setSelections(tmp)
             }
-            return <Element key={index} val={val} mutator={mutator}></Element>
-        })
+        }, [])
         
         return (
             <div id='radialMenuActionSolidBase' className={animate}>
-            <div className='close' onClick={closeMenu}></div>
-            <div className='center'>
-                <h1>{action.title}</h1>
-                <SingletonNotification></SingletonNotification>
-                <div className='scroll_list'>
-                    {selectionElements}
+                <div className='close' onClick={closeMenu}></div>
+                <div className='center'>
+                    <h1>{action.title}</h1>
+                    <SingletonNotification></SingletonNotification>
+                    <div className='scroll_list'>
+                        {selectionElements}
+                    </div>
                 </div>
             </div>
-        </div>
         )
     }
     

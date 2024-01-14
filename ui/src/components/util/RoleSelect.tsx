@@ -7,7 +7,7 @@ import Loading from './Loading';
 import { RoleType } from '@/common/RoleType';
 
 interface Props {
-  selections: string[], // stores selections
+  selections: Role[], // stores selections
   setSelections: Function, // sets selections
   max: number // maximum number of selections
 }
@@ -20,7 +20,7 @@ function RoleSelect(props: Props) {
     
     function onClick() {
       let tmp = props.selections.slice()
-      if (tmp.includes(buttonProps.role.id)) {
+      if (tmp.find((selection)=>selection.id === buttonProps.role.id)) {
         tmp.splice(tmp.indexOf(buttonProps.role), 1)
       } else {
         if (tmp.length !< props.max) {
@@ -36,7 +36,7 @@ function RoleSelect(props: Props) {
     const icon = require(`@assets/icons/${buttonProps.role.id}.png`)
     
     var classes = ""
-    if (props.selections.includes(buttonProps.role)) {
+    if (props.selections.find((selection)=>selection.id === buttonProps.role.id)) {
       classes = "selected"
     }
     
@@ -78,7 +78,7 @@ function RoleSelect(props: Props) {
     if (query.data.length === 0) {
       return <div className='error'>No roles found<br></br>Make sure a script is selected</div>
     } else {
-      return query.data.sort((a:Role, b:Role)=>order(a,b)).map((role: Role)=><RoleButton key={role.id} role={role}></RoleButton>)
+      return query.data.sort((a:Role, b:Role)=>order(a,b)).map((role: Role)=><RoleButton key={Math.random()} role={role}></RoleButton>)
     }
   })()
   

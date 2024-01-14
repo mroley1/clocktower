@@ -26,7 +26,7 @@
                             },
                             {
                                 "title": "select two roles",
-                                "type": 4,
+                                "type": 5,
                                 "quantity": 2,
                                 "exposeRoles": false,
                                 "typeRestriction": [],
