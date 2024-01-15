@@ -11,10 +11,12 @@ function OnBlockSet(props: any) {
     useEffect(() => {
         tokenContext.util.closeMenu()
         return () => {
-            if (gameContext.state.onBlock === tokenContext.json.id) {
-                gameContext.util.setOnBlock(null)
-            } else {
-                gameContext.util.setOnBlock(tokenContext.json.id)
+            if (tokenContext.menuState.open === true) {
+                if (gameContext.state.onBlock === tokenContext.json.id) {
+                    gameContext.util.setOnBlock(null)
+                } else {
+                    gameContext.util.setOnBlock(tokenContext.json.id)
+                }
             }
         }
     })
