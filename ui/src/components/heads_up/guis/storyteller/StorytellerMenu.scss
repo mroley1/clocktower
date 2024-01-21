@@ -142,6 +142,11 @@ $spread_speed: 0.25s;
                 }
             }
         }
+    
+        &:has(.peek:active) {
+            opacity: 0;
+            animation: none;
+        }
     }
 }
 

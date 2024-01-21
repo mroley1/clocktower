@@ -51,6 +51,7 @@ function NotesChange() {
                     value={isPublic?tokenContext.json.pubNotes:tokenContext.json.privNotes}
                 ></textarea>
             </div>
+            <div className='peek'></div>
         </div>
     );
   

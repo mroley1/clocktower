@@ -62,7 +62,7 @@ function SetupNewPlayer(props: any) {
     const dialogue = (() => {
         if (dialogueOpen) {
             return (
-                <div id='radialMenuActionSolidBase' onClick={stopPropagation}>
+                <div id='radialMenuActionSolidBase' onClick={stopPropagation} title="">
                     <div className='close' onClick={closeMenu}></div>
                     <div className='center'>
                         <h1>Select New Role</h1>
@@ -74,6 +74,7 @@ function SetupNewPlayer(props: any) {
                             </div>
                         </div>
                     </div>
+                    <div className='peek'></div>
                 </div>
             )
         } else {

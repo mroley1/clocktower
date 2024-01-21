@@ -52,6 +52,7 @@ function Action(props: any) {
                     
                 </div>
             </div>
+            <div className='peek'></div>
         </div>
         )
     }
@@ -234,6 +235,7 @@ function Action(props: any) {
                         {selectionElements}
                     </div>
                 </div>
+            <div className='peek'></div>
             </div>
         )
     }
@@ -245,6 +247,7 @@ function Action(props: any) {
             <div className='center'>
                 <h1>complete</h1>
             </div>
+            <div className='peek'></div>
         </div>
         )
     }

@@ -13,6 +13,7 @@
     position: fixed;
     z-index: 1000;
     animation: baseFade 0.5s ease-out forwards;
+    cursor: default;
     
     &.noanimate {
         opacity: 1;
@@ -175,5 +176,17 @@
         width: 75px;
         cursor: pointer;
         background: no-repeat center/contain url(../assets/menus/close.svg);
+    }
+    
+    .peek {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        height: 75px;
+        width: 75px;
+        cursor: pointer;
+        background: no-repeat center/contain url(../assets/menus/peek.svg);
+        background-color: skyblue;
+        border-radius: 20px;
     }
 }

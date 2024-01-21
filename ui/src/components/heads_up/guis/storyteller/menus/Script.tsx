@@ -269,6 +269,7 @@ function Script(props: any) {
                 <h1>Scripts</h1>
                 {content}
             </div>
+            <div className='peek'></div>
         </div>
     );
   

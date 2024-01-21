@@ -39,6 +39,7 @@ function AlignmentChange(props: any) {
                     </div>
                 </div>
             </div>
+            <div className='peek'></div>
         </div>
     );
   

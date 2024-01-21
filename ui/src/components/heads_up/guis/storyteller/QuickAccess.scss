@@ -13,4 +13,9 @@
             height: 100%;
         }
     }
+    
+    &:has(.peek:active) {
+        opacity: 0;
+        animation: none;
+    }
 }

@@ -26,6 +26,7 @@ function NameChange() {
                 <br></br>
                 <input onClick={closeMenu} value='Done' type='button'></input> 
             </div>
+            <div className='peek'></div>
         </div>
     );
   
