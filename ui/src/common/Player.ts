@@ -13,9 +13,9 @@ export default interface Player {
     privNotes: string
     viability: Viability
     ailments: Ailment[]
-    mad: Role | null
+    mad: string | null
     convinced: Role | null
-    bluffs: Role[]
+    bluffs: string[]
     alignment: Alignment
     usedActions: string[]
 }

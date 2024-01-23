@@ -96,7 +96,9 @@ function Action(props: any) {
         function PlayerSelectPiece() {
             const relevant = action.choices.find((choice) => choice.type===ChooseType.PLAYER)
             if (relevant) {
-                return <div className='item'>{relevant.title}</div>
+                return (
+                    <div></div>
+                )
             } else {
                 return null
             }
@@ -120,7 +122,7 @@ function Action(props: any) {
                     <div className='item'>
                         <div className='title'>{relevant.title}</div>
                         <div className='content'>
-                            <RoleSelect max={max} selections={val.role} setSelections={setRoles}></RoleSelect>
+                            <RoleSelect max={max} selections={val.role} setSelections={setRoles} restrictions={relevant.typeRestriction!}></RoleSelect>
                         </div>
                     </div>
                 )

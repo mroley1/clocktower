@@ -10,6 +10,7 @@ interface Props {
   selections: Role[], // stores selections
   setSelections: Function, // sets selections
   max: number // maximum number of selections
+  restrictions?: RoleType[]
 }
 
 function RoleSelect(props: Props) {
@@ -50,13 +51,18 @@ function RoleSelect(props: Props) {
   
   async function fetchData() {
     if (gameContext.state.script.roles.length === 0) {return []}
-    return fetch(`http://localhost:8000/role/multi/?roleList=${JSON.stringify(gameContext.state.script.roles)}`).then((response)=>{
+    let roles = gameContext.state.script.roles
+    return fetch(`http://localhost:8000/role/multi/?roleList=${JSON.stringify(roles)}`).then((response)=>{
             if (response.status === 200) {
                 return (response.json());
             } else {
                 throw new Error("HTTP Error: " + response.status + ": " + response.statusText);
             }
-        }).then((jsonOutput)=>{
+        }).then((jsonOutput: Role[])=>{
+          // enforce restrictions
+          if (props.restrictions) {
+            jsonOutput = jsonOutput.filter((role) => !props.restrictions?.find((roleType) => RoleType[roleType]===role.type.toString()))
+          }
           return jsonOutput
         }).catch((error)=>{
             console.error(error)
@@ -75,10 +81,10 @@ function RoleSelect(props: Props) {
   }
   
   const buttons = (()=> {
-    if (query.data.length === 0) {
+    if (query.data!.length === 0) {
       return <div className='error'>No roles found<br></br>Make sure a script is selected</div>
     } else {
-      return query.data.sort((a:Role, b:Role)=>order(a,b)).map((role: Role)=><RoleButton key={Math.random()} role={role}></RoleButton>)
+      return query.data!.sort((a:Role, b:Role)=>order(a,b)).map((role: Role)=><RoleButton key={Math.random()} role={role}></RoleButton>)
     }
   })()
   

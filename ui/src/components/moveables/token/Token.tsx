@@ -132,7 +132,7 @@ function Token(props: any) {
   })()
   
   const ailments = json.ailments.map((ailment) => {
-    return <div key={ailment.type} className={'ailment '+ ailment.type.toString().toLowerCase()}></div>
+    return <div key={ailment.type} className={'ailment '+ AilmentTypes[ailment.type].toString().toLowerCase()}></div>
   })
   
   const canVote = (()=>{

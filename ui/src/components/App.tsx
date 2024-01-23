@@ -9,7 +9,8 @@ import { GameMode } from '@Common/GameModes';
 import ScriptType from '@/common/ScriptType';
 import GameStateType from '@/common/GameStateType';
 
-const TESTSTATE = require('./testState.json');
+import { TESTSTATE } from './testState';
+
 const queryClient = new QueryClient({})
 
 // create gamemode context

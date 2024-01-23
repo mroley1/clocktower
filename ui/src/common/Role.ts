@@ -1,4 +1,4 @@
-import Action from "./action/ActionType"
+import ActionType from "./action/ActionType"
 import { Alignment } from "./Alignment"
 import MakeupMod from "./MakeupMod"
 import { RoleType } from "./RoleType"
@@ -13,7 +13,7 @@ export default interface Role {
     otherNight: string
     changeMakeup: MakeupMod[]
     secret: boolean
-    actions: Action[]
+    actions: ActionType[]
     hardMad: boolean
     getsBluffs: boolean
 }

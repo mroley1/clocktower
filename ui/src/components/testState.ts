@@ -1,13 +1,21 @@
-{
+import { AilmentTypes } from "@/common/AilmentTypes";
+import { Alignment } from "@/common/Alignment";
+import { GameMode } from "@/common/GameModes";
+import GameStateType from "@/common/GameStateType";
+import { RoleType } from "@/common/RoleType";
+import { Viability } from "@/common/Viability";
+import { ChooseType } from "@/common/action/ChooseType";
+
+export const TESTSTATE: GameStateType = {
     "tokens": [
         {
-            "id": 0,
+            "id": "0",
             "role": {
                 "id": "amnesiac",
                 "name": "Amnesiac",
                 "description": "You do not know what your ability is. Each day, privately guess what it is: you learn how accurate you are.",
-                "alignment": "GOOD",
-                "type": "TOWNSFOLK",
+                "alignment": Alignment.GOOD,
+                "type": RoleType.TOWNSFOLK,
                 "firstNight": "Decide the Amnesiac's entire ability. If the Amnesiac's ability causes them to wake tonight: Wake the Amnesiac and run their ability.",
                 "otherNight": "If the Amnesiac's ability causes them to wake tonight: Wake the Amnesiac and run their ability.",
                 "changeMakeup": [],
@@ -18,7 +26,7 @@
                         "choices": [
                             {
                                 "title": "Do You Want To Use Your Ability?",
-                                "type": 2,
+                                "type": ChooseType.YESNO,
                                 "quantity": 1,
                                 "exposeRoles": false,
                                 "typeRestriction": [],
@@ -26,20 +34,23 @@
                             },
                             {
                                 "title": "select two roles",
-                                "type": 5,
+                                "type": ChooseType.ROLE,
                                 "quantity": 2,
                                 "exposeRoles": false,
-                                "typeRestriction": [],
+                                "typeRestriction": [
+                                    RoleType.MINION,
+                                    RoleType.DEMON
+                                ],
                                 "alignmentRestriction": []
                             }
                         ],
                         "possibleAilments": [
                             {
-                                "ailmentType": 4,
+                                "ailmentType": AilmentTypes.KILL,
                                 "duration": -1
                             },
                             {
-                                "ailmentType": 0,
+                                "ailmentType": AilmentTypes.DRUNK,
                                 "duration": 2
                             }
                         ],
@@ -50,7 +61,7 @@
                         "choices": [
                             {
                                 "title": "select one player",
-                                "type": 3,
+                                "type": ChooseType.PLAYER,
                                 "quantity": 1,
                                 "exposeRoles": false,
                                 "typeRestriction": [],
@@ -59,7 +70,7 @@
                         ],
                         "possibleAilments": [
                             {
-                                "ailmentType": 7,
+                                "ailmentType": AilmentTypes.REVIVE,
                                 "duration": -1
                             }
                         ],
@@ -67,34 +78,43 @@
                     }
                 ],
                 "hardMad": false,
-                "getsBluffs": false,
-                "reminders": [
-                    "amnesiac_question_mark"
-                ]
+                "getsBluffs": false
             },
             "name": "player 1",
             "xpos": 200,
             "ypos": 200,
             "pubNotes": "buffs?",
             "privNotes": "custom role thing",
-            "viability": 0,
+            "viability": Viability.ALIVE,
             "ailments": [
-                {"type":"DRUNK", "duration": 0}
+                {
+                    "type":AilmentTypes.DRUNK,
+                    "from": 2,
+                    "mad": null,
+                    "duration": 0,
+                    "priority": 1
+                }
             ],
             "mad": null,
-            "convinced": "butler",
-            "bluffs": ["chef", "cult_leader", "drunk"],
-            "alignment": "GOOD",
-            "usedActions": ["test"]
+            "convinced": null,
+            "bluffs": [
+                "chef",
+                "cult_leader",
+                "drunk"
+            ],
+            "alignment": Alignment.GOOD,
+            "usedActions": [
+                "test"
+            ]
         },
         {
-            "id": 1,
+            "id": "1",
             "role": {
                 "id": "pit-hag",
                 "name": "Pit-Hag",
                 "description": "Each night*, choose a player & a character they become (if not-in-play). If a Demon is made, deaths tonight are arbitrary.",
-                "alignment": "EVIL",
-                "type": "MINION",
+                "alignment": Alignment.EVIL,
+                "type": RoleType.MINION,
                 "firstNight": "",
                 "otherNight": "The Pit-Hag points to a player and a character on the sheet. If this character is not in play, wake that player and show them the 'You are' card and the relevant character token. If the character is in play, nothing happens.",
                 "changeMakeup": [],
@@ -105,7 +125,7 @@
                         "choices": [
                             {
                                 "title": "select one player",
-                                "type": 3,
+                                "type": ChooseType.PLAYER,
                                 "quantity": 1,
                                 "exposeRoles": false,
                                 "typeRestriction": [],
@@ -114,7 +134,7 @@
                         ],
                         "possibleAilments": [
                             {
-                                "ailmentType": 7,
+                                "ailmentType": AilmentTypes.REVIVE,
                                 "duration": -1
                             }
                         ],
@@ -122,8 +142,7 @@
                     }
                 ],
                 "hardMad": false,
-                "getsBluffs": false,
-                "reminders": []
+                "getsBluffs": false
             },
             "name": "player 2",
             "xpos": 400,
@@ -132,34 +151,42 @@
             "privNotes": "Robert",
             "viability": 0,
             "ailments": [
-                {"type":"DRUNK", "duration": 0},
-                {"type":"POISONED", "duration": 0}
+                {
+                    "type": AilmentTypes.DRUNK,
+                    "from": 2,
+                    "mad": null,
+                    "duration": 0,
+                    "priority": 1
+                },
+                {
+                    "type": AilmentTypes.POISON,
+                    "from": 2,
+                    "mad": null,
+                    "duration": 0,
+                    "priority": 1
+                }
             ],
             "mad": null,
             "convinced": null,
             "bluffs": [],
-            "alignment": "EVIL",
+            "alignment": Alignment.EVIL,
             "usedActions": []
         },
         {
-            "id": 2,
+            "id": "2",
             "role": {
                 "id": "bishop",
                 "name": "Bishop",
                 "description": "Only the Storyteller can nominate. At least 1 opposing player must be nominated each day.",
-                "alignment": "STORYTELLER",
-                "type": "TRAVELER",
+                "alignment": Alignment.STORYTELLER,
+                "type": RoleType.TRAVELLER,
                 "firstNight": "",
                 "otherNight": "",
                 "changeMakeup": [],
                 "secret": false,
                 "actions": [],
                 "hardMad": false,
-                "getsBluffs": false,
-                "reminders": [
-                    "bishop_nominate_good",
-                    "bishop_nominate_evil"
-                ]
+                "getsBluffs": false
             },
             "name": "player 3",
             "xpos": 370,
@@ -168,18 +195,36 @@
             "privNotes": "",
             "viability": 0,
             "ailments": [
-                {"type":"MAD", "duration": 0},
-                {"type":"DRUNK", "duration": 0},
-                {"type":"POISONED", "duration": 0}
+                {
+                    "type": AilmentTypes.MAD,
+                    "from": 2,
+                    "mad": "amnesiac",
+                    "duration": 0,
+                    "priority": 1
+                },
+                {
+                    "type": AilmentTypes.DRUNK,
+                    "from": 2,
+                    "mad": null,
+                    "duration": 0,
+                    "priority": 1
+                },
+                {
+                    "type": AilmentTypes.POISON,
+                    "from": 2,
+                    "mad": null,
+                    "duration": 0,
+                    "priority": 1
+                }
             ],
             "mad": "farmer",
             "convinced": null,
             "bluffs": [],
-            "alignment": "STORYTELLER",
+            "alignment": Alignment.STORYTELLER,
             "usedActions": []
         }
     ],
-    "gameMode": 3,
+    "gameMode": GameMode.SETUP,
     "onBlock": null,
     "script": {
         "meta": {

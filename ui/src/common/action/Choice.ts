@@ -9,5 +9,5 @@ export default interface Choice {
     quantity: number
     exposeRoles: boolean | null // for player selections
     typeRestriction: RoleType[] | null // for role selections
-    aligignmentRestriction: Alignment[] | null // for role selections
+    alignmentRestriction: Alignment[] | null // for role selections
 }

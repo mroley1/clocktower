@@ -4,8 +4,8 @@ import Role from "./Role"
 
 export default interface Ailment {
     type: AilmentTypes
-    from: Player | null
-    mad: Role | null
+    from: number | null
+    mad: string | null
     duration: number
     priority: number
 }
