@@ -8,6 +8,7 @@ import { ChooseType } from '@/common/action/ChooseType';
 import Player from '@/common/Player';
 import Role from '@/common/Role';
 import RoleSelect from '@/components/util/RoleSelect';
+import PlayerSelect from '@/components/util/PlayerSelect';
 
 function Action(props: any) {
     
@@ -36,7 +37,7 @@ function Action(props: any) {
     function ActionSelect() {
         return (
             <div id='radialMenuActionSolidBase'>
-            <div className='close' onClick={closeMenu}></div>
+            <div className='peek'></div>
             <div className='center'>
                 <h1>What Action Does {tokenContext.json.name} Take?</h1>
                 <div className='large_options'>
@@ -52,7 +53,7 @@ function Action(props: any) {
                     
                 </div>
             </div>
-            <div className='peek'></div>
+            <div className='close' onClick={closeMenu}></div>
         </div>
         )
     }
@@ -93,11 +94,16 @@ function Action(props: any) {
             }
         }
         
-        function PlayerSelectPiece() {
+        function PlayerSelectPiece({val, mutator}:{val:any,mutator:any}) {
             const relevant = action.choices.find((choice) => choice.type===ChooseType.PLAYER)
             if (relevant) {
                 return (
-                    <div></div>
+                    <div className='item'>
+                        <div className='title'>{relevant.title}</div>
+                        <div className='content'>
+                            <PlayerSelect></PlayerSelect>
+                        </div>
+                    </div>
                 )
             } else {
                 return null
@@ -229,7 +235,7 @@ function Action(props: any) {
         
         return (
             <div id='radialMenuActionSolidBase' className={animate}>
-                <div className='close' onClick={closeMenu}></div>
+                <div className='peek'></div>
                 <div className='center'>
                     <h1>{action.title}</h1>
                     <SingletonNotification></SingletonNotification>
@@ -237,7 +243,7 @@ function Action(props: any) {
                         {selectionElements}
                     </div>
                 </div>
-            <div className='peek'></div>
+                <div className='close' onClick={closeMenu}></div>
             </div>
         )
     }
@@ -245,11 +251,11 @@ function Action(props: any) {
     function ActionComplete() {
         return (
             <div id='radialMenuActionSolidBase' className='noanimate'>
-            <div className='close' onClick={closeMenu}></div>
+            <div className='peek'></div>
             <div className='center'>
                 <h1>complete</h1>
             </div>
-            <div className='peek'></div>
+            <div className='close' onClick={closeMenu}></div>
         </div>
         )
     }
