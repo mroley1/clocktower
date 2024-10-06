@@ -4,8 +4,6 @@ import { GameProgression } from "./reactStates/GameProgression";
 import { Player } from "./reactStates/Player";
 import sha256 from "crypto-js/sha256";
 
-// TODO: convert to hashmap structure
-
 export namespace StateManager {
     type ReactStates = 
         GameProgression.ReactState |
@@ -61,6 +59,7 @@ export namespace StateManager {
         history: Transaction[] = []
         
         private usedUUIDs = new Set<string>()
+        private instanceMap = new Map<string, {jsonHash: string, instance: Object}>()
         
         constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, settings?: GameDataJSON) {
             this.gameState = gameState;
@@ -77,7 +76,7 @@ export namespace StateManager {
             return UUID;
         }
         
-        private mapObject(obj: any, fn: (obj: any) => any): any {
+        private mapObject(obj: any, fn: (obj: ReactStates) => any): any {
             if (obj.hasOwnProperty("type")) {
                 return fn(obj)
             }
@@ -135,10 +134,17 @@ export namespace StateManager {
         public build() {
             const newGameState = this.mapObject(this.gameStateJSON, (obj) => {
                 this.usedUUIDs.add(obj.UUID);
-                const callback = (reactState: ReactStates) => {
-                    this.setValue(reactState)
+                const storedInstance = this.instanceMap.get(obj.UUID);
+                if (storedInstance && sha256(JSON.stringify(obj)).toString() == storedInstance.jsonHash) {
+                    return storedInstance.instance
+                } else {
+                    const callback = (reactState: ReactStates) => {
+                        this.setValue(reactState)
+                    }
+                    const newClass = new (classMap.get(obj.type) as any)(obj, callback);
+                    this.instanceMap.set(obj.UUID, {jsonHash: sha256(JSON.stringify(obj)).toString(), instance: newClass})
+                    return newClass
                 }
-                return new (classMap.get(obj.type) as any)(obj, callback);
             })
             
             
