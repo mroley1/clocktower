@@ -9,6 +9,47 @@ export namespace Player {
         position: positionJSON
     }
     
+    export class Data {
+        private reactSetter
+        private UUID
+        
+        private _name: string
+        private _role: number
+        private _viability: Viability
+        private _position: Position
+        
+        private useSetter() {
+            this.reactSetter({
+                type: "Player",
+                UUID: this.UUID,
+                name: this._name,
+                role: this._role,
+                viability: this._viability.reactSafe,
+                position: this._position.reactSafe
+            })
+        }
+        
+        constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
+            this.UUID = reactState.UUID;
+            this._name = reactState.name;
+            this._role = reactState.role;
+            this._viability = new Viability(reactState.viability.state, reactState.viability.deadVote)
+            this._position = new Position(reactState.position.x, reactState.position.y)
+            this.reactSetter = reactSetter;
+        }
+        
+        public toJSON() {
+            return JSON.stringify({
+                type: "PlayerCount",
+                UUID: this.UUID,
+                name: this._name,
+                role: this._role,
+                viability: this._viability.reactSafe,
+                position: this._position.reactSafe
+            })
+        }
+    }
+    
     interface ViabilityJSON {
         state: ViabilityState,
         deadVote: boolean
@@ -70,47 +111,6 @@ export namespace Player {
             return JSON.stringify({
                 x: this._x,
                 y: this._y
-            })
-        }
-    }
-    
-    export class Data {
-        private reactSetter
-        private UUID
-        
-        private _name: string
-        private _role: number
-        private _viability: Viability
-        private _position: Position
-        
-        private useSetter() {
-            this.reactSetter({
-                type: "Player",
-                UUID: this.UUID,
-                name: this._name,
-                role: this._role,
-                viability: this._viability.reactSafe,
-                position: this._position.reactSafe
-            })
-        }
-        
-        constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
-            this.UUID = reactState.UUID;
-            this._name = reactState.name;
-            this._role = reactState.role;
-            this._viability = new Viability(reactState.viability.state, reactState.viability.deadVote)
-            this._position = new Position(reactState.position.x, reactState.position.y)
-            this.reactSetter = reactSetter;
-        }
-        
-        public toJSON() {
-            return JSON.stringify({
-                type: "PlayerCount",
-                UUID: this.UUID,
-                name: this._name,
-                role: this._role,
-                viability: this._viability.reactSafe,
-                position: this._position.reactSafe
             })
         }
     }

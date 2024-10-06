@@ -2,6 +2,9 @@ import { GameData, GameDataJSON } from "./GameData";
 import { PlayerCount } from "./reactStates/PlayerCount";
 import { GameProgression } from "./reactStates/GameProgression";
 import { Player } from "./reactStates/Player";
+import sha256 from "crypto-js/sha256";
+
+// TODO: convert to hashmap structure
 
 export namespace StateManager {
     type ReactStates = 
@@ -63,7 +66,6 @@ export namespace StateManager {
             this.gameState = gameState;
             this.setgameState = setGameState;
             this.gameStateJSON = settings;
-            
         }
         
         private newUUID() {
@@ -79,9 +81,17 @@ export namespace StateManager {
             if (obj.hasOwnProperty("type")) {
                 return fn(obj)
             }
-            const mapped: any = {};
-            for (const [key, value] of Object.entries(obj)) {
-                mapped[key] = this.mapObject(value, fn);
+            let mapped: any
+            if (Array.isArray(obj)) {
+                mapped = [];
+                obj.forEach((member) => {
+                    mapped.push(this.mapObject(member, fn));
+                })
+            } else {
+                mapped = {};
+                for (const [key, value] of Object.entries(obj)) {
+                    mapped[key] = this.mapObject(value, fn);
+                }
             }
             return mapped;
         }
@@ -108,6 +118,19 @@ export namespace StateManager {
             this.build();
         }
         
+        addPlayer = () => {
+            console.log(this.gameStateJSON?.players)
+            this.gameStateJSON?.players.push({
+                type: "Player",
+                UUID: this.newUUID(),
+                name: "",
+                role: 0,
+                viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
+                position: {x: 0, y: 0}
+            })
+            console.log(this.gameStateJSON?.players)
+            this.build()
+        }
         
         public build() {
             const newGameState = this.mapObject(this.gameStateJSON, (obj) => {
@@ -117,6 +140,7 @@ export namespace StateManager {
                 }
                 return new (classMap.get(obj.type) as any)(obj, callback);
             })
+            
             
             this.setgameState(newGameState)
         }

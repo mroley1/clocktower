@@ -1,10 +1,12 @@
 import { useContext } from 'react';
-import { GameContext } from '../Game';
+import { ControllerContext, GameContext } from '../Game';
 import { GameProgression } from '../../common/reactStates/GameProgression';
 
 function Test() {
   
   const gameContext = useContext(GameContext)
+  
+  const controllerContext = useContext(ControllerContext)
   
   return (
     <>
@@ -26,6 +28,10 @@ function Test() {
     <button onClick={() => {gameContext.playerCount.quantity = 2}}>set 2</button>
     <button onClick={() => {gameContext.playerCount.quantity = 13}}>set 13</button>
     <button onClick={() => {gameContext.playerCount.quantity = 20}}>set 20</button>
+    <br></br>
+    <br></br>
+    <br></br>
+    <button onClick={controllerContext.addPlayer}>new player</button>
     </>
   );
 }
