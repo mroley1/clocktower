@@ -10,7 +10,7 @@ export const GameContext = createContext({} as GameData)
 function Game() {
   
   const defaultSettings: GameDataJSON = {
-    playerCount: 4,
+    playerCount: {type: "PlayerCount", UUID: "9384576", quantity: 20},
     gameProgression: {"type": "GameProgression", UUID: "123456789", state: GameProgression.State.SETUP, night: 0, stored: undefined}
   }
 

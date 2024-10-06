@@ -1,11 +1,12 @@
+import { PlayerCount } from "./reactStates/PlayerCount"
 import { GameProgression } from "./reactStates/GameProgression"
 
 export interface GameData {
-    playerCount: number
+    playerCount: PlayerCount.Data
     gameProgression: GameProgression.Data
 }
 
 export interface GameDataJSON {
-    playerCount: number,
+    playerCount: PlayerCount.ReactState,
     gameProgression: GameProgression.ReactState
 }

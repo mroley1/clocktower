@@ -1,4 +1,5 @@
 import { GameData, GameDataJSON } from "./GameData";
+import { PlayerCount } from "./reactStates/PlayerCount";
 import { GameProgression } from "./reactStates/GameProgression";
 
 export namespace StateManager {
@@ -16,7 +17,7 @@ export namespace StateManager {
         gameStateJSON: GameDataJSON|undefined
         
         private classMap = new Map<string, Object>()
-        private objMap = new Map<string, Object>()
+        private usedUUIDs = new Set<string>()
         
         constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, settings?: GameDataJSON) {
             this.gameState = gameState;
@@ -24,28 +25,31 @@ export namespace StateManager {
             this.gameStateJSON = settings;
             
             this.classMap.set("GameProgression", GameProgression.Data)
+            this.classMap.set("PlayerCount", PlayerCount.Data)
         }
         
         private newUUID() {
-            return window.crypto.randomUUID()
+            let UUID = null;
+            while (!UUID || this.usedUUIDs.has(UUID)) {
+                UUID = window.crypto.randomUUID();
+            }
+            this.usedUUIDs.add(UUID);
+            return UUID;
         }
         
-        private mapObject(obj: any, fnValues: (val: any) => any, fnClasses: (obj: any) => any): any {
-            if (typeof obj !== "object" || obj === null) {
-                return fnValues(obj);
-            }
+        private mapObject(obj: any, fn: (obj: any) => any): any {
             if (obj.hasOwnProperty("type")) {
-                return fnClasses(obj)
+                return fn(obj)
             }
             const mapped: any = {};
             for (const [key, value] of Object.entries(obj)) {
-                mapped[key] = this.mapObject(value, fnValues, fnClasses);
+                mapped[key] = this.mapObject(value, fn);
             }
             return mapped;
         }
         
         private setValue(value: any) {
-            this.gameStateJSON = this.mapObject(this.gameStateJSON, val => val, obj => {
+            this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
                 if (obj.UUID == value.UUID) {
                     return value;
                 } else {
@@ -55,10 +59,8 @@ export namespace StateManager {
         }
         
         public build() {
-            const newGameState = this.mapObject(this.gameStateJSON, val => val, (obj) => {
-                if (!this.objMap.has(obj.UUID)) {
-                    this.objMap.set(obj.UUID, obj)
-                }
+            const newGameState = this.mapObject(this.gameStateJSON, (obj) => {
+                this.usedUUIDs.add(obj.UUID);
                 const callback = (reactState: any) => {
                     this.setValue(reactState)
                     this.build();
