@@ -1,5 +1,4 @@
 
-
 export namespace GameProgression {
     export enum State {
         SETUP,
@@ -8,6 +7,8 @@ export namespace GameProgression {
     }
     
     export interface ReactState {
+        type: string,
+        UUID: string,
         state: State,
         night: number,
         stored: State|undefined
@@ -15,21 +16,24 @@ export namespace GameProgression {
     
     export class Data {
         private reactSetter
+        private UUID
         
         private _state: State = State.SETUP;
         private _night: number = 0;
         private _stored: State|undefined;
         
         private useSetter() {
-            console.log(this)
             this.reactSetter({
+                type: "GameProgression",
+                UUID: this.UUID,
                 state: this._state,
                 night: this._night,
                 stored: this._stored
             })
         }
         
-        constructor(reactState: ReactState, reactSetter: React.Dispatch<React.SetStateAction<ReactState>>) {
+        constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
+            this.UUID = reactState.UUID;
             this._state = reactState.state;
             this._night = reactState.night;
             this._stored = reactState.stored;
@@ -61,7 +65,6 @@ export namespace GameProgression {
         nextStage = (): Data => {
             this.popStored();
             if (this.night == 0) {
-                console.log("start")
                 this._night = 1;
                 this._state = State.NIGHT
             } else {
@@ -106,6 +109,16 @@ export namespace GameProgression {
         
         get isNight(): boolean {
             return this._state == State.NIGHT;
+        }
+        
+        toJSON() {
+            return JSON.stringify({
+                type: "GameProgression",
+                UUID: this.UUID,
+                state: this._state,
+                night: this._night,
+                stored: this._stored
+            })
         }
     }
 }

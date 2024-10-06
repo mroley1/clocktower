@@ -1,18 +1,33 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { GameProgression } from '../common/reactStates/GameProgression';
 import Test from './test/test';
+import { StateManager } from '../common/StateManager';
+import { GameData, GameDataJSON } from '../common/GameData';
 
 
-export const GameContext = createContext({gameProgression: {}})
+export const GameContext = createContext({} as GameData)
 
 function Game() {
   
-  const [gpState, setgpState] = useState({state: GameProgression.State.SETUP, night: 0, stored: undefined} as GameProgression.ReactState)
+  const defaultSettings: GameDataJSON = {
+    playerCount: 4,
+    gameProgression: {"type": "GameProgression", UUID: "123456789", state: GameProgression.State.SETUP, night: 0, stored: undefined}
+  }
+
+  const [gameState, setGameState] = useState(defaultSettings as any as GameData)
+  
+  const stateManager =  new StateManager.Controller(gameState, setGameState, defaultSettings)
+  
+  useEffect(() => {
+    stateManager.build()
+  }, [])
+  
+  // const [gpState, setgpState] = useState({state: GameProgression.State.SETUP, night: 0, stored: undefined} as GameProgression.ReactState)
   
   //console.log(gpState)
   
   return (
-    <GameContext.Provider value={{gameProgression: new GameProgression.Data(gpState, setgpState)}}>
+    <GameContext.Provider value={gameState}>
       <Test></Test>
     </GameContext.Provider>
   );

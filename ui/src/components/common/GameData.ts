@@ -1,6 +1,11 @@
 import { GameProgression } from "./reactStates/GameProgression"
 
-export default interface GameData {
-    playercount: number
+export interface GameData {
+    playerCount: number
     gameProgression: GameProgression.Data
+}
+
+export interface GameDataJSON {
+    playerCount: number,
+    gameProgression: GameProgression.ReactState
 }

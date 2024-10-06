@@ -1,11 +1,10 @@
 import { createContext, useContext, useState } from 'react';
 import { GameContext } from '../Game';
-import GameData from '@/components/common/GameData';
 import { GameProgression } from '../../common/reactStates/GameProgression';
 
 function Test() {
   
-  const gameContext = useContext(GameContext) as any as GameData
+  const gameContext = useContext(GameContext)
   
   return (
     <>
