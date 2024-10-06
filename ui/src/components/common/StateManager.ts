@@ -1,12 +1,52 @@
 import { GameData, GameDataJSON } from "./GameData";
 import { PlayerCount } from "./reactStates/PlayerCount";
 import { GameProgression } from "./reactStates/GameProgression";
+import { Player } from "./reactStates/Player";
 
 export namespace StateManager {
-    export enum EditActions {
+    type ReactStates = 
+        GameProgression.ReactState |
+        PlayerCount.ReactState |
+        Player.ReactState
+    
+    export enum EditAction {
         UPDATE,
         CREATE,
         DELETE
+    }
+    
+    const classMap = new Map<string, Object>()
+    classMap.set("GameProgression", GameProgression.Data)
+    classMap.set("PlayerCount", PlayerCount.Data)
+    classMap.set("Player", Player.Data)
+    
+    class Transaction {
+        UUID: string
+        newValue: ReactStates|undefined
+        oldValue: ReactStates|undefined
+        editAction: EditAction
+        
+        constructor(UUID: string, newValue: ReactStates, oldValue: ReactStates, editAction: EditAction) {
+            this.UUID = UUID
+            this.newValue = newValue
+            this.oldValue = oldValue
+            this.editAction = editAction
+        }
+        
+        public revert(controller: Controller) {
+            switch (this.editAction) {
+                case EditAction.UPDATE:
+                    if (this.oldValue) {
+                        controller.setValue(this.oldValue);
+                    }
+                    break;
+                case EditAction.CREATE:
+                    controller.deleteValue(this.UUID);
+                    break;
+                case EditAction.DELETE:
+                    
+            }
+        }
     }
     
     export class Controller {
@@ -15,8 +55,8 @@ export namespace StateManager {
         setgameState: React.Dispatch<React.SetStateAction<GameData>>
         
         gameStateJSON: GameDataJSON|undefined
+        history: Transaction[] = []
         
-        private classMap = new Map<string, Object>()
         private usedUUIDs = new Set<string>()
         
         constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, settings?: GameDataJSON) {
@@ -24,8 +64,6 @@ export namespace StateManager {
             this.setgameState = setGameState;
             this.gameStateJSON = settings;
             
-            this.classMap.set("GameProgression", GameProgression.Data)
-            this.classMap.set("PlayerCount", PlayerCount.Data)
         }
         
         private newUUID() {
@@ -48,7 +86,7 @@ export namespace StateManager {
             return mapped;
         }
         
-        private setValue(value: any) {
+        public setValue(value: ReactStates) {
             this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
                 if (obj.UUID == value.UUID) {
                     return value;
@@ -56,19 +94,35 @@ export namespace StateManager {
                     return obj;
                 }
             })
+            this.build();
         }
+        
+        public deleteValue(UUID: string) {
+            this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
+                if (obj.UUID == UUID) {
+                    return null;
+                } else {
+                    return obj;
+                }
+            })
+            this.build();
+        }
+        
         
         public build() {
             const newGameState = this.mapObject(this.gameStateJSON, (obj) => {
                 this.usedUUIDs.add(obj.UUID);
-                const callback = (reactState: any) => {
+                const callback = (reactState: ReactStates) => {
                     this.setValue(reactState)
-                    this.build();
                 }
-                return new (this.classMap.get(obj.type) as any)(obj, callback);
+                return new (classMap.get(obj.type) as any)(obj, callback);
             })
             
             this.setgameState(newGameState)
+        }
+        
+        public toJSON() {
+            throw new Error("Not Implemented yet :(")
         }
     }
 }
