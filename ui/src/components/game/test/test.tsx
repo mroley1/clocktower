@@ -32,6 +32,12 @@ function Test() {
     <br></br>
     <br></br>
     <button onClick={controllerContext.addPlayer}>new player</button>
+    {gameContext.players.map((player) => <p key={player.id}>{player.toJSON()}</p>)}
+    <br></br>
+    <br></br>
+    <br></br>
+    <button onClick={controllerContext.undo}>undo</button>
+    <button onClick={controllerContext.redo}>redo</button>
     </>
   );
 }

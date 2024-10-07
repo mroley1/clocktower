@@ -1,14 +1,17 @@
+import BaseReactState from "./_BaseReactState"
 
 export namespace PlayerCount {
-    export interface ReactState {
+    export interface ReactState extends BaseReactState {
         type: string,
         UUID: string,
+        active: boolean,
         quantity: number
     }
     
     export class Data {
         private reactSetter
         private UUID
+        private active
         
         private _quantity: number
     
@@ -24,12 +27,14 @@ export namespace PlayerCount {
             this.reactSetter({
                 type: "PlayerCount",
                 UUID: this.UUID,
+                active: this.active,
                 quantity: this._quantity
             })
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
             this.UUID = reactState.UUID;
+            this.active = reactState.active;
             this._quantity = reactState.quantity;
             this.reactSetter = reactSetter;
         }

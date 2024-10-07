@@ -1,3 +1,4 @@
+import BaseReactState from "./_BaseReactState";
 
 export namespace GameProgression {
     export enum State {
@@ -6,9 +7,10 @@ export namespace GameProgression {
         NIGHT
     }
     
-    export interface ReactState {
+    export interface ReactState extends BaseReactState {
         type: string,
         UUID: string,
+        active: boolean,
         state: State,
         night: number,
         stored: State|undefined
@@ -17,6 +19,7 @@ export namespace GameProgression {
     export class Data {
         private reactSetter
         private UUID
+        private active
         
         private _state: State = State.SETUP;
         private _night: number = 0;
@@ -26,6 +29,7 @@ export namespace GameProgression {
             this.reactSetter({
                 type: "GameProgression",
                 UUID: this.UUID,
+                active: this.active,
                 state: this._state,
                 night: this._night,
                 stored: this._stored
@@ -34,6 +38,7 @@ export namespace GameProgression {
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
             this.UUID = reactState.UUID;
+            this.active = reactState.active;
             this._state = reactState.state;
             this._night = reactState.night;
             this._stored = reactState.stored;

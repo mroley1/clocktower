@@ -1,8 +1,10 @@
+import BaseReactState from "./_BaseReactState"
 
 export namespace Player {
-    export interface ReactState {
+    export interface ReactState extends BaseReactState {
         type: string,
         UUID: string,
+        active: boolean,
         name: string,
         role: number,
         viability: ViabilityJSON,
@@ -12,6 +14,7 @@ export namespace Player {
     export class Data {
         private reactSetter
         private UUID
+        private active
         
         private _name: string
         private _role: number
@@ -22,6 +25,7 @@ export namespace Player {
             this.reactSetter({
                 type: "Player",
                 UUID: this.UUID,
+                active: this.active,
                 name: this._name,
                 role: this._role,
                 viability: this._viability.reactSafe,
@@ -31,11 +35,16 @@ export namespace Player {
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
             this.UUID = reactState.UUID;
+            this.active = reactState.active;
             this._name = reactState.name;
             this._role = reactState.role;
             this._viability = new Viability(reactState.viability.state, reactState.viability.deadVote)
             this._position = new Position(reactState.position.x, reactState.position.y)
             this.reactSetter = reactSetter;
+        }
+        
+        get id() {
+            return this.UUID
         }
         
         public toJSON() {

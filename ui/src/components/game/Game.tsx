@@ -12,8 +12,8 @@ export const ControllerContext = createContext({} as StateManager.Controller)
 function Game() {
   
   const defaultSettings: GameDataJSON = {
-    playerCount: {type: "PlayerCount", UUID: "9384576", quantity: 20},
-    gameProgression: {type: "GameProgression", UUID: "123456789", state: GameProgression.State.SETUP, night: 0, stored: undefined},
+    playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, quantity: 20},
+    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, state: GameProgression.State.SETUP, night: 0, stored: undefined},
     players: []
   }
 
@@ -22,12 +22,8 @@ function Game() {
   const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, defaultSettings), [])
   
   useEffect(() => {
-    stateManager.build()
+    stateManager.build(true)
   }, [])
-  
-  // const [gpState, setgpState] = useState({state: GameProgression.State.SETUP, night: 0, stored: undefined} as GameProgression.ReactState)
-  
-  //console.log(gpState)
   
   return (
     <GameContext.Provider value={gameState}>

@@ -3,52 +3,14 @@ import { PlayerCount } from "./reactStates/PlayerCount";
 import { GameProgression } from "./reactStates/GameProgression";
 import { Player } from "./reactStates/Player";
 import sha256 from "crypto-js/sha256";
+import BaseReactState from "./reactStates/_BaseReactState";
 
 export namespace StateManager {
-    type ReactStates = 
-        GameProgression.ReactState |
-        PlayerCount.ReactState |
-        Player.ReactState
-    
-    export enum EditAction {
-        UPDATE,
-        CREATE,
-        DELETE
-    }
     
     const classMap = new Map<string, Object>()
     classMap.set("GameProgression", GameProgression.Data)
     classMap.set("PlayerCount", PlayerCount.Data)
     classMap.set("Player", Player.Data)
-    
-    class Transaction {
-        UUID: string
-        newValue: ReactStates|undefined
-        oldValue: ReactStates|undefined
-        editAction: EditAction
-        
-        constructor(UUID: string, newValue: ReactStates, oldValue: ReactStates, editAction: EditAction) {
-            this.UUID = UUID
-            this.newValue = newValue
-            this.oldValue = oldValue
-            this.editAction = editAction
-        }
-        
-        public revert(controller: Controller) {
-            switch (this.editAction) {
-                case EditAction.UPDATE:
-                    if (this.oldValue) {
-                        controller.setValue(this.oldValue);
-                    }
-                    break;
-                case EditAction.CREATE:
-                    controller.deleteValue(this.UUID);
-                    break;
-                case EditAction.DELETE:
-                    
-            }
-        }
-    }
     
     export class Controller {
         
@@ -56,15 +18,16 @@ export namespace StateManager {
         setgameState: React.Dispatch<React.SetStateAction<GameData>>
         
         gameStateJSON: GameDataJSON|undefined
-        history: Transaction[] = []
+        history: History
         
         private usedUUIDs = new Set<string>()
-        private instanceMap = new Map<string, {jsonHash: string, instance: Object}>()
+        private instanceMap = new Map<string, {json: BaseReactState, jsonHash: string, instance: Object}>()
         
-        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, settings?: GameDataJSON) {
+        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, gameStateJSON: GameDataJSON, transactions?: TransactionJSON[]) {
             this.gameState = gameState;
             this.setgameState = setGameState;
-            this.gameStateJSON = settings;
+            this.gameStateJSON = gameStateJSON;
+            this.history = new History(this, transactions)
         }
         
         private newUUID() {
@@ -76,7 +39,7 @@ export namespace StateManager {
             return UUID;
         }
         
-        private mapObject(obj: any, fn: (obj: ReactStates) => any): any {
+        private mapObject(obj: any, fn: (obj: BaseReactState) => any): any {
             if (obj.hasOwnProperty("type")) {
                 return fn(obj)
             }
@@ -84,7 +47,10 @@ export namespace StateManager {
             if (Array.isArray(obj)) {
                 mapped = [];
                 obj.forEach((member) => {
-                    mapped.push(this.mapObject(member, fn));
+                    const mpObj = this.mapObject(member, fn)
+                    if (mpObj) {
+                        mapped.push(mpObj);
+                    }
                 })
             } else {
                 mapped = {};
@@ -95,7 +61,7 @@ export namespace StateManager {
             return mapped;
         }
         
-        public setValue(value: ReactStates) {
+        public setValue(value: BaseReactState, suppressHistory?: boolean) {
             this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
                 if (obj.UUID == value.UUID) {
                     return value;
@@ -103,56 +69,147 @@ export namespace StateManager {
                     return obj;
                 }
             })
-            this.build();
+            this.build(suppressHistory);
         }
         
-        public deleteValue(UUID: string) {
-            this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
-                if (obj.UUID == UUID) {
-                    return null;
-                } else {
-                    return obj;
-                }
-            })
-            this.build();
+        undo = () => {
+            this.history.undo()
+        }
+        
+        redo = () => {
+            this.history.redo()
         }
         
         addPlayer = () => {
-            console.log(this.gameStateJSON?.players)
-            this.gameStateJSON?.players.push({
+            const newPlayerJSON = {
                 type: "Player",
                 UUID: this.newUUID(),
+                active: false,
                 name: "",
                 role: 0,
                 viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
                 position: {x: 0, y: 0}
-            })
-            console.log(this.gameStateJSON?.players)
-            this.build()
+            };
+            this.gameStateJSON?.players.push(newPlayerJSON);
+            this.build(true);
+            const newPlayerJSONActive = JSON.parse(JSON.stringify(newPlayerJSON))
+            newPlayerJSONActive.active = true;
+            this.setValue(newPlayerJSONActive);
         }
         
-        public build() {
+        public build(suppressHistory? : boolean) {
             const newGameState = this.mapObject(this.gameStateJSON, (obj) => {
                 this.usedUUIDs.add(obj.UUID);
                 const storedInstance = this.instanceMap.get(obj.UUID);
-                if (storedInstance && sha256(JSON.stringify(obj)).toString() == storedInstance.jsonHash) {
-                    return storedInstance.instance
-                } else {
-                    const callback = (reactState: ReactStates) => {
-                        this.setValue(reactState)
+                if (obj.active || !storedInstance) {
+                    if (storedInstance && sha256(JSON.stringify(obj)).toString() == storedInstance.jsonHash) {
+                        return storedInstance.instance
+                    } else {
+                        const callback = (reactState: BaseReactState) => {
+                            this.setValue(reactState)
+                        }
+                        const newClass = new (classMap.get(obj.type) as any)(obj, callback);
+                        if (!suppressHistory) {
+                            this.history.logEvent(new Transaction({UUID: obj.UUID, newValue: obj, oldValue: storedInstance?storedInstance.json:undefined}))
+                        }
+                        this.instanceMap.set(obj.UUID, {json: obj, jsonHash: sha256(JSON.stringify(obj)).toString(), instance: newClass})
+                        return newClass
                     }
-                    const newClass = new (classMap.get(obj.type) as any)(obj, callback);
-                    this.instanceMap.set(obj.UUID, {jsonHash: sha256(JSON.stringify(obj)).toString(), instance: newClass})
-                    return newClass
                 }
             })
-            
             
             this.setgameState(newGameState)
         }
         
         public toJSON() {
             throw new Error("Not Implemented yet :(")
+        }
+    }
+    
+    class History {
+        controller: Controller
+        stack: Transaction[] = []
+        head = 0
+        
+        constructor(controller: Controller, transactions?: TransactionJSON[]) {
+            this.controller = controller
+            if (transactions) {
+                this.stack = transactions.map((transaction) => new Transaction(transaction))
+            }
+        }
+        
+        undo() {
+            if (this.head > 0) {
+                this.head--;
+                this.stack[this.head].revert(this.controller);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        redo() {
+            if (this.head < this.stack.length) {
+                this.stack[this.head].apply(this.controller);
+                this.head++;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        cleanHead() {
+            while (this.stack.length > this.head) {
+                this.stack.pop()
+            }
+        }
+        
+        logEvent(transaction: Transaction) {
+            this.cleanHead()
+            this.stack.push(transaction)
+            this.head++
+        }
+        
+        toJSON() {
+            return JSON.stringify(this.stack)
+        }
+    }
+    
+    export interface TransactionJSON {
+        UUID: string
+        newValue: BaseReactState|undefined
+        oldValue: BaseReactState|undefined
+    }
+    
+    class Transaction {
+        UUID: string
+        newValue: BaseReactState|undefined
+        oldValue: BaseReactState|undefined
+        
+        constructor(transactionJson: TransactionJSON) {
+            this.UUID = transactionJson.UUID
+            this.newValue = transactionJson.newValue
+            this.oldValue = transactionJson.oldValue
+        }
+        
+        public revert(controller: Controller) {
+            if (this.oldValue) {
+                controller.setValue(this.oldValue, true);
+            }
+        }
+        
+        public apply(controller: Controller) {
+            if (this.newValue) {
+                controller.setValue(this.newValue, true);
+            }
+        }
+        
+        public toJSON() {
+            return JSON.stringify({
+                UUID: this.UUID,
+                newValue: this.newValue,
+                oldValue: this.oldValue
+            })
         }
     }
 }
