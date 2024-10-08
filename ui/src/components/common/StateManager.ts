@@ -72,14 +72,6 @@ export namespace StateManager {
             this.build(suppressHistory);
         }
         
-        undo = () => {
-            this.history.undo()
-        }
-        
-        redo = () => {
-            this.history.redo()
-        }
-        
         addPlayer = () => {
             const newPlayerJSON = {
                 type: "Player",
@@ -109,8 +101,8 @@ export namespace StateManager {
                             this.setValue(reactState)
                         }
                         const newClass = new (classMap.get(obj.type) as any)(obj, callback);
-                        if (!suppressHistory) {
-                            this.history.logEvent(new Transaction({UUID: obj.UUID, newValue: obj, oldValue: storedInstance?storedInstance.json:undefined}))
+                        if (!suppressHistory && storedInstance) {
+                            this.history.logEvent(new Transaction({UUID: obj.UUID, newValue: obj, oldValue: storedInstance.json}))
                         }
                         this.instanceMap.set(obj.UUID, {json: obj, jsonHash: sha256(JSON.stringify(obj)).toString(), instance: newClass})
                         return newClass
@@ -129,7 +121,7 @@ export namespace StateManager {
     class History {
         controller: Controller
         stack: Transaction[] = []
-        head = 0
+        private _head = 0
         
         constructor(controller: Controller, transactions?: TransactionJSON[]) {
             this.controller = controller
@@ -138,20 +130,20 @@ export namespace StateManager {
             }
         }
         
-        undo() {
-            if (this.head > 0) {
-                this.head--;
-                this.stack[this.head].revert(this.controller);
+        undo = () => {
+            if (this._head > 0) {
+                this._head--;
+                this.stack[this._head].revert(this.controller);
                 return true;
             } else {
                 return false;
             }
         }
         
-        redo() {
-            if (this.head < this.stack.length) {
-                this.stack[this.head].apply(this.controller);
-                this.head++;
+        redo = () => {
+            if (this._head < this.stack.length) {
+                this.stack[this._head].apply(this.controller);
+                this._head++;
                 return true;
             } else {
                 return false;
@@ -159,7 +151,7 @@ export namespace StateManager {
         }
         
         cleanHead() {
-            while (this.stack.length > this.head) {
+            while (this.stack.length > this._head) {
                 this.stack.pop()
             }
         }
@@ -167,24 +159,27 @@ export namespace StateManager {
         logEvent(transaction: Transaction) {
             this.cleanHead()
             this.stack.push(transaction)
-            this.head++
+            this._head++
         }
         
         toJSON() {
-            return JSON.stringify(this.stack)
+            return JSON.stringify({
+                stack: JSON.stringify(this.stack),
+                head: this._head
+            })
         }
     }
     
     export interface TransactionJSON {
         UUID: string
-        newValue: BaseReactState|undefined
-        oldValue: BaseReactState|undefined
+        newValue: BaseReactState
+        oldValue: BaseReactState
     }
     
     class Transaction {
         UUID: string
-        newValue: BaseReactState|undefined
-        oldValue: BaseReactState|undefined
+        newValue: BaseReactState
+        oldValue: BaseReactState
         
         constructor(transactionJson: TransactionJSON) {
             this.UUID = transactionJson.UUID
@@ -193,15 +188,11 @@ export namespace StateManager {
         }
         
         public revert(controller: Controller) {
-            if (this.oldValue) {
-                controller.setValue(this.oldValue, true);
-            }
+            controller.setValue(this.oldValue, true);
         }
         
         public apply(controller: Controller) {
-            if (this.newValue) {
-                controller.setValue(this.newValue, true);
-            }
+            controller.setValue(this.newValue, true);
         }
         
         public toJSON() {

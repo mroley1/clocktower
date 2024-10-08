@@ -36,8 +36,8 @@ function Test() {
     <br></br>
     <br></br>
     <br></br>
-    <button onClick={controllerContext.undo}>undo</button>
-    <button onClick={controllerContext.redo}>redo</button>
+    <button onClick={controllerContext.history.undo}>undo</button>
+    <button onClick={controllerContext.history.redo}>redo</button>
     </>
   );
 }
