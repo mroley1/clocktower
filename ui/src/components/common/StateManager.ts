@@ -72,25 +72,36 @@ export namespace StateManager {
             this.build(suppressHistory);
         }
         
+        public setValues(values: BaseReactState[], suppressHistory?: boolean) {
+            const valuesMap = new Map<string, BaseReactState>();
+            values.forEach(value => valuesMap.set(value.UUID, value))
+            this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
+                if (valuesMap.has(obj.UUID)) {
+                    return valuesMap.get(obj.UUID);
+                } else {
+                    return obj;
+                }
+            })
+            this.build(suppressHistory);
+        }
+        
         addPlayer = () => {
             const newPlayerJSON = {
                 type: "Player",
                 UUID: this.newUUID(),
-                active: false,
+                active: true,
                 name: "",
                 role: 0,
                 viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
                 position: {x: 0, y: 0}
             };
             this.gameStateJSON?.players.push(newPlayerJSON);
-            this.build(true);
-            const newPlayerJSONActive = JSON.parse(JSON.stringify(newPlayerJSON))
-            newPlayerJSONActive.active = true;
-            this.setValue(newPlayerJSONActive);
+            this.build();
         }
         
-        public build(suppressHistory? : boolean) {
-            const newGameState = this.mapObject(this.gameStateJSON, (obj) => {
+        public build(suppressHistory = false) {
+            const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
+            const newGameState = this.mapObject(this.gameStateJSON, (obj: BaseReactState) => {
                 this.usedUUIDs.add(obj.UUID);
                 const storedInstance = this.instanceMap.get(obj.UUID);
                 if (obj.active || !storedInstance) {
@@ -101,14 +112,27 @@ export namespace StateManager {
                             this.setValue(reactState)
                         }
                         const newClass = new (classMap.get(obj.type) as any)(obj, callback);
-                        if (!suppressHistory && storedInstance) {
-                            this.history.logEvent(new Transaction({UUID: obj.UUID, newValue: obj, oldValue: storedInstance.json}))
+                        
+                        if (!suppressHistory) {
+                            transactionBuffer.new.push(obj)
+                            if (storedInstance) {
+                                transactionBuffer.old.push(storedInstance.json)
+                            } else {
+                                const initilizingObject = structuredClone(obj)
+                                initilizingObject.active = false;
+                                transactionBuffer.old.push(initilizingObject)
+                            }
                         }
+                        
                         this.instanceMap.set(obj.UUID, {json: obj, jsonHash: sha256(JSON.stringify(obj)).toString(), instance: newClass})
                         return newClass
                     }
                 }
             })
+            
+            if (!suppressHistory) {
+                this.history.logEvent(new Transaction({newValues: transactionBuffer.new, oldValues: transactionBuffer.old}))
+            }
             
             this.setgameState(newGameState)
         }
@@ -171,35 +195,31 @@ export namespace StateManager {
     }
     
     export interface TransactionJSON {
-        UUID: string
-        newValue: BaseReactState
-        oldValue: BaseReactState
+        newValues: BaseReactState[]
+        oldValues: BaseReactState[]
     }
     
     class Transaction {
-        UUID: string
-        newValue: BaseReactState
-        oldValue: BaseReactState
+        newValues: BaseReactState[]
+        oldValues: BaseReactState[]
         
         constructor(transactionJson: TransactionJSON) {
-            this.UUID = transactionJson.UUID
-            this.newValue = transactionJson.newValue
-            this.oldValue = transactionJson.oldValue
+            this.newValues = transactionJson.newValues
+            this.oldValues = transactionJson.oldValues
         }
         
         public revert(controller: Controller) {
-            controller.setValue(this.oldValue, true);
+            controller.setValues(this.oldValues, true);
         }
         
         public apply(controller: Controller) {
-            controller.setValue(this.newValue, true);
+            controller.setValues(this.newValues, true);
         }
         
         public toJSON() {
             return JSON.stringify({
-                UUID: this.UUID,
-                newValue: this.newValue,
-                oldValue: this.oldValue
+                newValue: this.newValues,
+                oldValue: this.oldValues
             })
         }
     }
