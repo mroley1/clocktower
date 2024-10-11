@@ -4,6 +4,7 @@ import { GameProgression } from "./reactStates/GameProgression";
 import { Player } from "./reactStates/Player";
 import sha256 from "crypto-js/sha256";
 import BaseReactState from "./reactStates/_BaseReactState";
+import { Interaction } from "./reactStates/Intereaction";
 
 export namespace StateManager {
     
@@ -11,6 +12,7 @@ export namespace StateManager {
     classMap.set("GameProgression", GameProgression.Data)
     classMap.set("PlayerCount", PlayerCount.Data)
     classMap.set("Player", Player.Data)
+    classMap.set("Interaction", Interaction.Data)
     
     export class Controller {
         
@@ -28,6 +30,10 @@ export namespace StateManager {
             this.setgameState = setGameState;
             this.gameStateJSON = gameStateJSON;
             this.history = new History(this, transactions)
+        }
+        
+        private useSetGameState(newGameState: any) {
+            this.setgameState(newGameState)
         }
         
         private newUUID() {
@@ -134,7 +140,7 @@ export namespace StateManager {
                 this.history.logEvent(new Transaction({newValues: transactionBuffer.new, oldValues: transactionBuffer.old}))
             }
             
-            this.setgameState(newGameState)
+            this.useSetGameState(newGameState)
         }
         
         public toJSON() {

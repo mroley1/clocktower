@@ -120,6 +120,7 @@ export namespace GameProgression {
             return JSON.stringify({
                 type: "GameProgression",
                 UUID: this.UUID,
+                active: this.active,
                 state: this._state,
                 night: this._night,
                 stored: this._stored

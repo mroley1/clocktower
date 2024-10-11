@@ -2,6 +2,9 @@ import { useContext } from 'react';
 import { ControllerContext, GameContext } from '../Game';
 import { GameProgression } from '../../common/reactStates/GameProgression';
 
+import alHadikhia from '../../../assets/icons/alhadikhia_good.png'
+import gambler from '../../../assets/icons/gambler_evil.png'
+
 function Test() {
   
   const gameContext = useContext(GameContext)
@@ -38,6 +41,11 @@ function Test() {
     <br></br>
     <button onClick={controllerContext.history.undo}>undo</button>
     <button onClick={controllerContext.history.redo}>redo</button>
+    <br></br>
+    <br></br>
+    <br></br>
+    <img src={alHadikhia}></img>
+    <img src={gambler}></img>
     </>
   );
 }

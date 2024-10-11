@@ -14,7 +14,8 @@ function Game() {
   const defaultSettings: GameDataJSON = {
     playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, quantity: 20},
     gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, state: GameProgression.State.SETUP, night: 0, stored: undefined},
-    players: []
+    players: [],
+    interactions: []
   }
 
   const [gameState, setGameState] = useState(defaultSettings as any as GameData)

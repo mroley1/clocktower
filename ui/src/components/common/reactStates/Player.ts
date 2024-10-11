@@ -51,6 +51,7 @@ export namespace Player {
             return JSON.stringify({
                 type: "PlayerCount",
                 UUID: this.UUID,
+                active: this.active,
                 name: this._name,
                 role: this._role,
                 viability: this._viability.reactSafe,
