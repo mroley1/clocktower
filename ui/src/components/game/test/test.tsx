@@ -13,6 +13,12 @@ function Test() {
   
   return (
     <>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
     {GameProgression.State[gameContext.gameProgression.state]}
     {gameContext.gameProgression.night}
     <br></br>

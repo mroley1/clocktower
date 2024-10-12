@@ -11,6 +11,7 @@ export interface GameData {
 }
 
 export interface GameDataJSON {
+    gameID: string
     playerCount: PlayerCount.ReactState
     gameProgression: GameProgression.ReactState
     players: Player.ReactState[]

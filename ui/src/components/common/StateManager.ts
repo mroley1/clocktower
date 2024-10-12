@@ -17,18 +17,21 @@ export namespace StateManager {
     export class Controller {
         
         gameState: GameData
-        setgameState: React.Dispatch<React.SetStateAction<GameData>>
+        private setgameState: React.Dispatch<React.SetStateAction<GameData>>
         
-        gameStateJSON: GameDataJSON|undefined
+        private _gameStateJSON: GameDataJSON|undefined
         history: History
+        
+        private saveGameFunc: (gameDataJSON: GameDataJSON) => void
         
         private usedUUIDs = new Set<string>()
         private instanceMap = new Map<string, {json: BaseReactState, jsonHash: string, instance: Object}>()
         
-        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, gameStateJSON: GameDataJSON, transactions?: TransactionJSON[]) {
+        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, gameStateJSON: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON) => void, transactions?: TransactionJSON[]) {
             this.gameState = gameState;
             this.setgameState = setGameState;
-            this.gameStateJSON = gameStateJSON;
+            this._gameStateJSON = gameStateJSON;
+            this.saveGameFunc = saveGame;
             this.history = new History(this, transactions)
         }
         
@@ -61,14 +64,24 @@ export namespace StateManager {
             } else {
                 mapped = {};
                 for (const [key, value] of Object.entries(obj)) {
-                    mapped[key] = this.mapObject(value, fn);
+                    if (typeof value != "object") {
+                        mapped[key] = value;
+                    } else {
+                        mapped[key] = this.mapObject(value, fn);
+                    }
                 }
             }
             return mapped;
         }
         
+        public saveGame() {
+            if (this._gameStateJSON) {
+                this.saveGameFunc(this._gameStateJSON)
+            }
+        }
+        
         public setValue(value: BaseReactState, suppressHistory?: boolean) {
-            this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
+            this._gameStateJSON = this.mapObject(this._gameStateJSON, obj => {
                 if (obj.UUID == value.UUID) {
                     return value;
                 } else {
@@ -81,7 +94,7 @@ export namespace StateManager {
         public setValues(values: BaseReactState[], suppressHistory?: boolean) {
             const valuesMap = new Map<string, BaseReactState>();
             values.forEach(value => valuesMap.set(value.UUID, value))
-            this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
+            this._gameStateJSON = this.mapObject(this._gameStateJSON, obj => {
                 if (valuesMap.has(obj.UUID)) {
                     return valuesMap.get(obj.UUID);
                 } else {
@@ -101,13 +114,13 @@ export namespace StateManager {
                 viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
                 position: {x: 0, y: 0}
             };
-            this.gameStateJSON?.players.push(newPlayerJSON);
+            this._gameStateJSON?.players.push(newPlayerJSON);
             this.build();
         }
         
         public build(suppressHistory = false) {
             const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
-            const newGameState = this.mapObject(this.gameStateJSON, (obj: BaseReactState) => {
+            const newGameState = this.mapObject(this._gameStateJSON, (obj: BaseReactState) => {
                 this.usedUUIDs.add(obj.UUID);
                 const storedInstance = this.instanceMap.get(obj.UUID);
                 if (obj.active || !storedInstance) {

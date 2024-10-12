@@ -3,36 +3,52 @@ import { GameProgression } from '../common/reactStates/GameProgression';
 import Test from './test/test';
 import { StateManager } from '../common/StateManager';
 import { GameData, GameDataJSON } from '../common/GameData';
+import Menu from './Menu';
+import { ReferenceData } from '../common/ReferenceData';
 
 
 export const GameContext = createContext({} as GameData)
 
 export const ControllerContext = createContext({} as StateManager.Controller)
 
-function Game() {
-  
-  const defaultSettings: GameDataJSON = {
-    playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, quantity: 20},
-    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, state: GameProgression.State.SETUP, night: 0, stored: undefined},
-    players: [],
-    interactions: []
-  }
+export const DataContext = createContext({} as ReferenceData.ContextFormat)
 
-  const [gameState, setGameState] = useState(defaultSettings as any as GameData)
+interface GameProps {gameSettings: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON)=>void, quitGame: ()=>void}
+function Game({gameSettings, saveGame, quitGame}: GameProps) {
   
-  const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, defaultSettings), [])
+  const [gameState, setGameState] = useState(gameSettings as any as GameData)
+  
+  const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, gameSettings, saveGame), [])
+  
+  const referenceData = useMemo(() => {return {
+    utilies: {
+      saveGame,
+      quitGame
+    },
+    role: new ReferenceData.Role()
+  } as ReferenceData.ContextFormat}, [])
+  
+  const [building, setBuilding] = useState(true);
   
   useEffect(() => {
-    stateManager.build(true)
+    stateManager.build(true);
+    setBuilding(false);
   }, [])
   
-  return (
-    <GameContext.Provider value={gameState}>
-      <ControllerContext.Provider value={stateManager}>
-        <Test></Test>
-      </ControllerContext.Provider>
-    </GameContext.Provider>
-  );
+  if (building) {
+    return <>loading</>
+  } else {
+    return (
+      <GameContext.Provider value={gameState}>
+        <ControllerContext.Provider value={stateManager}>
+          <DataContext.Provider value={referenceData}>
+            <Menu></Menu>
+            <Test></Test>
+          </DataContext.Provider>
+        </ControllerContext.Provider>
+      </GameContext.Provider>
+    );
+  }
 }
 
 export default Game;
