@@ -17,6 +17,7 @@ function App() {
     const newSaves = structuredClone(saves)
     newSaves.push(newSaveJSON())
     setSaves(newSaves)
+    setLocalStorage(newSaves)
   }
   
   function saveGame(gameDataJSON: GameDataJSON) {
@@ -27,8 +28,12 @@ function App() {
         return save
       }
     })
-    localStorage.setItem("saves", JSON.stringify(newSaves))
+    setLocalStorage(newSaves)
     setSaves(newSaves)
+  }
+  
+  function setLocalStorage(saves: GameDataJSON[]) {
+    localStorage.setItem("saves", JSON.stringify(saves))
   }
   
   function quitGame() {

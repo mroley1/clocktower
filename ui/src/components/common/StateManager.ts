@@ -153,6 +153,7 @@ export namespace StateManager {
                 this.history.logEvent(new Transaction({newValues: transactionBuffer.new, oldValues: transactionBuffer.old}))
             }
             
+            this.saveGame()
             this.useSetGameState(newGameState)
         }
         
