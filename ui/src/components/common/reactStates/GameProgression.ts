@@ -26,17 +26,17 @@ export namespace GameProgression {
         private _stored: State|undefined;
         
         private useSetter() {
-            this.reactSetter({
+            this.reactSetter([{
                 type: "GameProgression",
                 UUID: this.UUID,
                 active: this.active,
                 state: this._state,
                 night: this._night,
                 stored: this._stored
-            })
+            }])
         }
         
-        constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
+        constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
             this._state = reactState.state;
@@ -117,14 +117,15 @@ export namespace GameProgression {
         }
         
         toJSON() {
-            return JSON.stringify({
+            const formatDocument: ReactState = {
                 type: "GameProgression",
                 UUID: this.UUID,
                 active: this.active,
                 state: this._state,
                 night: this._night,
                 stored: this._stored
-            })
+            }
+            return JSON.stringify(formatDocument)
         }
     }
 }

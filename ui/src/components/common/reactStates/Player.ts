@@ -22,7 +22,7 @@ export namespace Player {
         private _position: Position
         
         private useSetter() {
-            this.reactSetter({
+            this.reactSetter([{
                 type: "Player",
                 UUID: this.UUID,
                 active: this.active,
@@ -30,10 +30,10 @@ export namespace Player {
                 role: this._role,
                 viability: this._viability.reactSafe,
                 position: this._position.reactSafe
-            })
+            }])
         }
         
-        constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
+        constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
             this._name = reactState.name;
@@ -48,7 +48,7 @@ export namespace Player {
         }
         
         public toJSON() {
-            return JSON.stringify({
+            const formatDocument: ReactState = {
                 type: "PlayerCount",
                 UUID: this.UUID,
                 active: this.active,
@@ -56,7 +56,8 @@ export namespace Player {
                 role: this._role,
                 viability: this._viability.reactSafe,
                 position: this._position.reactSafe
-            })
+            }
+            return JSON.stringify(formatDocument)
         }
     }
     
@@ -88,7 +89,7 @@ export namespace Player {
             }
         }
         
-        toJson() {
+        toJSON() {
             return JSON.stringify({
                 state: this._state,
                 deadVote: this._deadvote
@@ -117,7 +118,7 @@ export namespace Player {
             }
         }
         
-        toJson() {
+        toJSON() {
             return JSON.stringify({
                 x: this._x,
                 y: this._y

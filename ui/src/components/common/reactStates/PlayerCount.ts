@@ -2,9 +2,9 @@ import BaseReactState from "./_BaseReactState"
 
 export namespace PlayerCount {
     export interface ReactState extends BaseReactState {
-        type: string,
-        UUID: string,
-        active: boolean,
+        type: string
+        UUID: string
+        active: boolean
         quantity: number
     }
     
@@ -24,15 +24,15 @@ export namespace PlayerCount {
         private CAP = 15;
         
         private useSetter() {
-            this.reactSetter({
+            this.reactSetter([{
                 type: "PlayerCount",
                 UUID: this.UUID,
                 active: this.active,
                 quantity: this._quantity
-            })
+            }])
         }
         
-        constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
+        constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
             this._quantity = reactState.quantity;
@@ -70,11 +70,13 @@ export namespace PlayerCount {
         }
         
         public toJSON() {
-            return JSON.stringify({
+            const formatDocument: ReactState = {
                 type: "PlayerCount",
                 UUID: this.UUID,
-                state: this._quantity
-            })
+                active: this.active,
+                quantity: this._quantity
+            }
+            return JSON.stringify(formatDocument)
         }
     }
 }

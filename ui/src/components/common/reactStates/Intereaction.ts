@@ -14,25 +14,26 @@ export namespace Interaction {
         private active
         
         private useSetter() {
-            this.reactSetter({
+            this.reactSetter([{
                 type: "Interaction",
                 UUID: this.UUID,
                 active: this.active
-            })
+            }])
         }
         
-        constructor(reactState: ReactState, reactSetter: (reactState: ReactState) => void) {
+        constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
             this.reactSetter = reactSetter;
         }
         
         toJSON() {
-            return JSON.stringify({
+            const formatDocument: ReactState = {
                 type: "Interaction",
                 UUID: this.UUID,
                 active: this.active
-            })
+            }
+            return JSON.stringify(formatDocument)
         }
     }
 }

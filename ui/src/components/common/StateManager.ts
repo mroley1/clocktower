@@ -5,6 +5,7 @@ import { Player } from "./reactStates/Player";
 import sha256 from "crypto-js/sha256";
 import BaseReactState from "./reactStates/_BaseReactState";
 import { Interaction } from "./reactStates/Intereaction";
+import { Transaction } from "./reactStates/Transaction";
 
 export namespace StateManager {
     
@@ -13,13 +14,14 @@ export namespace StateManager {
     classMap.set("PlayerCount", PlayerCount.Data)
     classMap.set("Player", Player.Data)
     classMap.set("Interaction", Interaction.Data)
+    classMap.set("Transaction", Transaction.Data)
     
     export class Controller {
         
         gameState: GameData
         private setgameState: React.Dispatch<React.SetStateAction<GameData>>
         
-        private _gameStateJSON: GameDataJSON|undefined
+        gameStateJSON: GameDataJSON
         history: History
         
         private saveGameFunc: (gameDataJSON: GameDataJSON) => void
@@ -30,13 +32,14 @@ export namespace StateManager {
         constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, gameStateJSON: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON) => void, transactions?: TransactionJSON[]) {
             this.gameState = gameState;
             this.setgameState = setGameState;
-            this._gameStateJSON = gameStateJSON;
+            this.gameStateJSON = gameStateJSON;
             this.saveGameFunc = saveGame;
-            this.history = new History(this, transactions)
+            this.history = new History(this)
         }
         
         private useSetGameState(newGameState: any) {
-            this.setgameState(newGameState)
+            this.gameState = newGameState;
+            this.setgameState(newGameState);
         }
         
         private newUUID() {
@@ -75,26 +78,15 @@ export namespace StateManager {
         }
         
         public saveGame() {
-            if (this._gameStateJSON) {
-                this.saveGameFunc(this._gameStateJSON)
+            if (this.gameStateJSON) {
+                this.saveGameFunc(this.gameStateJSON)
             }
         }
         
-        public setValue(value: BaseReactState, suppressHistory?: boolean) {
-            this._gameStateJSON = this.mapObject(this._gameStateJSON, obj => {
-                if (obj.UUID == value.UUID) {
-                    return value;
-                } else {
-                    return obj;
-                }
-            })
-            this.build(suppressHistory);
-        }
-        
-        public setValues(values: BaseReactState[], suppressHistory?: boolean) {
+        private setValues(values: BaseReactState[], suppressHistory?: boolean) {
             const valuesMap = new Map<string, BaseReactState>();
             values.forEach(value => valuesMap.set(value.UUID, value))
-            this._gameStateJSON = this.mapObject(this._gameStateJSON, obj => {
+            this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
                 if (valuesMap.has(obj.UUID)) {
                     return valuesMap.get(obj.UUID);
                 } else {
@@ -114,22 +106,28 @@ export namespace StateManager {
                 viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
                 position: {x: 0, y: 0}
             };
-            this._gameStateJSON?.players.push(newPlayerJSON);
+            this.gameStateJSON?.players.push(newPlayerJSON);
             this.build();
         }
         
         public build(suppressHistory = false) {
+            
             const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
-            const newGameState = this.mapObject(this._gameStateJSON, (obj: BaseReactState) => {
+            if (!suppressHistory) {
+                this.history.cleanHead()
+            }
+            
+            const callback = (reactState: BaseReactState[], suppressHistory?: boolean) => {
+                this.setValues(reactState, suppressHistory)
+            }
+            
+            const newGameState = this.mapObject(this.gameStateJSON, (obj: BaseReactState) => {
                 this.usedUUIDs.add(obj.UUID);
                 const storedInstance = this.instanceMap.get(obj.UUID);
                 if (obj.active || !storedInstance) {
                     if (storedInstance && sha256(JSON.stringify(obj)).toString() == storedInstance.jsonHash) {
                         return storedInstance.instance
                     } else {
-                        const callback = (reactState: BaseReactState) => {
-                            this.setValue(reactState)
-                        }
                         const newClass = new (classMap.get(obj.type) as any)(obj, callback);
                         
                         if (!suppressHistory) {
@@ -149,9 +147,21 @@ export namespace StateManager {
                 }
             })
             
-            if (!suppressHistory) {
-                this.history.logEvent(new Transaction({newValues: transactionBuffer.new, oldValues: transactionBuffer.old}))
+            if (!suppressHistory && this.gameStateJSON) {
+                const transactionJSON: Transaction.ReactState = {
+                    type: "Transaction",
+                    UUID: this.newUUID(),
+                    active: true,
+                    newValues: transactionBuffer.new,
+                    oldValues: transactionBuffer.old
+                }
+                this.gameStateJSON.transactions.push(transactionJSON);
+                const newClass = new Transaction.Data(transactionJSON, callback)
+                newGameState.transactions.push(newClass);
+                this.instanceMap.set(transactionJSON.UUID, {json: transactionJSON, jsonHash: sha256(JSON.stringify(transactionJSON)).toString(), instance: newClass})
+                this.history.logEvent()
             }
+            
             
             this.saveGame()
             this.useSetGameState(newGameState)
@@ -163,21 +173,17 @@ export namespace StateManager {
     }
     
     class History {
-        controller: Controller
-        stack: Transaction[] = []
-        private _head = 0
         
-        constructor(controller: Controller, transactions?: TransactionJSON[]) {
+        controller: StateManager.Controller
+        
+        constructor (controller: StateManager.Controller) {
             this.controller = controller
-            if (transactions) {
-                this.stack = transactions.map((transaction) => new Transaction(transaction))
-            }
         }
         
         undo = () => {
-            if (this._head > 0) {
-                this._head--;
-                this.stack[this._head].revert(this.controller);
+            if (this.controller.gameStateJSON.historyHead > 0) {
+                this.controller.gameStateJSON.historyHead--;
+                this.controller.gameState.transactions[this.controller.gameStateJSON.historyHead].revert();
                 return true;
             } else {
                 return false;
@@ -185,9 +191,9 @@ export namespace StateManager {
         }
         
         redo = () => {
-            if (this._head < this.stack.length) {
-                this.stack[this._head].apply(this.controller);
-                this._head++;
+            if (this.controller.gameStateJSON.historyHead < this.controller.gameState.transactions.length) {
+                this.controller.gameState.transactions[this.controller.gameStateJSON.historyHead].apply();
+                this.controller.gameStateJSON.historyHead++;
                 return true;
             } else {
                 return false;
@@ -195,21 +201,20 @@ export namespace StateManager {
         }
         
         cleanHead() {
-            while (this.stack.length > this._head) {
-                this.stack.pop()
+            if (this.controller.gameStateJSON) {
+                while (this.controller.gameStateJSON.transactions.length > this.controller.gameStateJSON.historyHead) {
+                    this.controller.gameStateJSON.transactions.pop()
+                }
             }
         }
         
-        logEvent(transaction: Transaction) {
-            this.cleanHead()
-            this.stack.push(transaction)
-            this._head++
+        logEvent() {
+            this.controller.gameStateJSON.historyHead++
         }
         
         toJSON() {
             return JSON.stringify({
-                stack: JSON.stringify(this.stack),
-                head: this._head
+                head: this.controller.gameStateJSON.historyHead
             })
         }
     }
@@ -219,28 +224,28 @@ export namespace StateManager {
         oldValues: BaseReactState[]
     }
     
-    class Transaction {
-        newValues: BaseReactState[]
-        oldValues: BaseReactState[]
+    // class Transaction {
+    //     newValues: BaseReactState[]
+    //     oldValues: BaseReactState[]
         
-        constructor(transactionJson: TransactionJSON) {
-            this.newValues = transactionJson.newValues
-            this.oldValues = transactionJson.oldValues
-        }
+    //     constructor(transactionJson: TransactionJSON) {
+    //         this.newValues = transactionJson.newValues
+    //         this.oldValues = transactionJson.oldValues
+    //     }
         
-        public revert(controller: Controller) {
-            controller.setValues(this.oldValues, true);
-        }
+    //     public revert(controller: Controller) {
+    //         controller.setValues(this.oldValues, true);
+    //     }
         
-        public apply(controller: Controller) {
-            controller.setValues(this.newValues, true);
-        }
+    //     public apply(controller: Controller) {
+    //         controller.setValues(this.newValues, true);
+    //     }
         
-        public toJSON() {
-            return JSON.stringify({
-                newValue: this.newValues,
-                oldValue: this.oldValues
-            })
-        }
-    }
+    //     public toJSON() {
+    //         return JSON.stringify({
+    //             newValue: this.newValues,
+    //             oldValue: this.oldValues
+    //         })
+    //     }
+    // }
 }
