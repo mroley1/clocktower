@@ -8,7 +8,12 @@ export namespace Player {
         name: string,
         role: number,
         viability: ViabilityJSON,
-        position: positionJSON
+        position: Position
+    }
+    
+    export interface Position {
+        x: number,
+        y: number
     }
     
     export class Data {
@@ -29,7 +34,7 @@ export namespace Player {
                 name: this._name,
                 role: this._role,
                 viability: this._viability.reactSafe,
-                position: this._position.reactSafe
+                position: this.position
             }])
         }
         
@@ -39,7 +44,7 @@ export namespace Player {
             this._name = reactState.name;
             this._role = reactState.role;
             this._viability = new Viability(reactState.viability.state, reactState.viability.deadVote)
-            this._position = new Position(reactState.position.x, reactState.position.y)
+            this._position = reactState.position
             this.reactSetter = reactSetter;
         }
         
@@ -48,11 +53,11 @@ export namespace Player {
         }
         
         get position() {
-            return this._position.reactSafe
+            return this._position
         }
         
-        set position(position: positionJSON) {
-            this._position = new Position(position.x, position.y)
+        set position(position: Position) {
+            this._position = position
             this.useSetter()
         }
         
@@ -64,7 +69,7 @@ export namespace Player {
                 name: this._name,
                 role: this._role,
                 viability: this._viability.reactSafe,
-                position: this._position.reactSafe
+                position: this._position
             }
             return JSON.stringify(formatDocument)
         }
@@ -102,35 +107,6 @@ export namespace Player {
             return JSON.stringify({
                 state: this._state,
                 deadVote: this._deadvote
-            })
-        }
-    }
-    
-    interface positionJSON {
-        x: number,
-        y: number
-    }
-    
-    class Position {
-        private _x: number;
-        private _y: number;
-        
-        constructor(x: number, y: number) {
-            this._x = x;
-            this._y = y;
-        }
-        
-        get reactSafe(): positionJSON {
-            return {
-                x: this._x,
-                y: this._y
-            }
-        }
-        
-        toJSON() {
-            return JSON.stringify({
-                x: this._x,
-                y: this._y
             })
         }
     }

@@ -9,81 +9,94 @@ function PlayerPartial({playerData}: PlayerPartialProps) {
   const controllerContext = useContext(ControllerContext)
   const referenceData = useContext(DataContext)
   
-  let xOffset = 0;
-  let yOffset = 0;
-  let active: HTMLDivElement
-  function dragStart(event: React.PointerEvent<HTMLDivElement>) {
-    const target = event.target as HTMLDivElement
-    xOffset = event.clientX - (target.getBoundingClientRect().x - target.parentElement!.getBoundingClientRect().x)
-    yOffset = event.clientY - (target.getBoundingClientRect().y - target.parentElement!.getBoundingClientRect().y)
-    if (event.pointerType == "touch") {
-        active = target
-        document.addEventListener("touchmove", touchMove)
-        document.addEventListener("touchend", touchEnd)
-    } else {
-        active = target
-        document.addEventListener("pointermove", pointermove)
-        document.addEventListener("pointerup", pointerEnd)
-        document.addEventListener("pointercancel", pointerEnd)
-    }
+  const updatePoisition = (position: Player.Position) => {
+    playerData.position = position
   }
-  
-  function touchMove(event: TouchEvent) {
-    console.log(event)
-    const target = event.target as HTMLDivElement
-    const boundingRect = target.getBoundingClientRect()
-    let candidateX = event.targetTouches[0].clientX - xOffset
-    let candidateY = event.targetTouches[0].clientY - yOffset
-    if (candidateX < 0) {candidateX = 0}
-    if (candidateX > window.innerWidth - boundingRect.width) {candidateX = window.innerWidth - boundingRect.width}
-    if (candidateY < 0) {candidateY = 0}
-    if (candidateY > window.innerHeight - boundingRect.height) {candidateY = window.innerHeight - boundingRect.height}
-    target.style.left = candidateX + "px";
-    target.style.top = candidateY + "px";
-  }
-  
-  function pointermove(event: PointerEvent) {
-    if (active) {
-        const boundingRect = active.getBoundingClientRect()
-        let candidateX = event.clientX - xOffset
-        let candidateY = event.clientY - yOffset
-        if (candidateX < 0) {candidateX = 0}
-        if (candidateX > window.innerWidth - boundingRect.width) {candidateX = window.innerWidth - boundingRect.width}
-        if (candidateY < 0) {candidateY = 0}
-        if (candidateY > window.innerHeight - boundingRect.height) {candidateY = window.innerHeight - boundingRect.height}
-        active.style.left = candidateX + "px";
-        active.style.top = candidateY + "px";
-    }
-}
-  
-  function touchEnd(event: TouchEvent) {
-    console.log(event)
-    const target = event.target as HTMLDivElement
-    if (target.getAttribute("data-id") == playerData.id) {
-        playerData.position = {
-            x: target.getBoundingClientRect().x,
-            y: target.getBoundingClientRect().y
-        }
-        document.removeEventListener("touchmove", touchMove);
-        document.removeEventListener("touchend", touchEnd);
-    }
-  }
-  
-  function pointerEnd() {
-    if (active) {
-        playerData.position = {
-            x: active.getBoundingClientRect().x,
-            y: active.getBoundingClientRect().y
-        }
-    }
-    document.removeEventListener("pointermove", pointermove);
-    document.removeEventListener("pointerup", pointerEnd);
-    document.removeEventListener("pointercancel", pointerEnd)
-}
+  const drag = new Drag(updatePoisition, playerData.id)
   
   return (
-    <div data-id={playerData.id} style={{left: playerData.position.x, top: playerData.position.y}} className={styles.token} onPointerDown={dragStart}></div>
+    <div data-id={playerData.id} style={{left: playerData.position.x, top: playerData.position.y}} className={styles.token} onPointerDown={drag.dragStart}></div>
   );
 }
 
 export default PlayerPartial;
+
+class Drag {
+    xOffset = 0;
+    yOffset = 0;
+    active: HTMLDivElement|undefined
+    updatePosition: (position: Player.Position) => void
+    UUID: string
+    
+    constructor(updatePosition: (position: Player.Position) => void, UUID: string) {
+        this.updatePosition = updatePosition
+        this.UUID = UUID
+    }
+    
+    dragStart = (event: React.PointerEvent<HTMLDivElement>) => {
+        this.active = (event.target as HTMLDivElement)
+        this.xOffset = event.clientX - (this.active.getBoundingClientRect().x - this.active.parentElement!.getBoundingClientRect().x)
+        this.yOffset = event.clientY - (this.active.getBoundingClientRect().y - this.active.parentElement!.getBoundingClientRect().y)
+        if (event.pointerType == "touch") {
+            document.addEventListener("touchmove", this.touchMove)
+            document.addEventListener("touchend", this.touchEnd)
+        } else {
+            document.addEventListener("pointermove", this.pointermove)
+            document.addEventListener("pointerup", this.pointerEnd)
+            document.addEventListener("pointercancel", this.pointerEnd)
+        }
+      }
+      
+    touchMove = (event: TouchEvent) => {
+        const target = event.target as HTMLDivElement
+        const boundingRect = target.getBoundingClientRect()
+        let candidateX = event.targetTouches[0].clientX - this.xOffset
+        let candidateY = event.targetTouches[0].clientY - this.yOffset
+        if (candidateX < 0) {candidateX = 0}
+        if (candidateX > window.innerWidth - boundingRect.width) {candidateX = window.innerWidth - boundingRect.width}
+        if (candidateY < 0) {candidateY = 0}
+        if (candidateY > window.innerHeight - boundingRect.height) {candidateY = window.innerHeight - boundingRect.height}
+        target.style.left = candidateX + "px";
+        target.style.top = candidateY + "px";
+      }
+      
+    pointermove = (event: PointerEvent) => {
+        if (this.active) {
+            const boundingRect = this.active.getBoundingClientRect()
+            let candidateX = event.clientX - this.xOffset
+            let candidateY = event.clientY - this.yOffset
+            if (candidateX < 0) {candidateX = 0}
+            if (candidateX > window.innerWidth - boundingRect.width) {candidateX = window.innerWidth - boundingRect.width}
+            if (candidateY < 0) {candidateY = 0}
+            if (candidateY > window.innerHeight - boundingRect.height) {candidateY = window.innerHeight - boundingRect.height}
+            this.active.style.left = candidateX + "px";
+            this.active.style.top = candidateY + "px";
+        }
+    }
+      
+    touchEnd = (event: TouchEvent) => {
+        const target = event.target as HTMLDivElement
+        if (target.getAttribute("data-id") == this.UUID) {
+            this.updatePosition({
+                x: target.getBoundingClientRect().x,
+                y: target.getBoundingClientRect().y
+            })
+            document.removeEventListener("touchmove", this.touchMove);
+            document.removeEventListener("touchend", this.touchEnd);
+        }
+        
+      }
+      
+    pointerEnd = () => {
+        if (this.active) {
+            this.updatePosition({
+                x: this.active.getBoundingClientRect().x,
+                y: this.active.getBoundingClientRect().y
+            })
+        }
+        document.removeEventListener("pointermove", this.pointermove);
+        document.removeEventListener("pointerup", this.pointerEnd);
+        document.removeEventListener("pointercancel", this.pointerEnd);
+    }
+    
+}
