@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import styles from './Menu.module.scss';
-import { ControllerContext, DataContext } from './Game';
+import { ControllerContext, DataContext } from '../Game';
 
 
 function Menu() {

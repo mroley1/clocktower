@@ -47,6 +47,15 @@ export namespace Player {
             return this.UUID
         }
         
+        get position() {
+            return this._position.reactSafe
+        }
+        
+        set position(position: positionJSON) {
+            this._position = new Position(position.x, position.y)
+            this.useSetter()
+        }
+        
         public toJSON() {
             const formatDocument: ReactState = {
                 type: "PlayerCount",

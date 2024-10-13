@@ -205,4 +205,6 @@ export namespace StateManager {
             })
         }
     }
+    
+    class Interactions {}
 }

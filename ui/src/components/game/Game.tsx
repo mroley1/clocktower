@@ -3,8 +3,9 @@ import { GameProgression } from '../common/reactStates/GameProgression';
 import Test from './test/test';
 import { StateManager } from '../common/StateManager';
 import { GameData, GameDataJSON } from '../common/GameData';
-import Menu from './Menu';
+import Menu from './menu/Menu';
 import { ReferenceData } from '../common/ReferenceData';
+import Players from './players/Players';
 
 
 export const GameContext = createContext({} as GameData)
@@ -42,8 +43,8 @@ function Game({gameSettings, saveGame, quitGame}: GameProps) {
       <GameContext.Provider value={gameState}>
         <ControllerContext.Provider value={stateManager}>
           <DataContext.Provider value={referenceData}>
+            <Players></Players>
             <Menu></Menu>
-            <Test></Test>
           </DataContext.Provider>
         </ControllerContext.Provider>
       </GameContext.Provider>
