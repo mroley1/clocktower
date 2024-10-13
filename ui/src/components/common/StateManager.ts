@@ -29,7 +29,7 @@ export namespace StateManager {
         private usedUUIDs = new Set<string>()
         private instanceMap = new Map<string, {json: BaseReactState, jsonHash: string, instance: Object}>()
         
-        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, gameStateJSON: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON) => void, transactions?: TransactionJSON[]) {
+        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, gameStateJSON: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON) => void) {
             this.gameState = gameState;
             this.setgameState = setGameState;
             this.gameStateJSON = gameStateJSON;
@@ -111,14 +111,15 @@ export namespace StateManager {
         }
         
         public build(suppressHistory = false) {
-            
             const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
-            if (!suppressHistory) {
-                this.history.cleanHead()
-            }
-            
             const callback = (reactState: BaseReactState[], suppressHistory?: boolean) => {
                 this.setValues(reactState, suppressHistory)
+            }
+            
+            if (!suppressHistory) {
+                while (this.gameStateJSON.transactions.length > this.gameStateJSON.historyHead) {
+                    this.gameStateJSON.transactions.pop()
+                }
             }
             
             const newGameState = this.mapObject(this.gameStateJSON, (obj: BaseReactState) => {
@@ -159,7 +160,7 @@ export namespace StateManager {
                 const newClass = new Transaction.Data(transactionJSON, callback)
                 newGameState.transactions.push(newClass);
                 this.instanceMap.set(transactionJSON.UUID, {json: transactionJSON, jsonHash: sha256(JSON.stringify(transactionJSON)).toString(), instance: newClass})
-                this.history.logEvent()
+                this.gameStateJSON.historyHead++
             }
             
             
@@ -182,8 +183,7 @@ export namespace StateManager {
         
         undo = () => {
             if (this.controller.gameStateJSON.historyHead > 0) {
-                this.controller.gameStateJSON.historyHead--;
-                this.controller.gameState.transactions[this.controller.gameStateJSON.historyHead].revert();
+                this.controller.gameState.transactions[--this.controller.gameStateJSON.historyHead].revert();
                 return true;
             } else {
                 return false;
@@ -192,24 +192,11 @@ export namespace StateManager {
         
         redo = () => {
             if (this.controller.gameStateJSON.historyHead < this.controller.gameState.transactions.length) {
-                this.controller.gameState.transactions[this.controller.gameStateJSON.historyHead].apply();
-                this.controller.gameStateJSON.historyHead++;
+                this.controller.gameState.transactions[this.controller.gameStateJSON.historyHead++].apply();
                 return true;
             } else {
                 return false;
             }
-        }
-        
-        cleanHead() {
-            if (this.controller.gameStateJSON) {
-                while (this.controller.gameStateJSON.transactions.length > this.controller.gameStateJSON.historyHead) {
-                    this.controller.gameStateJSON.transactions.pop()
-                }
-            }
-        }
-        
-        logEvent() {
-            this.controller.gameStateJSON.historyHead++
         }
         
         toJSON() {
@@ -218,34 +205,4 @@ export namespace StateManager {
             })
         }
     }
-    
-    export interface TransactionJSON {
-        newValues: BaseReactState[]
-        oldValues: BaseReactState[]
-    }
-    
-    // class Transaction {
-    //     newValues: BaseReactState[]
-    //     oldValues: BaseReactState[]
-        
-    //     constructor(transactionJson: TransactionJSON) {
-    //         this.newValues = transactionJson.newValues
-    //         this.oldValues = transactionJson.oldValues
-    //     }
-        
-    //     public revert(controller: Controller) {
-    //         controller.setValues(this.oldValues, true);
-    //     }
-        
-    //     public apply(controller: Controller) {
-    //         controller.setValues(this.newValues, true);
-    //     }
-        
-    //     public toJSON() {
-    //         return JSON.stringify({
-    //             newValue: this.newValues,
-    //             oldValue: this.oldValues
-    //         })
-    //     }
-    // }
 }
