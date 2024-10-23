@@ -1,3 +1,4 @@
+import { Alignmant } from "../RoleType"
 import BaseReactState from "./_BaseReactState"
 
 export namespace Player {
@@ -6,9 +7,10 @@ export namespace Player {
         UUID: string,
         active: boolean,
         name: string,
-        role: number,
+        role: string,
         viability: ViabilityJSON,
-        position: Position
+        position: Position,
+        alignment: Alignmant
     }
     
     export interface Position {
@@ -22,9 +24,10 @@ export namespace Player {
         private active
         
         private _name: string
-        private _role: number
+        private _role: string
         private _viability: Viability
         private _position: Position
+        private _alignment: Alignmant
         
         private useSetter() {
             this.reactSetter([{
@@ -34,18 +37,20 @@ export namespace Player {
                 name: this._name,
                 role: this._role,
                 viability: this._viability.reactSafe,
-                position: this.position
+                position: this.position,
+                alignment: this._alignment
             }])
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
+            this.reactSetter = reactSetter;
             this._name = reactState.name;
             this._role = reactState.role;
             this._viability = new Viability(reactState.viability.state, reactState.viability.deadVote)
             this._position = reactState.position
-            this.reactSetter = reactSetter;
+            this._alignment = reactState.alignment
         }
         
         get id() {
@@ -61,6 +66,19 @@ export namespace Player {
             this.useSetter()
         }
         
+        get role() {
+            return this._role;
+        }
+        
+        set role(role: string) {
+            this._role = role;
+            this.useSetter();
+        }
+        
+        get alignment() {
+            return this._alignment;
+        }
+        
         public toJSON() {
             const formatDocument: ReactState = {
                 type: "PlayerCount",
@@ -69,7 +87,8 @@ export namespace Player {
                 name: this._name,
                 role: this._role,
                 viability: this._viability.reactSafe,
-                position: this._position
+                position: this._position,
+                alignment: this._alignment
             }
             return JSON.stringify(formatDocument)
         }

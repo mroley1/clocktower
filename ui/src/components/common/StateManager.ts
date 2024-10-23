@@ -6,6 +6,7 @@ import sha256 from "crypto-js/sha256";
 import BaseReactState from "./reactStates/_BaseReactState";
 import { Interaction } from "./reactStates/Intereaction";
 import { Transaction } from "./reactStates/Transaction";
+import { Alignmant } from "./RoleType";
 
 export namespace StateManager {
     
@@ -102,9 +103,10 @@ export namespace StateManager {
                 UUID: this.newUUID(),
                 active: true,
                 name: "",
-                role: 0,
+                role: "",
                 viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
-                position: {x: 0, y: 0}
+                position: {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75},
+                alignment: 2
             };
             this.gameStateJSON?.players.push(newPlayerJSON);
             this.build();

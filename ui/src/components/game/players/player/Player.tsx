@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import styles from './Player.module.scss';
 import { ControllerContext, DataContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
+import { Alignmant } from '../../../../components/common/RoleType';
 
 interface PlayerPartialProps {playerData: Player.Data}
 function PlayerPartial({playerData}: PlayerPartialProps) {
@@ -12,16 +13,31 @@ function PlayerPartial({playerData}: PlayerPartialProps) {
   const updatePoisition = (position: Player.Position) => {
     playerData.position = position
   }
-  const drag = new Drag(updatePoisition, playerData.id)
+  const interactionHandler = new InteractionHandler(updatePoisition, playerData.id);
+  
+  const image = getImage(playerData)
   
   return (
-    <div data-id={playerData.id} style={{left: playerData.position.x, top: playerData.position.y}} className={styles.token} onPointerDown={drag.dragStart}></div>
+    <div data-id={playerData.id} style={{left: playerData.position.x, top: playerData.position.y}} className={styles.token} onPointerDown={interactionHandler.dragStart}>
+        <img className={styles.image} src={image}></img>
+    </div>
   );
 }
 
 export default PlayerPartial;
 
-class Drag {
+function getImage(playerData: Player.Data) {
+    if (playerData.role != "") {
+        if (playerData.alignment == Alignmant.GOOD) {
+            var imageName = playerData.role + "_good.png"
+        } else {
+            var imageName = playerData.role + "_evil.png"
+        }
+        return require("../../../../assets/icons/" + imageName)
+    } else return null
+}
+
+class InteractionHandler {
     xOffset = 0;
     yOffset = 0;
     active: HTMLDivElement|undefined
