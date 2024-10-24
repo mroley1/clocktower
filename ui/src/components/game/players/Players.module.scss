@@ -9,4 +9,12 @@
     position: absolute;
     left: 0;
     top: 0;
+    
+    .playerWrapper {
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        touch-action: auto;
+        pointer-events: all;
+    }
 }

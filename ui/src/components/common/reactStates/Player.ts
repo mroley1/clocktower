@@ -79,6 +79,11 @@ export namespace Player {
             return this._alignment;
         }
         
+        set alignment(alignment: Alignmant) {
+            this._alignment = alignment;
+            this.useSetter();
+        }
+        
         public toJSON() {
             const formatDocument: ReactState = {
                 type: "PlayerCount",
