@@ -7,7 +7,7 @@ export namespace Player {
         UUID: string,
         active: boolean,
         name: string,
-        role: string,
+        role: string|undefined,
         viability: ViabilityJSON,
         position: Position,
         alignment: Alignmant
@@ -24,7 +24,7 @@ export namespace Player {
         private active
         
         private _name: string
-        private _role: string
+        private _role: string|undefined
         private _viability: Viability
         private _position: Position
         private _alignment: Alignmant
@@ -70,7 +70,7 @@ export namespace Player {
             return this._role;
         }
         
-        set role(role: string) {
+        set role(role: string|undefined) {
             this._role = role;
             this.useSetter();
         }

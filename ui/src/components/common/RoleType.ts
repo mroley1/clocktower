@@ -1,8 +1,8 @@
 
 export enum Alignmant {
+    NONE,
     GOOD,
     EVIL,
-    NONE,
 }
 
 export enum ClassType {

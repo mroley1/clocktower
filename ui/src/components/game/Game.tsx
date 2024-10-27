@@ -26,7 +26,8 @@ function Game({gameSettings, saveGame, quitGame}: GameProps) {
       saveGame,
       quitGame
     },
-    role: new ReferenceData.Role()
+    role: new ReferenceData.Role(),
+    script: new ReferenceData.Script()
   } as ReferenceData.ContextFormat}, [])
   
   const [building, setBuilding] = useState(true);

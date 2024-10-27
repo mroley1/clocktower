@@ -14,6 +14,7 @@ export namespace GameProgression {
         state: State,
         night: number,
         stored: State|undefined
+        currentTurnOwner: string|undefined
     }
     
     export class Data {
@@ -24,6 +25,7 @@ export namespace GameProgression {
         private _state: State = State.SETUP;
         private _night: number = 0;
         private _stored: State|undefined;
+        private _currentTurnOwner: string|undefined
         
         private useSetter() {
             this.reactSetter([{
@@ -32,17 +34,20 @@ export namespace GameProgression {
                 active: this.active,
                 state: this._state,
                 night: this._night,
-                stored: this._stored
+                stored: this._stored,
+                currentTurnOwner: this._currentTurnOwner
             }])
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
+            this.reactSetter = reactSetter;
             this.UUID = reactState.UUID;
             this.active = reactState.active;
+            
             this._state = reactState.state;
             this._night = reactState.night;
             this._stored = reactState.stored;
-            this.reactSetter = reactSetter;
+            this._currentTurnOwner = reactState.currentTurnOwner;
         }
         
         private pushStored(state: State): boolean {
@@ -76,6 +81,7 @@ export namespace GameProgression {
                 if (this.isDay) {
                     this._night++
                     this._state = State.NIGHT
+                    this._currentTurnOwner = undefined
                 } else {
                     this._state = State.DAY
                 }
@@ -116,6 +122,14 @@ export namespace GameProgression {
             return this._state == State.NIGHT;
         }
         
+        get currentTurnOwner() {
+            return this._currentTurnOwner;
+        }
+        
+        set currentTurnOwner(currentTurnOwner: string|undefined) {
+            this._currentTurnOwner = currentTurnOwner;
+        }
+        
         toJSON() {
             const formatDocument: ReactState = {
                 type: "GameProgression",
@@ -123,7 +137,8 @@ export namespace GameProgression {
                 active: this.active,
                 state: this._state,
                 night: this._night,
-                stored: this._stored
+                stored: this._stored,
+                currentTurnOwner: this._currentTurnOwner
             }
             return JSON.stringify(formatDocument)
         }

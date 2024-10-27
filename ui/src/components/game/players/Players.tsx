@@ -4,6 +4,7 @@ import { ControllerContext, DataContext, GameContext } from '../Game';
 import PlayerPartial from './player/Player';
 import React from 'react';
 import { Player } from '@/components/common/reactStates/Player';
+import { GameProgression } from '../../../components/common/reactStates/GameProgression';
 
 
 function Players() {
@@ -16,15 +17,15 @@ function Players() {
     <div className={styles.dragContext}>
         <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
         <button onClick={() => {controllerContext.addPlayer()}}>new</button>
+        <br></br><br></br><br></br>
+        <button onClick={gameContext.gameProgression.nextStage}>next</button>{gameContext.gameProgression.night}{GameProgression.State[gameContext.gameProgression.state]}
+        <br></br><br></br>
+        <button onClick={controllerContext.history.undo}>undo</button>
+        <button onClick={controllerContext.history.redo}>redo</button>
         {
-            gameContext.players.map(player => {
-                const interactionHandles = InteractionHandler(player)
-                return (
-                    <div key={player.id} data-id={player.id} style={{left: player.position.x, top: player.position.y}} className={styles.playerWrapper} onPointerDown={interactionHandles.pointerDown} ref={interactionHandles.wrapperRef}>
-                        <PlayerPartial playerData={player}></PlayerPartial>
-                    </div>
-                )
-            })
+            gameContext.players.map(player => 
+                <PlayerWrapper key={player.id} player={player}></PlayerWrapper>
+            )
         }
     </div>
   );
@@ -32,7 +33,16 @@ function Players() {
 
 export default Players;
 
-const InteractionHandler = (player: Player.Data) => {
+function PlayerWrapper({player}: {player: Player.Data}) {
+    const interactionHandles = useInteractionHandler(player)
+    return (
+        <div  data-id={player.id} style={{left: player.position.x, top: player.position.y}} className={styles.playerWrapper} onPointerDown={interactionHandles.pointerDown} ref={interactionHandles.wrapperRef}>
+            <PlayerPartial playerData={player}></PlayerPartial>
+        </div>
+    )
+}
+
+const useInteractionHandler = (player: Player.Data) => {
     const wrapperRef = useRef<null|HTMLDivElement>(null);
     
     let xStart = 0;

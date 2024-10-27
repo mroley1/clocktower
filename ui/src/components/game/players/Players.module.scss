@@ -9,6 +9,8 @@
     position: absolute;
     left: 0;
     top: 0;
+    user-select: none;
+    overflow: hidden;
     
     .playerWrapper {
         width: 150px;

@@ -103,12 +103,28 @@ export namespace StateManager {
                 UUID: this.newUUID(),
                 active: true,
                 name: "",
-                role: "",
+                role: undefined,
                 viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
                 position: {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75},
-                alignment: 2
+                alignment: Alignmant.NONE
             };
             this.gameStateJSON?.players.push(newPlayerJSON);
+            this.build();
+        }
+        
+        addInteraction = () => {
+            const newInteractionJSON = {
+                type: "Interaction",
+                UUID: this.newUUID(),
+                active: true,
+                owner: "this._owner",
+                bound: true,
+                name: "this._name",
+                length: 0,
+                effect: 0,
+                effected: "this._effected"
+            }
+            this.gameStateJSON.interactions.push(newInteractionJSON)
             this.build();
         }
         

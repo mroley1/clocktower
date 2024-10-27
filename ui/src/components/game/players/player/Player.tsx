@@ -49,7 +49,7 @@ function PlayerPartial({playerData}: PlayerPartialProps) {
 export default PlayerPartial;
 
 function getImage(playerData: Player.Data) {
-    if (playerData.role != "") {
+    if (playerData.role) {
         if (playerData.alignment == Alignmant.GOOD) {
             var imageName = playerData.role + "_good.png"
         } else {
