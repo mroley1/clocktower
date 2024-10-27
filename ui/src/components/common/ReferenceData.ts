@@ -4,7 +4,7 @@ import { Alignmant, ClassType } from "./RoleType"
 
 export namespace ReferenceData {
     export interface ContextFormat {
-        role: Role,
+        roles: Roles,
         nightOrder: NightOrder,
         jinxes: Jinxes,
         script: Script,
@@ -34,33 +34,69 @@ export namespace ReferenceData {
         change_makeup: [],
         hide_face: boolean
     }
-    export class Role {
+    export class Roles {
         private roleData
         
         constructor() {
-            this.roleData = require("../../data/common/roles.json")
+            this.roleData = require("../../data/common/roles.json");
         }
         
-        getData(role: string): RoleData {
-            return this.roleData[role]
+        getRole(roleName: string): RoleData {
+            return this.roleData[roleName]
+        }
+        
+        getAll() {
+            return this.roleData
         }
     }
-    
-    export class NightOrder {}
-    
-    export class Jinxes {}
     
     export class Script {
         private script
+        private _roleNames: string[]
+        private _roles: RoleData[]
         
-        constructor() {
-            this.script = require('../../data/scripts/trouble_brewing.json')
+        constructor(roles: Roles) {
+            this.script = require('../../data/scripts/trouble_brewing.json');
+            this._roleNames = this.script.filter((obj: any) => typeof(obj) == "string");
+            this._roles = this._roleNames.map((roleName) => roles.getRole(roleName));
         }
         
-        get players(): string[] {
-            return this.script.filter((obj: any) => typeof(obj) == "string")
+        get roleNames(): string[] {
+            return this._roleNames;
+        }
+        
+        get roles(): RoleData[] {
+            return this._roles;
+        }
+        
+        getRole(roleName: string) {
+            return this._roles.find((role) => role.id == roleName);
         }
     }
+    
+    export class NightOrder {
+        private nightOrder
+        private script
+        private _firstNight
+        private _otherNight
+        
+        constructor(script: Script) {
+            this.nightOrder = require('../../data/common/nightsheet.json');
+            this.script = script;
+            this._firstNight = this.nightOrder.firstnight.map((roleName: string) => this.script.getRole(roleName))
+            this._otherNight = this.nightOrder.othernight.map((roleName: string) => this.script.getRole(roleName))
+        }
+        
+        get firstNight(): RoleData[] {
+            return this._firstNight
+        }
+        
+        get otherNight(): RoleData[] {
+            return this._otherNight
+        }
+    }
+    
+    export class Jinxes {}
     
     export class Fabled {}
 }

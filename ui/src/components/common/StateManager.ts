@@ -26,6 +26,7 @@ export namespace StateManager {
         history: History
         
         private saveGameFunc: (gameDataJSON: GameDataJSON) => void
+        private inBatchBuild = false;
         
         private usedUUIDs = new Set<string>()
         private instanceMap = new Map<string, {json: BaseReactState, jsonHash: string, instance: Object}>()
@@ -97,6 +98,19 @@ export namespace StateManager {
             this.build(suppressHistory);
         }
         
+        applyPatches = (patches: Patch[]) => {
+            this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
+                patches.forEach((patch) => {
+                    if (obj.UUID == patch.UUID) {
+                        function setValue(value: any, path: string[]) {
+                            if (path.length == 1) {}
+                        }
+                        //setValue(patch)
+                    }
+                })
+            })
+        }
+        
         addPlayer = () => {
             const newPlayerJSON = {
                 type: "Player",
@@ -128,7 +142,23 @@ export namespace StateManager {
             this.build();
         }
         
+        // used to group separate edits into one build
+        batchBuild(callback: () => void) {
+            this.batchBuildEntry()
+            callback()
+            this.batchBuildExit()
+        }
+        // manually enter or leave batch
+        batchBuildEntry() {
+            this.inBatchBuild = true
+        }
+        batchBuildExit() {
+            this.inBatchBuild = false
+            this.build()
+        }
+        
         public build(suppressHistory = false) {
+            if (this.inBatchBuild) {return}
             const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
             const callback = (reactState: BaseReactState[], suppressHistory?: boolean) => {
                 this.setValues(reactState, suppressHistory)
@@ -166,7 +196,7 @@ export namespace StateManager {
                 }
             })
             
-            if (!suppressHistory && this.gameStateJSON) {
+            if (!suppressHistory && this.gameStateJSON && (transactionBuffer.new.length > 0 || transactionBuffer.old.length > 0)) {
                 const transactionJSON: Transaction.ReactState = {
                     type: "Transaction",
                     UUID: this.newUUID(),
@@ -189,6 +219,13 @@ export namespace StateManager {
         public toJSON() {
             throw new Error("Not Implemented yet :(")
         }
+    }
+    
+    interface Patch {
+        UUID: string
+        path: string[]
+        old: string|number|boolean
+        new: string|number|boolean
     }
     
     class History {

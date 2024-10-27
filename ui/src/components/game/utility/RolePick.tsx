@@ -14,7 +14,7 @@ function RolePick({setRoleSelect}: RolePickProps) {
     return (
         <div>
             Select Role: 
-            {dataContext.script.players.map(role => 
+            {dataContext.script.roleNames.map(role => 
                 <button key={role} onClick={() => {selectRole(role)}}>{role}</button>
             )}
         </div>

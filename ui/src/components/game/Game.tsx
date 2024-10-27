@@ -21,13 +21,22 @@ function Game({gameSettings, saveGame, quitGame}: GameProps) {
   
   const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, gameSettings, saveGame), [])
   
-  const referenceData = useMemo(() => {return {
+  const referenceData = useMemo(() => {
+    const roles = new ReferenceData.Roles();
+    const script = new ReferenceData.Script(roles);
+    const nightOrder = new ReferenceData.NightOrder(script);
+    const jinxes = new ReferenceData.Jinxes();
+    const fabled = new ReferenceData.Fabled();
+    return {
     utilies: {
       saveGame,
       quitGame
     },
-    role: new ReferenceData.Role(),
-    script: new ReferenceData.Script()
+    roles,
+    script,
+    nightOrder,
+    jinxes,
+    fabled,
   } as ReferenceData.ContextFormat}, [])
   
   const [building, setBuilding] = useState(true);

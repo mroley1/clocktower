@@ -19,12 +19,14 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     useEffect(() => {
         if (roleSelect) {
-            playerData.role = roleSelect
-            const roleData = dataContext.role.getData(playerData.role)
-            if (playerData.alignment == Alignmant.NONE) {
-                playerData.alignment = roleData.alignment
-                setAlignmentSelect(roleData.alignment)
-            }
+            controllerContext.batchBuild(() => {
+                playerData.role = roleSelect
+                const roleData = dataContext.roles.getRole(playerData.role)
+                if (playerData.alignment == Alignmant.NONE) {
+                    playerData.alignment = roleData.alignment
+                    setAlignmentSelect(roleData.alignment)
+                }
+            })
         }
     }, [roleSelect])
     
@@ -49,6 +51,12 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
         return <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
     }
     
+    function Day() {
+        return (
+            <></>
+        )
+    }
+    
     function ModalContent() {
         
         if (!roleSelect) {
@@ -65,13 +73,17 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
         if (gameContext.gameProgression.isNight && gameContext.gameProgression.currentTurnOwner) {
             return <NightTurn></NightTurn>
         }
+        if (gameContext.gameProgression.isDay) {
+            return <Day></Day>
+        }
+        
         console.error("No Menu Found")
         closeFunc();
-        return <></>
+        return null
     }
   
     if (!isOpen) {
-        return <></>
+        return null
     } else {
         return (
             <div className={styles.menu_wrapper} onClick={closeFunc}>
