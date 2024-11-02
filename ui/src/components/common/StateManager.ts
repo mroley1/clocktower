@@ -167,7 +167,6 @@ export namespace StateManager {
         
         public build(suppressHistory = false) {
             if (this.inBatchBuild) {return}
-            suppressHistory = true // ! temp disable history
             const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
             const callback = (reactState: BaseReactState[], suppressHistory?: boolean) => {
                 this.setValues(reactState, suppressHistory)

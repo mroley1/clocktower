@@ -52,7 +52,7 @@ function NightGuide() {
                         if (index < focusedIndex) {callback = last}
                         if (index > focusedIndex) {callback = next}
                         return (
-                            <CSSTransition in={showDescription} timeout={300} classNames={{...style}}>
+                            <CSSTransition key={turnData.UUID} in={showDescription} timeout={300} classNames={{...style}}>
                                 <div className={style.nightTurn} style={{transform: `rotate(${-index*25}deg)`}} >
                                     <div className={style.tile} data-alignment={Alignmant[turnData.alignment]} onClick={callback}>
                                         <img src={getImage(turnData.role, turnData.alignment)}></img>

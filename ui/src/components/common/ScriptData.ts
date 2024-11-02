@@ -1,1 +1,5 @@
-export default interface ScriptData {}
+export default interface ScriptData {
+    author: string,
+    name: string,
+    data: string[]
+}
