@@ -98,16 +98,24 @@ export namespace StateManager {
             this.build(suppressHistory);
         }
         
+        // ! unused for later improvment to use patches instead of full states in history
         applyPatches = (patches: Patch[]) => {
             this.gameStateJSON = this.mapObject(this.gameStateJSON, obj => {
                 patches.forEach((patch) => {
                     if (obj.UUID == patch.UUID) {
-                        function setValue(value: any, path: string[]) {
-                            if (path.length == 1) {}
+                        function setValue(obj: any, value: any, path: string[]) {
+                            if (path.length == 1) {
+                                return obj[path[1]] = value
+                            } else {
+                                setValue(obj[path.pop()!], value, path)
+                            }
                         }
-                        //setValue(patch)
+                        if (patch.path.length > 0) {
+                            setValue(obj, patch.value, patch.path)
+                        }
                     }
                 })
+                this.build(true);
             })
         }
         
@@ -159,6 +167,7 @@ export namespace StateManager {
         
         public build(suppressHistory = false) {
             if (this.inBatchBuild) {return}
+            suppressHistory = true // ! temp disable history
             const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
             const callback = (reactState: BaseReactState[], suppressHistory?: boolean) => {
                 this.setValues(reactState, suppressHistory)
@@ -224,8 +233,7 @@ export namespace StateManager {
     interface Patch {
         UUID: string
         path: string[]
-        old: string|number|boolean
-        new: string|number|boolean
+        value: string|number|boolean
     }
     
     class History {
