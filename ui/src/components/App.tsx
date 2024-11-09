@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import './App.scss';
-import { GameDataJSON, GameDataJSONTag } from './common/GameData';
+import { GameDataJSON, GameDataJSONTag, HistoryJSON } from './common/GameData';
 import { GameProgression } from './common/reactStates/GameProgression';
 import Game from './game/Game';
 
@@ -8,14 +8,14 @@ function App() {
   
   const [saves, setSaves] = useState<GameDataJSONTag[]>([])
   
-  let loadedGameInit: GameDataJSON|undefined
+  let loadedGameInit: {data: GameDataJSON, history: HistoryJSON}|undefined
   const [loadedGame, setLoadedGame] = useState(loadedGameInit)
   
   const dbPromise = useMemo(initDatabase, [])
   
-  function saveGame(gameDataJSON: GameDataJSON) {
+  function saveGame(gameDataJSON: GameDataJSON, history: HistoryJSON) {
     dbPromise.then(db => {
-      saveGameData(db, gameDataJSON)
+      saveGameData(db, gameDataJSON, history)
     })
   }
   
@@ -50,7 +50,7 @@ function App() {
   }
   
   if (loadedGame) {
-    return <Game gameSettings={loadedGame} saveGame={saveGame} quitGame={quitGame}></Game>
+    return <Game gameSettings={loadedGame.data} history={loadedGame.history} saveGame={saveGame} quitGame={quitGame}></Game>
   } else {
     return <div>
       <br></br>
@@ -68,18 +68,17 @@ export default App;
 
 function newSaveJSON(): GameDataJSON {
   return {
-    metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, name: "", gameID: dbIdNew(), historyHead: 0},
+    metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, name: "", gameID: dbIdNew()},
     playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, quantity: 20},
     gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, state: GameProgression.State.SETUP, night: 0, stored: undefined},
     players: [],
-    interactions: [],
-    transactions: []
+    interactions: []
   }
 }
 
 function genSaveJsonTag(gameDataJSON: GameDataJSON): GameDataJSONTag {
   return {
-    name: "",
+    name: gameDataJSON.metadata.name,
     gameID: gameDataJSON.metadata.gameID,
     gameProgression: gameDataJSON.gameProgression,
     playerRoles: gameDataJSON.players.filter(player => player.role).map(player => player.role!),
@@ -124,6 +123,7 @@ function initDatabase() {
         
         savesObjectStore.createIndex('tags', 'tags', {unique: false})
         savesObjectStore.createIndex('data', 'data', {unique: false})
+        savesObjectStore.createIndex('history', 'history', {unique: false})
         
         resolve(db)
       } else {
@@ -167,9 +167,11 @@ function newSave(db: IDBDatabase) {
     
     const data = newSaveJSON()
     const tag = genSaveJsonTag(data)
+    const history: HistoryJSON = {head: 0, transactions: []}
     const newItem = {
       data,
-      tag
+      tag,
+      history
     }
     
     const objectStore = transaction.objectStore('saves')
@@ -187,9 +189,9 @@ function newSave(db: IDBDatabase) {
   })
 }
 
-function getSaveData(db: IDBDatabase, gameID: number): Promise<GameDataJSON> {
+function getSaveData(db: IDBDatabase, gameID: number): Promise<{data: GameDataJSON, history: HistoryJSON}> {
   
-  return new Promise<GameDataJSON>((resolve, reject) => {
+  return new Promise<{data: GameDataJSON, history: HistoryJSON}>((resolve, reject) => {
     
     const transaction = db.transaction(['saves'], 'readonly')
     
@@ -197,7 +199,7 @@ function getSaveData(db: IDBDatabase, gameID: number): Promise<GameDataJSON> {
     const objectStoreRequest = objectStore.get(gameID)
     
     objectStoreRequest.onsuccess = (event: any) => {
-      resolve(event.target.result.data as GameDataJSON)
+      resolve({data: event.target.result.data as GameDataJSON, history: event.target.result.history})
     }
     
     objectStoreRequest.onerror = (err) => {
@@ -208,7 +210,7 @@ function getSaveData(db: IDBDatabase, gameID: number): Promise<GameDataJSON> {
   })
 }
 
-function saveGameData(db: IDBDatabase, gameData: GameDataJSON): Promise<void> {
+function saveGameData(db: IDBDatabase, gameData: GameDataJSON, history: HistoryJSON): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     
     const transaction = db.transaction(['saves'], 'readwrite')
@@ -216,7 +218,8 @@ function saveGameData(db: IDBDatabase, gameData: GameDataJSON): Promise<void> {
     const tag = genSaveJsonTag(gameData)
     const newItem = {
       data: gameData,
-      tag
+      tag,
+      history
     }
     
     const objectStore = transaction.objectStore('saves')

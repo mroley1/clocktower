@@ -8,7 +8,6 @@ export namespace Metadata {
         active: boolean
         gameID: number
         name: string
-        historyHead: number
     }
     
     export class Data {
@@ -18,7 +17,6 @@ export namespace Metadata {
         
         private _gameID: number
         private _name: string
-        private _historyHead: number
         
         private useSetter() {
             this.reactSetter([{
@@ -26,8 +24,7 @@ export namespace Metadata {
                 UUID: this.UUID,
                 active: this.active,
                 gameID: this._gameID,
-                name: this._name,
-                historyHead: this._historyHead
+                name: this._name
             }])
         }
         
@@ -37,7 +34,6 @@ export namespace Metadata {
             this.reactSetter = reactSetter;
             this._gameID = reactState.gameID;
             this._name = reactState.name;
-            this._historyHead = reactState.historyHead
         }
         
         toJSON() {
@@ -46,8 +42,7 @@ export namespace Metadata {
                 UUID: this.UUID,
                 active: this.active,
                 gameID: this._gameID,
-                name: this._name,
-                historyHead: this._historyHead
+                name: this._name
             }
             return JSON.stringify(formatDocument)
         }

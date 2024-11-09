@@ -1,13 +1,10 @@
 import { createContext, useEffect, useMemo, useState } from 'react';
-import { GameProgression } from '../common/reactStates/GameProgression';
-import Test from './test/test';
 import { StateManager } from '../common/StateManager';
-import { GameData, GameDataJSON } from '../common/GameData';
+import { GameData, GameDataJSON, HistoryJSON } from '../common/GameData';
 import Menu from './menu/Menu';
 import { ReferenceData } from '../common/ReferenceData';
 import Players from './players/Players';
 import NightGuide from './nightGuide/NightGuide';
-import { Interaction } from '../common/reactStates/Intereaction';
 
 
 export const GameContext = createContext({} as GameData)
@@ -18,12 +15,12 @@ export const DataContext = createContext({} as ReferenceData.ContextFormat)
 
 export const EphemeralContext = createContext({} as EphemeralContext)
 
-interface GameProps {gameSettings: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON)=>void, quitGame: ()=>void}
-function Game({gameSettings, saveGame, quitGame}: GameProps) {
+interface GameProps {gameSettings: GameDataJSON, history: HistoryJSON, saveGame: (gameDataJSON: GameDataJSON, history: HistoryJSON)=>void, quitGame: ()=>void}
+function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
   
   const [gameState, setGameState] = useState(gameSettings as any as GameData)
   
-  const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, gameSettings, saveGame), [])
+  const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, history, gameSettings, saveGame), [])
   
   const referenceData = useMemo(() => {
     const roles = new ReferenceData.Roles();

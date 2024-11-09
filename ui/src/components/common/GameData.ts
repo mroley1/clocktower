@@ -2,9 +2,9 @@ import { PlayerCount } from "./reactStates/PlayerCount"
 import { GameProgression } from "./reactStates/GameProgression"
 import { Player } from "./reactStates/Player"
 import { Interaction } from "./reactStates/Intereaction"
-import { Transaction } from "./reactStates/Transaction"
 import ScriptData from "./ScriptData"
-import { Metadata } from "./reactStates/Metadadta"
+import { Metadata } from "./reactStates/Metadata"
+import BaseReactState from "./reactStates/_BaseReactState"
 
 export interface GameData {
     metadata: Metadata.Data
@@ -12,7 +12,6 @@ export interface GameData {
     gameProgression: GameProgression.Data
     players: Player.Data[]
     interactions: Interaction.Data[]
-    transactions: Transaction.Data[]
 }
 
 export interface GameDataJSON {
@@ -21,7 +20,17 @@ export interface GameDataJSON {
     gameProgression: GameProgression.ReactState
     players: Player.ReactState[]
     interactions: Interaction.ReactState[]
-    transactions: Transaction.ReactState[]
+}
+
+export interface TransactionJSON {
+    owner: string|undefined
+    new: BaseReactState[],
+    old: BaseReactState[]
+}
+
+export interface HistoryJSON {
+    head: number,
+    transactions: TransactionJSON[]
 }
 
 export interface GameDataJSONTag {

@@ -20,8 +20,8 @@ function Players() {
         <br></br><br></br><br></br>
         <button onClick={gameContext.gameProgression.nextStage}>next</button>{gameContext.gameProgression.night}{GameProgression.State[gameContext.gameProgression.state]}
         <br></br><br></br>
-        <button onClick={controllerContext.history.undo}>undo</button>
-        <button onClick={controllerContext.history.redo}>redo</button>
+        <button onClick={controllerContext.undo}>undo</button>
+        <button onClick={controllerContext.redo}>redo</button>
         {
             gameContext.players.map(player => 
                 <PlayerWrapper key={player.id} player={player}></PlayerWrapper>
