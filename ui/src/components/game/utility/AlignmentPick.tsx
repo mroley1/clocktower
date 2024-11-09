@@ -5,7 +5,6 @@ interface AlignmentPickProps {setAlignmentSelect: React.Dispatch<React.SetStateA
 function AlignmentPick({setAlignmentSelect}: AlignmentPickProps) {
     
     const selectAlignment = (alignment: Alignmant) => {
-        console.log(alignment)
         setAlignmentSelect(alignment)
     }
   

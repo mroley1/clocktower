@@ -7,6 +7,7 @@ import Menu from './menu/Menu';
 import { ReferenceData } from '../common/ReferenceData';
 import Players from './players/Players';
 import NightGuide from './nightGuide/NightGuide';
+import { Interaction } from '../common/reactStates/Intereaction';
 
 
 export const GameContext = createContext({} as GameData)
@@ -14,6 +15,8 @@ export const GameContext = createContext({} as GameData)
 export const ControllerContext = createContext({} as StateManager.Controller)
 
 export const DataContext = createContext({} as ReferenceData.ContextFormat)
+
+export const EphemeralContext = createContext({} as EphemeralContext)
 
 interface GameProps {gameSettings: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON)=>void, quitGame: ()=>void}
 function Game({gameSettings, saveGame, quitGame}: GameProps) {
@@ -26,6 +29,7 @@ function Game({gameSettings, saveGame, quitGame}: GameProps) {
     const roles = new ReferenceData.Roles();
     const script = new ReferenceData.Script(roles);
     const nightOrder = new ReferenceData.NightOrder(script);
+    const interactions = new ReferenceData.Interactions(script);
     const jinxes = new ReferenceData.Jinxes();
     const fabled = new ReferenceData.Fabled();
     return {
@@ -36,9 +40,19 @@ function Game({gameSettings, saveGame, quitGame}: GameProps) {
     roles,
     script,
     nightOrder,
+    interactions,
     jinxes,
     fabled,
   } as ReferenceData.ContextFormat}, [])
+  
+  const [ephemeralContextValue, setEphemeralContextValue] = useState({
+    currentTurnOwner: ""
+  })
+  
+  const ephemeralContext = {
+    value: ephemeralContextValue,
+    setter: setEphemeralContextValue
+  }
   
   const [building, setBuilding] = useState(true);
   
@@ -54,9 +68,11 @@ function Game({gameSettings, saveGame, quitGame}: GameProps) {
       <GameContext.Provider value={gameState}>
         <ControllerContext.Provider value={stateManager}>
           <DataContext.Provider value={referenceData}>
-            <Players></Players>
-            <Menu></Menu>
-            <NightGuide></NightGuide>
+            <EphemeralContext.Provider value={ephemeralContext}>
+              <Players></Players>
+              <Menu></Menu>
+              <NightGuide></NightGuide>
+            </EphemeralContext.Provider>
           </DataContext.Provider>
         </ControllerContext.Provider>
       </GameContext.Provider>

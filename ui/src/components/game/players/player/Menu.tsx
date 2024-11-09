@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import styles from './Player.module.scss';
-import { ControllerContext, DataContext, GameContext } from '../../Game';
+import { ControllerContext, DataContext, EphemeralContext, GameContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
 import { Alignmant } from '../../../../components/common/RoleType';
 import RolePick from '../../utility/RolePick';
 import AlignmentPick from '../../utility/AlignmentPick';
+import { getPlayerImage } from '../../utility/getImages';
 
 interface MenuProps {isOpen: boolean, closeFunc: ()=>void, playerData: Player.Data}
 function Menu({isOpen, closeFunc, playerData}: MenuProps) {
@@ -12,6 +13,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     const gameContext = useContext(GameContext);
     const controllerContext = useContext(ControllerContext)
     const dataContext = useContext(DataContext)
+    const ephemeralContext = useContext(EphemeralContext)
     
     const [roleSelect, setRoleSelect] = useState<string|undefined>(playerData.role)
         
@@ -47,8 +49,24 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     }
     
     function NightTurn() {
-        
-        return <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
+        return (
+            <div className={styles.container}>
+                <div className={styles.major_options}>
+                    <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
+                    <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
+                </div>
+                <div className={styles.pictogram}>
+                    {ephemeralContext.value.currentTurnOwner && ephemeralContext.value.currentTurnOwner != playerData.id && <>
+                        <img className={styles.player_image} src={getPlayerImage(gameContext.players.find(player => player.id == ephemeralContext.value.currentTurnOwner)!)}></img>
+                        <img className={styles.relationship_image} src={require('../../../../assets/arrow-right-long-solid.png')}></img>
+                    </>}
+                    <img className={styles.player_image} src={getPlayerImage(playerData)}></img>
+                    {ephemeralContext.value.currentTurnOwner == playerData.id && <>
+                        <img className={styles.relationship_image} src={require('../../../../assets/arrow-loop-left-solid.png')}></img>
+                    </>}
+                </div>
+            </div>
+        )
     }
     
     function Day() {
@@ -70,7 +88,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
         if (gameContext.gameProgression.isSetup) {
             return <Setup></Setup>
         }
-        if (gameContext.gameProgression.isNight && gameContext.gameProgression.currentTurnOwner) {
+        if (gameContext.gameProgression.isNight) {
             return <NightTurn></NightTurn>
         }
         if (gameContext.gameProgression.isDay) {

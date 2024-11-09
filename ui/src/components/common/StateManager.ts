@@ -7,6 +7,8 @@ import BaseReactState from "./reactStates/_BaseReactState";
 import { Interaction } from "./reactStates/Intereaction";
 import { Transaction } from "./reactStates/Transaction";
 import { Alignmant } from "./RoleType";
+import { Metadata } from "./reactStates/Metadadta";
+import { useCallback } from "react";
 
 export namespace StateManager {
     
@@ -16,6 +18,7 @@ export namespace StateManager {
     classMap.set("Player", Player.Data)
     classMap.set("Interaction", Interaction.Data)
     classMap.set("Transaction", Transaction.Data)
+    classMap.set("Metadata", Metadata.Data)
     
     export class Controller {
         
@@ -173,7 +176,7 @@ export namespace StateManager {
             }
             
             if (!suppressHistory) {
-                while (this.gameStateJSON.transactions.length > this.gameStateJSON.historyHead) {
+                while (this.gameStateJSON.transactions.length > this.gameStateJSON.metadata.historyHead) {
                     this.gameStateJSON.transactions.pop()
                 }
             }
@@ -182,11 +185,14 @@ export namespace StateManager {
                 this.usedUUIDs.add(obj.UUID);
                 const storedInstance = this.instanceMap.get(obj.UUID);
                 if (obj.active || !storedInstance) {
+                    if (storedInstance) {
+                        console.log(sha256(JSON.stringify(obj)).toString() + " == " + storedInstance!.jsonHash + ": ", sha256(JSON.stringify(obj)).toString() == storedInstance!.jsonHash)
+                    }
                     if (storedInstance && sha256(JSON.stringify(obj)).toString() == storedInstance.jsonHash) {
                         return storedInstance.instance
                     } else {
                         const newClass = new (classMap.get(obj.type) as any)(obj, callback);
-                        
+                        console.log(newClass)
                         if (!suppressHistory) {
                             transactionBuffer.new.push(obj)
                             if (storedInstance) {
@@ -212,11 +218,14 @@ export namespace StateManager {
                     newValues: transactionBuffer.new,
                     oldValues: transactionBuffer.old
                 }
+                transactionBuffer.new = []
+                transactionBuffer.old = []
                 this.gameStateJSON.transactions.push(transactionJSON);
                 const newClass = new Transaction.Data(transactionJSON, callback)
                 newGameState.transactions.push(newClass);
                 this.instanceMap.set(transactionJSON.UUID, {json: transactionJSON, jsonHash: sha256(JSON.stringify(transactionJSON)).toString(), instance: newClass})
-                this.gameStateJSON.historyHead++
+                this.gameStateJSON.metadata.historyHead++
+                console.log(this.instanceMap)
             }
             
             
@@ -244,8 +253,8 @@ export namespace StateManager {
         }
         
         undo = () => {
-            if (this.controller.gameStateJSON.historyHead > 0) {
-                this.controller.gameState.transactions[--this.controller.gameStateJSON.historyHead].revert();
+            if (this.controller.gameStateJSON.metadata.historyHead > 0) {
+                this.controller.gameState.transactions[--this.controller.gameStateJSON.metadata.historyHead].revert();
                 return true;
             } else {
                 return false;
@@ -253,8 +262,8 @@ export namespace StateManager {
         }
         
         redo = () => {
-            if (this.controller.gameStateJSON.historyHead < this.controller.gameState.transactions.length) {
-                this.controller.gameState.transactions[this.controller.gameStateJSON.historyHead++].apply();
+            if (this.controller.gameStateJSON.metadata.historyHead < this.controller.gameState.transactions.length) {
+                this.controller.gameState.transactions[this.controller.gameStateJSON.metadata.historyHead++].apply();
                 return true;
             } else {
                 return false;
@@ -263,7 +272,7 @@ export namespace StateManager {
         
         toJSON() {
             return JSON.stringify({
-                head: this.controller.gameStateJSON.historyHead
+                head: this.controller.gameStateJSON.metadata.historyHead
             })
         }
     }

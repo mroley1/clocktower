@@ -5,11 +5,12 @@ import { Alignmant, ClassType } from "./RoleType"
 
 export namespace ReferenceData {
     export interface ContextFormat {
-        roles: Roles,
-        nightOrder: NightOrder,
-        jinxes: Jinxes,
-        script: Script,
-        fabled: Fabled,
+        roles: Roles
+        script: Script
+        nightOrder: NightOrder
+        interactions: Interactions
+        jinxes: Jinxes
+        fabled: Fabled
         utilies: {
             saveGame: (gameDataJSON: GameDataJSON) => void,
             quitGame: () => void
@@ -164,7 +165,6 @@ export namespace ReferenceData {
         getOtherNight(players: Player.Data[]) {
             let order: NightOrderTurn[] = []
             this._otherNight.forEach((role) => {
-                console.log(role)
                 if (this.KEYWORDS.some((keyword) => keyword.id == role.id)) {
                     order.push({
                         role: role.id,
@@ -188,6 +188,11 @@ export namespace ReferenceData {
             })
             return order
         }
+    }
+    
+    export class Interactions {
+        
+        constructor(script: Script) {}
     }
     
     export class Jinxes {}

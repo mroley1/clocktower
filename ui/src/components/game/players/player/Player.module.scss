@@ -54,5 +54,33 @@
             cursor: pointer;
             color: red;
         }
+        
+        .container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            
+            .major_options {
+                display: flex;
+            }
+            
+            .pictogram {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                
+                .player_image {
+                    width: 30%;
+                }
+                
+                .relationship_image {
+                    width: 10%;
+                }
+            }
+        }
     }
 }

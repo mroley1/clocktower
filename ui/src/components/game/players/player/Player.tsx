@@ -4,6 +4,7 @@ import { ControllerContext, DataContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
 import { Alignmant } from '../../../../components/common/RoleType';
 import Menu from './Menu';
+import { getPlayerImage } from '../../utility/getImages';
 
 interface PlayerPartialProps {playerData: Player.Data}
 function PlayerPartial({playerData}: PlayerPartialProps) {
@@ -16,7 +17,7 @@ function PlayerPartial({playerData}: PlayerPartialProps) {
   }
   // const interactionHandler = new InteractionHandler(updatePoisition, playerData.id);
   
-  const image = getImage(playerData);
+  const image = getPlayerImage(playerData);
   
   const [menuOpen, setMenuOpen] = useState(false);
   function openMenu() {
@@ -47,14 +48,3 @@ function PlayerPartial({playerData}: PlayerPartialProps) {
 }
 
 export default PlayerPartial;
-
-function getImage(playerData: Player.Data) {
-    if (playerData.role) {
-        if (playerData.alignment == Alignmant.GOOD) {
-            var imageName = playerData.role + "_good.png"
-        } else {
-            var imageName = playerData.role + "_evil.png"
-        }
-        return require("../../../../assets/icons/" + imageName)
-    } else return null
-}

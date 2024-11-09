@@ -68,11 +68,9 @@ export default App;
 
 function newSaveJSON(): GameDataJSON {
   return {
-    name: "",
-    gameID: dbIdNew(),
-    historyHead: 0,
+    metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, name: "", gameID: dbIdNew(), historyHead: 0},
     playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, quantity: 20},
-    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, state: GameProgression.State.SETUP, night: 0, stored: undefined, currentTurnOwner: ""},
+    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, state: GameProgression.State.SETUP, night: 0, stored: undefined},
     players: [],
     interactions: [],
     transactions: []
@@ -82,7 +80,7 @@ function newSaveJSON(): GameDataJSON {
 function genSaveJsonTag(gameDataJSON: GameDataJSON): GameDataJSONTag {
   return {
     name: "",
-    gameID: gameDataJSON.gameID,
+    gameID: gameDataJSON.metadata.gameID,
     gameProgression: gameDataJSON.gameProgression,
     playerRoles: gameDataJSON.players.filter(player => player.role).map(player => player.role!),
     script: undefined,
@@ -175,7 +173,7 @@ function newSave(db: IDBDatabase) {
     }
     
     const objectStore = transaction.objectStore('saves')
-    const objectStoreRequest = objectStore.add(newItem, data.gameID)
+    const objectStoreRequest = objectStore.add(newItem, data.metadata.gameID)
     
     objectStoreRequest.onsuccess = () => {
       resolve(newItem.tag)
@@ -222,7 +220,7 @@ function saveGameData(db: IDBDatabase, gameData: GameDataJSON): Promise<void> {
     }
     
     const objectStore = transaction.objectStore('saves')
-    const objectStoreRequest = objectStore.put(newItem, gameData.gameID)
+    const objectStoreRequest = objectStore.put(newItem, gameData.metadata.gameID)
     
     objectStoreRequest.onsuccess = () => {
       resolve()

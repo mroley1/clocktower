@@ -94,7 +94,6 @@ const useInteractionHandler = (player: Player.Data) => {
     }
     const touchEnd = (event: any) => {
         const target =  event.target.parentElement as HTMLDivElement
-        console.log(target)
         if (target.getAttribute("data-id") == player.id) {
             const targetBox = target.getBoundingClientRect()
             if (targetBox.x == xStart && targetBox.y == yStart) {
