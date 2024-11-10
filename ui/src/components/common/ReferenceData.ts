@@ -143,7 +143,7 @@ export namespace ReferenceData {
                         role: role.id,
                         alignment: Alignmant.NONE,
                         description: role.description,
-                        UUID: undefined,
+                        UUID: "_" + role.id,
                         keyword: true
                     })
                 }
@@ -170,7 +170,7 @@ export namespace ReferenceData {
                         role: role.id,
                         alignment: Alignmant.NONE,
                         description: role.description,
-                        UUID: undefined,
+                        UUID: "_" + role.id,
                         keyword: true
                     })
                 }

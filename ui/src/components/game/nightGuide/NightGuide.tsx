@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import style from "./NightGuide.module.scss";
-import { DataContext, GameContext } from "../Game";
+import { ControllerContext, DataContext, GameContext } from "../Game";
 import { Alignmant } from "../../../components/common/RoleType";
 import { ReferenceData } from "@/components/common/ReferenceData";
 import { CSSTransition } from "react-transition-group"
@@ -9,6 +9,7 @@ function NightGuide() {
     
     const dataContext = useContext(DataContext)
     const gameContext = useContext(GameContext)
+    const controllerContext = useContext(ControllerContext)
     
     var nightOrder: ReferenceData.NightOrderTurn[] = []
     if (gameContext.gameProgression.night) {
@@ -19,9 +20,31 @@ function NightGuide() {
         }
     }
     
-    const [focusedIndex, setFocusedIndex] = useState(0)
+    let initalFocusedIndex = 0
+    if (nightOrder.length > 0) {
+        initalFocusedIndex = nightOrder.findIndex((value) => value.UUID == gameContext.gameProgression.currentTurn)
+        if (initalFocusedIndex < 0) {
+            initalFocusedIndex = 0
+            controllerContext.initilizeTurn(nightOrder[0].UUID)
+        }
+    }
+    
+    const [focusedIndex, setFocusedIndex] = useState(initalFocusedIndex)
+    
+    useEffect(() => {
+        console.log(gameContext.gameProgression.currentTurn)
+        if (gameContext.gameProgression.currentTurn && nightOrder.length > 0) {
+            let focusedIndex = nightOrder.findIndex((value) => value.UUID == gameContext.gameProgression.currentTurn)
+            if (focusedIndex < 0) {
+                focusedIndex = 0
+                controllerContext.initilizeTurn(nightOrder[0].UUID)
+            }
+            setFocusedIndex(focusedIndex)
+        }
+    }, [gameContext.gameProgression.currentTurn])
+    
     function setCurrentTurn(focusedIndex: number) {
-        gameContext._globals.currentTurnOwner = nightOrder[focusedIndex].UUID
+        gameContext.gameProgression.currentTurn = nightOrder[focusedIndex].UUID
         setFocusedIndex(focusedIndex)
     }
     function next(event: React.PointerEvent<HTMLDivElement>) {

@@ -5,10 +5,8 @@ import { Interaction } from "./reactStates/Intereaction"
 import ScriptData from "./ScriptData"
 import { Metadata } from "./reactStates/Metadata"
 import BaseReactState from "./reactStates/_BaseReactState"
-import { _QuietState } from "./reactStates/_QuietState"
 
 export interface GameData {
-    _globals: _QuietState.Data
     metadata: Metadata.Data
     playerCount: PlayerCount.Data
     gameProgression: GameProgression.Data
@@ -17,7 +15,6 @@ export interface GameData {
 }
 
 export interface GameDataJSON {
-    _globals: _QuietState.ReactState
     metadata: Metadata.ReactState
     playerCount: PlayerCount.ReactState
     gameProgression: GameProgression.ReactState

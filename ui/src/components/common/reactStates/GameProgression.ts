@@ -8,12 +8,13 @@ export namespace GameProgression {
     }
     
     export interface ReactState extends BaseReactState {
-        type: string,
-        UUID: string,
-        active: boolean,
-        state: State,
-        night: number,
+        type: string
+        UUID: string
+        active: boolean
+        state: State
+        night: number
         stored: State|undefined
+        currentTurn: string|undefined
     }
     
     export class Data {
@@ -24,6 +25,7 @@ export namespace GameProgression {
         private _state: State = State.SETUP;
         private _night: number = 0;
         private _stored: State|undefined;
+        private _currentTurn: string|undefined
         
         private useSetter() {
             this.reactSetter([{
@@ -32,7 +34,8 @@ export namespace GameProgression {
                 active: this.active,
                 state: this._state,
                 night: this._night,
-                stored: this._stored
+                stored: this._stored,
+                currentTurn: this._currentTurn
             }])
         }
         
@@ -44,6 +47,7 @@ export namespace GameProgression {
             this._state = reactState.state;
             this._night = reactState.night;
             this._stored = reactState.stored;
+            this._currentTurn = reactState.currentTurn;
         }
         
         private pushStored(state: State): boolean {
@@ -117,6 +121,21 @@ export namespace GameProgression {
             return this._state == State.NIGHT;
         }
         
+        get currentTurn(): string|undefined {
+            return this._currentTurn;
+        }
+        
+        set currentTurn(currentTurn: string|undefined) {
+            this._currentTurn = currentTurn;
+            this.useSetter()
+        }
+        
+        get currentTurnOwner(): string|undefined {
+            if (!this._currentTurn?.startsWith("_")) {
+                return this.currentTurn
+            }
+        }
+        
         toJSON() {
             const formatDocument: ReactState = {
                 type: "GameProgression",
@@ -124,7 +143,8 @@ export namespace GameProgression {
                 active: this.active,
                 state: this._state,
                 night: this._night,
-                stored: this._stored
+                stored: this._stored,
+                currentTurn: this._currentTurn
             }
             return JSON.stringify(formatDocument)
         }

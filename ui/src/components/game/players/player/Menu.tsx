@@ -55,12 +55,12 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                     <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
                 </div>
                 <div className={styles.pictogram}>
-                    {gameContext._globals.currentTurnOwner && gameContext._globals.currentTurnOwner != playerData.id && <>
-                        <img className={styles.player_image} src={getPlayerImage(gameContext.players.find(player => player.id == gameContext._globals.currentTurnOwner)!)}></img>
+                    {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
+                        <img className={styles.player_image} src={getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-right-long-solid.png')}></img>
                     </>}
                     <img className={styles.player_image} src={getPlayerImage(playerData)}></img>
-                    {gameContext._globals.currentTurnOwner == playerData.id && <>
+                    {gameContext.gameProgression.currentTurnOwner == playerData.id && <>
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-loop-left-solid.png')}></img>
                     </>}
                 </div>
