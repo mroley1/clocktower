@@ -13,8 +13,6 @@ export const ControllerContext = createContext({} as StateManager.Controller)
 
 export const DataContext = createContext({} as ReferenceData.ContextFormat)
 
-export const EphemeralContext = createContext({} as EphemeralContext)
-
 interface GameProps {gameSettings: GameDataJSON, history: HistoryJSON, saveGame: (gameDataJSON: GameDataJSON, history: HistoryJSON)=>void, quitGame: ()=>void}
 function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
   
@@ -42,15 +40,6 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
     fabled,
   } as ReferenceData.ContextFormat}, [])
   
-  const [ephemeralContextValue, setEphemeralContextValue] = useState({
-    currentTurnOwner: ""
-  })
-  
-  const ephemeralContext = {
-    value: ephemeralContextValue,
-    setter: setEphemeralContextValue
-  }
-  
   const [building, setBuilding] = useState(true);
   
   useEffect(() => {
@@ -65,11 +54,9 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
       <GameContext.Provider value={gameState}>
         <ControllerContext.Provider value={stateManager}>
           <DataContext.Provider value={referenceData}>
-            <EphemeralContext.Provider value={ephemeralContext}>
-              <Players></Players>
-              <Menu></Menu>
-              <NightGuide></NightGuide>
-            </EphemeralContext.Provider>
+            <Players></Players>
+            <Menu></Menu>
+            <NightGuide></NightGuide>
           </DataContext.Provider>
         </ControllerContext.Provider>
       </GameContext.Provider>

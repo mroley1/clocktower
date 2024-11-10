@@ -7,6 +7,7 @@ import BaseReactState from "./reactStates/_BaseReactState";
 import { Interaction } from "./reactStates/Intereaction";
 import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
+import { _QuietState } from "./reactStates/_QuietState";
 
 export namespace StateManager {
     
@@ -16,6 +17,7 @@ export namespace StateManager {
     classMap.set("Player", Player.Data)
     classMap.set("Interaction", Interaction.Data)
     classMap.set("Metadata", Metadata.Data)
+    classMap.set("_QuietState", _QuietState.Data)
     
     export class Controller {
         
@@ -78,6 +80,36 @@ export namespace StateManager {
             }
             return mapped;
         }
+        
+        // private filterEphemeral(obj: any): any {
+        //     let filtered: any
+        //     if (Array.isArray(obj)) {
+        //         filtered = [];
+        //         obj.forEach((member) => {
+        //             const mpObj = this.filterEphemeral(member)
+        //             if (mpObj) {
+        //                 filtered.push(mpObj);
+        //             }
+        //         })
+        //     } else {
+        //         filtered = {};
+        //         for (const [key, value] of Object.entries(obj)) {
+        //             if (key.startsWith("_")) {
+        //                 filtered[key] = undefined
+        //             } else if (typeof value != "object") {
+        //                 filtered[key] = value;
+        //             } else {
+        //                 filtered[key] = this.filterEphemeral(value);
+        //             }
+        //         }
+        //     }
+        //     return filtered;
+        // }
+        
+        // private prepareGameStateForSave() {
+        //     let prepared = this.filterEphemeral(this.gameStateJSON)
+        //     return prepared
+        // }
         
         public saveGame() {
             if (this.gameStateJSON) {
@@ -188,7 +220,7 @@ export namespace StateManager {
                         return storedInstance.instance
                     } else {
                         const newClass = new (classMap.get(obj.type) as any)(obj, callback);
-                        if (!suppressHistory) {
+                        if (!suppressHistory && !obj.type.startsWith("_")) {
                             transactionBuffer.new.push(obj)
                             if (storedInstance) {
                                 transactionBuffer.old.push(storedInstance.json)
@@ -206,7 +238,8 @@ export namespace StateManager {
             })
             
             if (!suppressHistory && this.gameStateJSON && (transactionBuffer.new.length > 0 || transactionBuffer.old.length > 0)) {
-                this.historyController.push(transactionBuffer.old, transactionBuffer.new)
+                console.log(this.gameStateJSON._globals)
+                this.historyController.push(transactionBuffer.old, transactionBuffer.new, this.gameStateJSON._globals.currentTurnOwner || undefined)
             }
             
             this.saveGame()

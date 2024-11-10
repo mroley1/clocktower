@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import styles from './Player.module.scss';
-import { ControllerContext, DataContext, EphemeralContext, GameContext } from '../../Game';
+import { ControllerContext, DataContext, GameContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
 import { Alignmant } from '../../../../components/common/RoleType';
 import RolePick from '../../utility/RolePick';
@@ -13,7 +13,6 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     const gameContext = useContext(GameContext);
     const controllerContext = useContext(ControllerContext)
     const dataContext = useContext(DataContext)
-    const ephemeralContext = useContext(EphemeralContext)
     
     const [roleSelect, setRoleSelect] = useState<string|undefined>(playerData.role)
         
@@ -56,12 +55,12 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                     <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
                 </div>
                 <div className={styles.pictogram}>
-                    {ephemeralContext.value.currentTurnOwner && ephemeralContext.value.currentTurnOwner != playerData.id && <>
-                        <img className={styles.player_image} src={getPlayerImage(gameContext.players.find(player => player.id == ephemeralContext.value.currentTurnOwner)!)}></img>
+                    {gameContext._globals.currentTurnOwner && gameContext._globals.currentTurnOwner != playerData.id && <>
+                        <img className={styles.player_image} src={getPlayerImage(gameContext.players.find(player => player.id == gameContext._globals.currentTurnOwner)!)}></img>
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-right-long-solid.png')}></img>
                     </>}
                     <img className={styles.player_image} src={getPlayerImage(playerData)}></img>
-                    {ephemeralContext.value.currentTurnOwner == playerData.id && <>
+                    {gameContext._globals.currentTurnOwner == playerData.id && <>
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-loop-left-solid.png')}></img>
                     </>}
                 </div>

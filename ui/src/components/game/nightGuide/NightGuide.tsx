@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import style from "./NightGuide.module.scss";
-import { DataContext, EphemeralContext, GameContext } from "../Game";
+import { DataContext, GameContext } from "../Game";
 import { Alignmant } from "../../../components/common/RoleType";
 import { ReferenceData } from "@/components/common/ReferenceData";
 import { CSSTransition } from "react-transition-group"
@@ -9,7 +9,6 @@ function NightGuide() {
     
     const dataContext = useContext(DataContext)
     const gameContext = useContext(GameContext)
-    const ephemeralContext = useContext(EphemeralContext)
     
     var nightOrder: ReferenceData.NightOrderTurn[] = []
     if (gameContext.gameProgression.night) {
@@ -22,9 +21,7 @@ function NightGuide() {
     
     const [focusedIndex, setFocusedIndex] = useState(0)
     function setCurrentTurn(focusedIndex: number) {
-        const newEpContextValue = structuredClone(ephemeralContext.value)
-        newEpContextValue.currentTurnOwner = nightOrder[focusedIndex].UUID!
-        ephemeralContext.setter(newEpContextValue)
+        gameContext._globals.currentTurnOwner = nightOrder[focusedIndex].UUID
         setFocusedIndex(focusedIndex)
     }
     function next(event: React.PointerEvent<HTMLDivElement>) {
@@ -55,8 +52,8 @@ function NightGuide() {
                         if (index < focusedIndex) {callback = last}
                         if (index > focusedIndex) {callback = next}
                         return (
-                            <CSSTransition in={showDescription} timeout={300} classNames={{...style}}>
-                                <div key={turnData.UUID} className={style.nightTurn} style={{transform: `rotate(${-index*25}deg)`}} >
+                            <CSSTransition key={turnData.UUID} in={showDescription} timeout={300} classNames={{...style}}>
+                                <div className={style.nightTurn} style={{transform: `rotate(${-index*25}deg)`}} >
                                     <div className={style.tile} data-alignment={Alignmant[turnData.alignment]} onClick={callback}>
                                         <img src={getImage(turnData.role, turnData.alignment)}></img>
                                     </div>
