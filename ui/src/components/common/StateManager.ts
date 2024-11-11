@@ -7,6 +7,7 @@ import BaseReactState from "./reactStates/_BaseReactState";
 import { Interaction } from "./reactStates/Intereaction";
 import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
+import { ReferenceData } from "./ReferenceData";
 
 export namespace StateManager {
     
@@ -94,6 +95,10 @@ export namespace StateManager {
             }
         }
         
+        getPlayerFromId = (UUID: string|undefined) => {
+            return this.gameStateJSON.players.find((player) => player.UUID == UUID)
+        }
+        
         private setValues(values: BaseReactState[], suppressHistory?: boolean) {
             const valuesMap = new Map<string, BaseReactState>();
             values.forEach(value => valuesMap.set(value.UUID, value))
@@ -151,18 +156,19 @@ export namespace StateManager {
             this.build();
         }
         
-        addInteraction = () => {
+        addInteraction = (effect: ReferenceData.Effect, effected: string) => {
             const newInteractionJSON = {
                 type: "Interaction",
                 UUID: this.newUUID(),
                 active: true,
-                owner: "this._owner",
+                owner: this.gameStateJSON.gameProgression.currentTurn,
                 bound: true,
-                name: "this._name",
+                name: effect.name,
                 length: 0,
-                effect: 0,
-                effected: "this._effected"
-            }
+                effect: effect.effect,
+                effected: effected,
+                from: effect.role
+            } as Interaction.ReactState
             this.gameStateJSON.interactions.push(newInteractionJSON)
             this.build();
         }
@@ -220,7 +226,7 @@ export namespace StateManager {
             })
             
             if (!suppressHistory && this.gameStateJSON && (transactionBuffer.new.length > 0 || transactionBuffer.old.length > 0)) {
-                this.historyController.push(transactionBuffer.old, transactionBuffer.new, this.gameState.gameProgression.currentTurnOwner || undefined)
+                this.historyController.push(transactionBuffer.old, transactionBuffer.new)
             }
             
             this.saveGame()
@@ -269,10 +275,9 @@ export namespace StateManager {
             this._transactions = this._transactions.filter((_, i) => i < this._head)
         }
         
-        public push(oldValues: BaseReactState[], newValues: BaseReactState[], owner: string|undefined = undefined) {
+        public push(oldValues: BaseReactState[], newValues: BaseReactState[]) {
             this.cleanHead()
             this._transactions.push({
-                owner,
                 old: oldValues,
                 new: newValues
             } as TransactionJSON)

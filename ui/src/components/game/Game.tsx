@@ -23,6 +23,7 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
   const referenceData = useMemo(() => {
     const roles = new ReferenceData.Roles();
     const script = new ReferenceData.Script(roles);
+    const image = new ReferenceData.Image(script)
     const nightOrder = new ReferenceData.NightOrder(script);
     const interactions = new ReferenceData.Interactions(script);
     const jinxes = new ReferenceData.Jinxes();
@@ -34,6 +35,7 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
     },
     roles,
     script,
+    image,
     nightOrder,
     interactions,
     jinxes,

@@ -32,7 +32,6 @@ function NightGuide() {
     const [focusedIndex, setFocusedIndex] = useState(initalFocusedIndex)
     
     useEffect(() => {
-        console.log(gameContext.gameProgression.currentTurn)
         if (gameContext.gameProgression.currentTurn && nightOrder.length > 0) {
             let focusedIndex = nightOrder.findIndex((value) => value.UUID == gameContext.gameProgression.currentTurn)
             if (focusedIndex < 0) {

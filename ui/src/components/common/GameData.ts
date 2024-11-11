@@ -23,8 +23,7 @@ export interface GameDataJSON {
 }
 
 export interface TransactionJSON {
-    owner: string|undefined
-    new: BaseReactState[],
+    new: BaseReactState[]
     old: BaseReactState[]
 }
 

@@ -7,6 +7,7 @@ export namespace ReferenceData {
     export interface ContextFormat {
         roles: Roles
         script: Script
+        image: Image
         nightOrder: NightOrder
         interactions: Interactions
         jinxes: Jinxes
@@ -17,20 +18,24 @@ export namespace ReferenceData {
         }
     }
     
+    export interface Effect {
+        role: string
+        alignment: string
+        name: string
+        effect: number
+        length: number
+        bound: boolean
+        limitToSelf: boolean
+        public: boolean
+    }
+    
     interface RoleData {
         id: string
         name: string
         description: string
         alignment: Alignmant
         classType: ClassType
-        effects: {
-            name: string
-            effect: number
-            length: number
-            bound: boolean
-            limitToSelf: boolean
-            public: boolean
-        }[]
+        effects: Effect[]
         first_night_desc: string,
         other_night_desc: string,
         change_makeup: [],
@@ -192,10 +197,62 @@ export namespace ReferenceData {
     
     export class Interactions {
         
-        constructor(script: Script) {}
+        private _script
+        private _interactions: Effect[] = []
+        
+        constructor(script: Script) {
+            this._script = script
+            this._interactions = this._script.roles.flatMap(role =>
+                role.effects.map(effect => {
+                    effect.role = role.id;
+                    return effect
+                })
+            )
+        }
+        
+        getInteractions(role: string|undefined = undefined, inPlay: string[]) {
+            return this._interactions.filter(interaction => 
+                interaction.role == role ||
+                (interaction.public && inPlay.includes(interaction.role))
+            )
+        }
     }
     
     export class Jinxes {}
     
     export class Fabled {}
+    
+    export class Image {
+        
+        private _script
+        
+        constructor(script: Script) {
+            this._script = script
+        }
+        
+        getPlayerImage(playerData: Player.Data) {
+            if (playerData.role) {
+                if (playerData.alignment == Alignmant.GOOD) {
+                    var imageName = playerData.role + "_good.png"
+                } else {
+                    var imageName = playerData.role + "_evil.png"
+                }
+                return require("../../assets/icons/" + imageName)
+            } else return null
+        }
+        
+        getRoleImage(roleName: string, alignment: Alignmant|undefined = undefined) {
+            if (!alignment) {
+                alignment = this._script.getRole(roleName)?.alignment
+            }
+            if (roleName) {
+                if (alignment == Alignmant.GOOD) {
+                    var imageName = roleName + "_good.png"
+                } else {
+                    var imageName = roleName + "_evil.png"
+                }
+                return require("../../assets/icons/" + imageName)
+            } else return null
+        }
+    }
 }

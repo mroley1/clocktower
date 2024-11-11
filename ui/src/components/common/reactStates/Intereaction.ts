@@ -26,6 +26,7 @@ export namespace Interaction {
         length: number
         effect: Effect
         effected: string
+        from: string
     }
     
     export class Data {
@@ -39,6 +40,7 @@ export namespace Interaction {
         private _length: number
         private _effect: Effect
         private _effected: string
+        private _from: string
         
         private applyFunc: (orgState: ReactState) => ReactState
         
@@ -52,7 +54,8 @@ export namespace Interaction {
                 name: this._name,
                 length: this._length,
                 effect: this._effect,
-                effected: this._effected
+                effected: this._effected,
+                from: this._from
             }])
         }
         
@@ -67,6 +70,7 @@ export namespace Interaction {
             this._length = reactState.length;
             this._effect = reactState.effect;
             this._effected = reactState.effected;
+            this._from = reactState.from;
             
             this.applyFunc = getApplyFunc(this._effect)
         }
@@ -79,6 +83,18 @@ export namespace Interaction {
             return this._effected
         }
         
+        get name() {
+            return this._name
+        }
+        
+        get key() {
+            return this.UUID
+        }
+        
+        get from() {
+            return this._from
+        }
+        
         toJSON() {
             const formatDocument: ReactState = {
                 type: "Interaction",
@@ -89,7 +105,8 @@ export namespace Interaction {
                 name: this._name,
                 length: this._length,
                 effect: this._effect,
-                effected: this._effected
+                effected: this._effected,
+                from: this._from
             }
             return JSON.stringify(formatDocument)
         }
