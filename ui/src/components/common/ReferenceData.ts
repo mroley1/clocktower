@@ -129,7 +129,7 @@ export namespace ReferenceData {
                 })
             }
             this._firstNight = transform(this.nightOrder.firstnight);
-            this._otherNight = transform(this.nightOrder.firstnight);
+            this._otherNight = transform(this.nightOrder.othernight);
         }
         
         get firstNight() {

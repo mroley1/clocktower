@@ -62,7 +62,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 .filter(role => role != undefined)
         )
         
-        console.log(availableInteractions)
+        const activeInteractions = gameContext.interactions.filter(interaction => interaction.effected == playerData.id)
         
         return (
             <div className={styles.container}>
@@ -71,11 +71,21 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                     <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
                 </div>
                 <div className={styles.interactions}>
+                    AVAILABLE
                     {
                         availableInteractions.map(interaction => <div className={styles.interaction} onClick={() => {applyEffect(interaction)}} key={interaction.name + interaction.role}>
                             <img src={dataContext.image.getRoleImage(interaction.role)}></img>
                             {interaction.name}
                         </div>)
+                    }
+                </div>
+                <div className={styles.interactions}>
+                    ACTIVE
+                    {
+                        activeInteractions.map(interaction => <div className={styles.interaction} key={interaction.key}>
+                        <img src={dataContext.image.getRoleImage(interaction.from)}></img>
+                        {interaction.name}
+                    </div>)
                     }
                 </div>
                 <div className={styles.pictogram}>
@@ -113,9 +123,11 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
         if (gameContext.gameProgression.isSetup) {
             return <Setup></Setup>
         }
+        
         if (gameContext.gameProgression.isNight) {
             return <NightTurn></NightTurn>
         }
+        
         if (gameContext.gameProgression.isDay) {
             return <Day></Day>
         }

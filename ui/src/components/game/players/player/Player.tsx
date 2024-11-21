@@ -68,15 +68,15 @@ function InteractionIndicators({activeInteractions}: InteractionIndicatorsProps)
       {displayed.map(interaction => {
         if (interaction == null) {
           return (
-          <div className={styles.slot + " " + styles["quantity-" + activeInteractions.length]}>
-            <div key="etc" className={styles.pip}>
+          <div key="etc" className={`${styles.slot} ${styles["quantity-" + activeInteractions.length]}`}>
+            <div className={styles.pip}>
               <img src={require("../../../../assets/dots.png")}></img>
             </div>
           </div>)
         } else {
           return (
-            <div className={styles.slot + " " + styles["quantity-" + activeInteractions.length]}>
-              <div key={interaction.key} className={styles.pip}>
+            <div key={interaction.key} className={styles.slot + " " + styles["quantity-" + activeInteractions.length]}>
+              <div className={styles.pip}>
                 <img src={dataContext.image.getRoleImage(interaction.from)}></img>
               </div>
             </div>

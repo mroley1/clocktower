@@ -1,3 +1,4 @@
+import { prgressIdToDayState } from "../GameProgressionTranslator";
 import BaseReactState from "./_BaseReactState";
 
 export namespace GameProgression {
@@ -11,9 +12,7 @@ export namespace GameProgression {
         type: string
         UUID: string
         active: boolean
-        state: State
-        night: number
-        stored: State|undefined
+        progressId: number
         currentTurn: string|undefined
     }
     
@@ -22,9 +21,7 @@ export namespace GameProgression {
         private UUID
         private active
         
-        private _state: State = State.SETUP;
-        private _night: number = 0;
-        private _stored: State|undefined;
+        private _progressId: number = 0;
         private _currentTurn: string|undefined
         
         private useSetter() {
@@ -32,9 +29,7 @@ export namespace GameProgression {
                 type: "GameProgression",
                 UUID: this.UUID,
                 active: this.active,
-                state: this._state,
-                night: this._night,
-                stored: this._stored,
+                progressId: this._progressId,
                 currentTurn: this._currentTurn
             }])
         }
@@ -44,81 +39,48 @@ export namespace GameProgression {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
             
-            this._state = reactState.state;
-            this._night = reactState.night;
-            this._stored = reactState.stored;
+            this._progressId = reactState.progressId;
             this._currentTurn = reactState.currentTurn;
         }
         
-        private pushStored(state: State): boolean {
-            if (this._stored) {
-                return false;
-            } else {
-                this._stored = this._state;
-                this._state = state;
-                this.useSetter();
-                return true;
-            }
-        }
-        
-        private popStored(): boolean {
-            if (this._stored) {
-                this._state = this._stored;
-                this._stored = undefined;
-                this.useSetter();
-                return true;
-            } else {
-                return true;
-            }
-        }
-        
         nextStage = (): Data => {
-            this.popStored();
-            if (this.night == 0) {
-                this._night = 1;
-                this._state = State.NIGHT
+            if (this._progressId == 1) {
+                this._progressId = 0b10
             } else {
-                if (this.isDay) {
-                    this._night++
-                    this._state = State.NIGHT
-                } else {
-                    this._state = State.DAY
-                }
+                this._progressId += 0b10
             }
             this.useSetter();
             return this;
         }
         
-        enterSetup = (): boolean => {
-            return this.pushStored(State.SETUP);
+        enterSetup = (): void => {
+            this._progressId |= 1
+            this.useSetter()
         }
         
-        leaveSetup = (): boolean => {
-            if (this.isSetup) {
-                return this.popStored();
-            } else {
-                return false;
-            }
+        leaveSetup = (): void => {
+            this._progressId &= 0
+            this.useSetter()
         }
         
         get state(): State {
-            return this._state;
+            return prgressIdToDayState(this._progressId).state;
         }
         
         get night(): State {
-            return this._night;
+            return prgressIdToDayState(this._progressId).night;
         }
         
         get isSetup(): boolean {
-            return this._state == State.SETUP;
+            return this.state == State.SETUP;
         }
         
         get isDay(): boolean {
-            return this._state == State.DAY;
+            return this.state == State.DAY;
         }
         
         get isNight(): boolean {
-            return this._state == State.NIGHT;
+            return this.state == State.NIGHT;
         }
         
         get currentTurn(): string|undefined {
@@ -141,9 +103,7 @@ export namespace GameProgression {
                 type: "GameProgression",
                 UUID: this.UUID,
                 active: this.active,
-                state: this._state,
-                night: this._night,
-                stored: this._stored,
+                progressId: this._progressId,
                 currentTurn: this._currentTurn
             }
             return JSON.stringify(formatDocument)

@@ -70,7 +70,7 @@ function newSaveJSON(): GameDataJSON {
   return {
     metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, name: "", gameID: dbIdNew()},
     playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, quantity: 20},
-    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, state: GameProgression.State.SETUP, night: 0, stored: undefined, currentTurn: undefined},
+    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, progressId: 1, currentTurn: undefined},
     players: [],
     interactions: []
   }
