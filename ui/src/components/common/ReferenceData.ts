@@ -1,3 +1,4 @@
+import { InteractionJSON } from "@/data/common/roles"
 import { GameDataJSON } from "./GameData"
 import { Player } from "./reactStates/Player"
 import { Alignmant, ClassType } from "./RoleType"
@@ -18,16 +19,12 @@ export namespace ReferenceData {
         }
     }
     
-    export interface Effect {
-        role: string
-        alignment: string
-        name: string
-        effect: number
-        length: number
-        bound: boolean
-        limitToSelf: boolean
-        public: boolean
+    export type InteractionAdditions = {
+        role: string,
+        UUID: string
     }
+    
+    export type Interaction = InteractionJSON & InteractionAdditions
     
     interface RoleData {
         id: string
@@ -35,7 +32,7 @@ export namespace ReferenceData {
         description: string
         alignment: Alignmant
         classType: ClassType
-        effects: Effect[]
+        interactions: Interaction[]
         first_night_desc: string,
         other_night_desc: string,
         change_makeup: [],
@@ -46,6 +43,15 @@ export namespace ReferenceData {
         
         constructor() {
             this.roleData = require("../../data/common/roles.json");
+            for (let role of Object.keys(this.roleData)) {
+                try { // ! REMOVE TRY WHEN ALL ROLES ARE UPDATED
+                    this.roleData[role].interactions.forEach((effect: any) => {
+                        effect.role = role
+                        effect.UUID = window.crypto.randomUUID()
+                    })
+                } catch {}
+            }
+            console.log(this.roleData)
         }
         
         getRole(roleName: string): RoleData {
@@ -198,16 +204,16 @@ export namespace ReferenceData {
     export class Interactions {
         
         private _script
-        private _interactions: Effect[] = []
+        private _interactions: Interaction[] = []
+        
+        private _map: Map<string, Interaction> = new Map()
         
         constructor(script: Script) {
             this._script = script
-            this._interactions = this._script.roles.flatMap(role =>
-                role.effects.map(effect => {
-                    effect.role = role.id;
-                    return effect
-                })
-            )
+            this._interactions = this._script.roles.flatMap(role => role.interactions)
+            this._interactions.forEach(interaction => {
+                this._map.set(interaction.UUID, interaction)
+            })
         }
         
         getInteractions(role: string|undefined = undefined, inPlay: string[]) {
@@ -215,6 +221,16 @@ export namespace ReferenceData {
                 interaction.role == role ||
                 (interaction.public && inPlay.includes(interaction.role))
             )
+        }
+        
+        getAllInterations(inPlay: string[]) {
+            return this._interactions.filter(interaction => 
+                inPlay.includes(interaction.role)
+            )
+        }
+        
+        getInteraction(UUID: string) {
+            return this._map.get(UUID)
         }
     }
     

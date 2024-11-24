@@ -84,6 +84,16 @@ export namespace Player {
             this.useSetter();
         }
         
+        kill() {
+            this._viability.kill();
+            this.useSetter();
+        }
+        
+        bury() {
+            this._viability.bury();
+            this.useSetter();
+        }
+        
         public toJSON() {
             const formatDocument: ReactState = {
                 type: "PlayerCount",
@@ -107,8 +117,7 @@ export namespace Player {
     export enum ViabilityState {
         ALIVE,
         DEAD,
-        SLEEPING,
-        DEADVOTE
+        BURIED
     }
     
     export class Viability {
@@ -118,6 +127,27 @@ export namespace Player {
         constructor(state: ViabilityState, deadVote: boolean) {
             this._state = state;
             this._deadvote = deadVote;
+        }
+        
+        kill() {
+            this._state = ViabilityState.DEAD
+        }
+        
+        bury() {
+            this._state = ViabilityState.BURIED
+        }
+        
+        canVote() {
+            if (this._state == ViabilityState.DEAD && !this._deadvote) {
+                return false
+            }
+            return true
+        }
+        
+        vote() {
+            if (this._state != ViabilityState.ALIVE) {
+                this._deadvote = false
+            }
         }
         
         get reactSafe(): ViabilityJSON {

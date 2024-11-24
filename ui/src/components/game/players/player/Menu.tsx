@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import styles from './Player.module.scss';
 import { ControllerContext, DataContext, GameContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
@@ -6,6 +6,7 @@ import { Alignmant } from '../../../../components/common/RoleType';
 import RolePick from '../../utility/RolePick';
 import AlignmentPick from '../../utility/AlignmentPick';
 import { ReferenceData } from '@/components/common/ReferenceData';
+import { applyEffect, EffectKit } from '../../utility/ApplyEffect';
 
 interface MenuProps {isOpen: boolean, closeFunc: ()=>void, playerData: Player.Data}
 function Menu({isOpen, closeFunc, playerData}: MenuProps) {
@@ -17,6 +18,12 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     const [roleSelect, setRoleSelect] = useState<string|undefined>(playerData.role)
         
     const [alignmentSelect, setAlignmentSelect] = useState<Alignmant|undefined>(playerData.alignment)
+    
+    const effectStore = useRef<ReferenceData.Interaction|null>(null)
+    
+    const [madSelect, setMadSelect] = useState<string|undefined>("")
+    
+    const [grantSelect, setGrantSelect] = useState<string|undefined>("")
     
     useEffect(() => {
         if (roleSelect) {
@@ -37,32 +44,60 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
         }
     }, [alignmentSelect])
     
-    function Setup() {
-        
-        return (
-            <>
-                <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
-                <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
-            </>
-        )
-    }
-    
-    function NightTurn() {
-        
-        const applyEffect = (effect: ReferenceData.Effect) => {
-            controllerContext.addInteraction(effect, playerData.id)
+    useEffect(() => {
+        if (madSelect && effectStore.current) {
+            controllerContext.addInteraction(effectStore.current!, playerData.id, madSelect)
+            setMadSelect("")
             closeFunc()
         }
+    }, [madSelect])
+    
+    useEffect(() => {
+        if (grantSelect && effectStore.current) {
+            controllerContext.addInteraction(effectStore.current!, playerData.id, grantSelect)
+            setGrantSelect("")
+            closeFunc()
+        }
+    }, [grantSelect])
+    
+    const setRoleSelectHandler = (value: string|undefined) => {
+        console.log(value)
+        setRoleSelect(value)
+    }
+    
+    const setAlignmentSelectHandler = (value: Alignmant|undefined) => {
+        console.log(value)
+        setAlignmentSelect(value)
+    }
+    
+    const applyEffectHandler = (interaction: ReferenceData.Interaction) => {
+        controllerContext.batchBuild(() => {
+            
+            const effectKit: EffectKit = {
+                interaction: interaction,
+                player: playerData,
+                roleSelect: setRoleSelectHandler,
+                alignmentSelect: setAlignmentSelectHandler,
+                madSelect: setMadSelect,
+                grantSelect: setGrantSelect
+            }
+            
+            const shouldCreateInteractionNow = applyEffect(effectKit)
+            
+            if (shouldCreateInteractionNow) {
+                controllerContext.addInteraction(interaction, playerData.id)
+                closeFunc()
+            } else {
+                effectStore.current = interaction
+            }
+        })
+    }
+    
+    function Setup() {
         
-        const availableInteractions = dataContext.interactions.getInteractions(
-            controllerContext.getPlayerFromId(
-                gameContext.gameProgression.currentTurnOwner
-            )?.role,
-            gameContext.players.map(player => player.role)
-                .filter(role => role != undefined)
-        )
+        const availableInteractions = controllerContext.aggregateData.availableInteractions()
         
-        const activeInteractions = gameContext.interactions.filter(interaction => interaction.effected == playerData.id)
+        const activeInteractions = controllerContext.aggregateData.activeInteractions(playerData.id)
         
         return (
             <div className={styles.container}>
@@ -73,7 +108,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 <div className={styles.interactions}>
                     AVAILABLE
                     {
-                        availableInteractions.map(interaction => <div className={styles.interaction} onClick={() => {applyEffect(interaction)}} key={interaction.name + interaction.role}>
+                        availableInteractions.map(interaction => <div className={styles.interaction} onClick={() => {applyEffectHandler(interaction)}} key={interaction.name + interaction.role}>
                             <img src={dataContext.image.getRoleImage(interaction.role)}></img>
                             {interaction.name}
                         </div>)
@@ -82,8 +117,57 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 <div className={styles.interactions}>
                     ACTIVE
                     {
-                        activeInteractions.map(interaction => <div className={styles.interaction} key={interaction.key}>
-                        <img src={dataContext.image.getRoleImage(interaction.from)}></img>
+                        activeInteractions.map(interaction => <div className={styles.interaction} key={interaction.id}>
+                        <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
+                        {interaction.name}
+                        {interaction.role}
+                    </div>)
+                    }
+                </div>
+                <div className={styles.pictogram}>
+                    {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
+                        <img className={styles.player_image} src={dataContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
+                        {dataContext.roles.getRole(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!.role!).description}
+                        <img className={styles.relationship_image} src={require('../../../../assets/arrow-right-long-solid.png')}></img>
+                    </>}
+                    <img className={styles.player_image} src={dataContext.image.getPlayerImage(playerData)}></img>
+                    {dataContext.roles.getRole(playerData.role!).description}
+                    {gameContext.gameProgression.currentTurnOwner == playerData.id && <>
+                        <img className={styles.relationship_image} src={require('../../../../assets/arrow-loop-left-solid.png')}></img>
+                    </>}
+                </div>
+            </div>
+        )
+    }
+    
+    function NightTurn() {
+        
+        const availableInteractions = controllerContext.aggregateData.availableInteractions()
+        
+        const activeInteractions = controllerContext.aggregateData.activeInteractions(playerData.id)
+        
+        useEffect(() => {}, [activeInteractions])
+        
+        return (
+            <div className={styles.container}>
+                <div className={styles.major_options}>
+                    <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
+                    <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
+                </div>
+                <div className={styles.interactions}>
+                    AVAILABLE
+                    {
+                        availableInteractions.map(interaction => <div className={styles.interaction} onClick={() => {applyEffectHandler(interaction)}} key={interaction.name + interaction.role}>
+                            <img src={dataContext.image.getRoleImage(interaction.role)}></img>
+                            {interaction.name}
+                        </div>)
+                    }
+                </div>
+                <div className={styles.interactions}>
+                    ACTIVE
+                    {
+                        activeInteractions.map(interaction => <div className={styles.interaction} key={interaction.id}>
+                        <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
                         {interaction.name}
                     </div>)
                     }
@@ -106,7 +190,11 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     function Day() {
         return (
-            <></>
+            <>
+            voting stuff
+                <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
+                <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
+            </>
         )
     }
     
@@ -118,6 +206,14 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
         
         if (!alignmentSelect) {
             return <AlignmentPick setAlignmentSelect={setAlignmentSelect}></AlignmentPick>
+        }
+        
+        if (madSelect == undefined) {
+            return <RolePick setRoleSelect={setMadSelect}></RolePick>
+        }
+        
+        if (grantSelect == undefined) {
+            return <RolePick setRoleSelect={setGrantSelect}></RolePick>
         }
         
         if (gameContext.gameProgression.isSetup) {

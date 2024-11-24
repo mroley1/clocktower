@@ -54,12 +54,17 @@ export namespace GameProgression {
         }
         
         enterSetup = (): void => {
-            this._progressId |= 1
+            this._progressId |= 0b1
             this.useSetter()
         }
         
         leaveSetup = (): void => {
-            this._progressId &= 0
+            this._progressId &= 0b1
+            this.useSetter()
+        }
+        
+        toggleSetup = (): void => {
+            this._progressId ^= 0b1
             this.useSetter()
         }
         

@@ -12,10 +12,6 @@ function PlayerPartial({playerData}: PlayerPartialProps) {
   const gameContext = useContext(GameContext)
   const referenceData = useContext(DataContext)
   
-  function updatePoisition (position: Player.Position) {
-    playerData.position = position
-  }
-  
   const image = referenceData.image.getPlayerImage(playerData);
   
   const [menuOpen, setMenuOpen] = useState(false);
@@ -38,7 +34,7 @@ function PlayerPartial({playerData}: PlayerPartialProps) {
     }
   }, [playerData])
   
-  const activeInteractions = gameContext.interactions.filter(interaction => interaction.effected == playerData.id)
+  const activeInteractions = controllerContext.aggregateData.activeInteractions(playerData.id)
   
   return (
     <div className={styles.token}>
@@ -75,9 +71,9 @@ function InteractionIndicators({activeInteractions}: InteractionIndicatorsProps)
           </div>)
         } else {
           return (
-            <div key={interaction.key} className={styles.slot + " " + styles["quantity-" + activeInteractions.length]}>
+            <div key={interaction.id} className={styles.slot + " " + styles["quantity-" + activeInteractions.length]}>
               <div className={styles.pip}>
-                <img src={dataContext.image.getRoleImage(interaction.from)}></img>
+                <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
               </div>
             </div>
           )

@@ -2,20 +2,16 @@ import { useContext } from 'react';
 import styles from './RolePick.module.scss'
 import { DataContext } from '../Game';
 
-interface RolePickProps {setRoleSelect: React.Dispatch<React.SetStateAction<string|undefined>>}
+interface RolePickProps {setRoleSelect: (role: string) => void}
 function RolePick({setRoleSelect}: RolePickProps) {
     
     const dataContext = useContext(DataContext)
-    
-    const selectRole = (role: string) => {
-        setRoleSelect(role)
-    }
   
     return (
         <div>
             Select Role: 
             {dataContext.script.roleNames.map(role => 
-                <button key={role} onClick={() => {selectRole(role)}}>{role}</button>
+                <button key={role} onClick={() => {setRoleSelect(role)}}>{role}</button>
             )}
         </div>
     );

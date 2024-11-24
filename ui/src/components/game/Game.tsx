@@ -5,6 +5,7 @@ import Menu from './menu/Menu';
 import { ReferenceData } from '../common/ReferenceData';
 import Players from './players/Players';
 import NightGuide from './nightGuide/NightGuide';
+import Setup from './setup/Setup';
 
 
 export const GameContext = createContext({} as GameData)
@@ -17,8 +18,6 @@ interface GameProps {gameSettings: GameDataJSON, history: HistoryJSON, saveGame:
 function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
   
   const [gameState, setGameState] = useState(gameSettings as any as GameData)
-  
-  const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, history, gameSettings, saveGame), [])
   
   const referenceData = useMemo(() => {
     const roles = new ReferenceData.Roles();
@@ -42,6 +41,8 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
     fabled,
   } as ReferenceData.ContextFormat}, [])
   
+  const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, history, gameSettings, saveGame, referenceData), [])
+  
   const [building, setBuilding] = useState(true);
   
   useEffect(() => {
@@ -59,6 +60,7 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
             <Players></Players>
             <Menu></Menu>
             <NightGuide></NightGuide>
+            <Setup></Setup>
           </DataContext.Provider>
         </ControllerContext.Provider>
       </GameContext.Provider>

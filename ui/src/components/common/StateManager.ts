@@ -8,6 +8,7 @@ import { Interaction } from "./reactStates/Intereaction";
 import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
+import { EffectKit } from "../game/utility/ApplyEffect";
 
 export namespace StateManager {
     
@@ -34,6 +35,7 @@ export namespace StateManager {
         
         gameStateJSON: GameDataJSON
         private historyController: History
+        aggregateData: AggregateData
         
         private saveGameFunc: (gameDataJSON: GameDataJSON, history: HistoryJSON) => void
         private inBatchBuild = false;
@@ -41,12 +43,13 @@ export namespace StateManager {
         private usedUUIDs = new Set<string>()
         private instanceMap = new Map<string, {json: BaseReactState, jsonHash: string, instance: Object}>()
         
-        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, history: HistoryJSON, gameStateJSON: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON, history: HistoryJSON) => void) {
+        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, history: HistoryJSON, gameStateJSON: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON, history: HistoryJSON) => void, referenceData: ReferenceData.ContextFormat) {
             this.gameState = gameState;
             this.setgameState = setGameState;
             this.gameStateJSON = gameStateJSON;
             this.saveGameFunc = saveGame;
             this.historyController = new History(history.head, history.transactions)
+            this.aggregateData = new AggregateData(this, referenceData)
         }
         
         private useSetGameState(newGameState: any) {
@@ -156,21 +159,21 @@ export namespace StateManager {
             this.build();
         }
         
-        addInteraction = (effect: ReferenceData.Effect, effected: string) => {
+        addInteraction = (interaction: ReferenceData.Interaction, effected: string, role: string|undefined = undefined) => {
+            const UUID = this.newUUID()
             const newInteractionJSON = {
                 type: "Interaction",
-                UUID: this.newUUID(),
+                UUID,
                 active: true,
                 owner: this.gameStateJSON.gameProgression.currentTurn,
-                bound: true,
-                name: effect.name,
-                length: 0,
-                effect: effect.effect,
+                end: 0, // ! NEED TO IMPLEMENT THIS LOGIC
                 effected: effected,
-                from: effect.role
+                interaction: interaction,
+                role
             } as Interaction.ReactState
+            console.log(newInteractionJSON)
             this.gameStateJSON.interactions.push(newInteractionJSON)
-            this.build();
+            this.build()
         }
         
         initilizeTurn = (currentTurn: string|undefined) => {
@@ -285,5 +288,50 @@ export namespace StateManager {
         }
     }
     
-    class Interactions {}
+    class AggregateData {
+        
+        private _controller: Controller
+        private _referenceData: ReferenceData.ContextFormat
+        
+        constructor(controller: Controller, referenceData: ReferenceData.ContextFormat) {
+            this._controller = controller
+            this._referenceData = referenceData
+        }
+        
+        public players() {
+            return this._controller.gameState.players.filter(player =>
+                player.role
+            ).map(player => 
+                player.role
+                    ? this._referenceData.script.getRole(player.role)
+                    : undefined
+            )
+        }
+        
+        public availableInteractions(): ReferenceData.Interaction[] {
+            if (this._controller.gameState.gameProgression.isSetup) {
+                return this._referenceData.interactions.getAllInterations(
+                    this._controller.gameState.players.map(player => player.role)
+                        .filter(role => role != undefined)
+                )
+            } else {
+                return this._referenceData.interactions.getInteractions(
+                    this._controller.getPlayerFromId(
+                        this._controller.gameState.gameProgression.currentTurnOwner
+                    )?.role,
+                    this._controller.gameState.players.map(player => player.role)
+                        .filter(role => role != undefined)
+                )
+            }
+        }
+        
+        public activeInteractions(playerId: string): Interaction.Data[] {
+            return this._controller.gameState.interactions.filter(interaction => interaction.isActive && interaction.effected == playerId)
+        }
+        
+        public activeEffects(playerId: string): Interaction.Effect[] {
+            const set = new Set(this.activeInteractions(playerId).map(interaction => interaction.effect))
+            return Array.from(set)
+        }
+    }
 }

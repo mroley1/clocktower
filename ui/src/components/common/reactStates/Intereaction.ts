@@ -1,9 +1,11 @@
+import { ReferenceData } from "../ReferenceData";
 import BaseReactState from "./_BaseReactState";
+import { Player } from "./Player";
 
 export namespace Interaction {
     
     export enum Effect {
-        CHOOSE,  //^0 player choice
+        NONE,    //^0 no effect
         KILL,    //^1 mark as dead
         POISON,  //^2 poision
         MADDEN,  //^3 make mad
@@ -13,20 +15,18 @@ export namespace Interaction {
         IMBIBE,  //^7 make drunk
         PROTECT, //^8 protect from killing
         REVIVE,  //^9 bring back to life
-        NONE     //^10 no effect
+        BURY     //^10 make it look like they are dead
     }
     
     export interface ReactState extends BaseReactState {
         type: string
         UUID: string
         active: boolean
-        owner: string
-        bound: boolean
-        name: string
-        length: number
-        effect: Effect
-        effected: string
-        from: string
+        owner: string // who applied effect (by current turn)
+        end: number // when this effect expires (use GameProgression format)
+        effected: string // who was effected (user id)
+        interaction: ReferenceData.Interaction // what role 
+        role: string|undefined // optianal role associated with this interaction
     }
     
     export class Data {
@@ -35,14 +35,10 @@ export namespace Interaction {
         private active
         
         private _owner: string
-        private _bound: boolean
-        private _name: string
-        private _length: number
-        private _effect: Effect
+        private _end: number
         private _effected: string
-        private _from: string
-        
-        private applyFunc: (orgState: ReactState) => ReactState
+        private _interaction: ReferenceData.Interaction
+        private _role: string|undefined
         
         private useSetter() {
             this.reactSetter([{
@@ -50,12 +46,10 @@ export namespace Interaction {
                 UUID: this.UUID,
                 active: this.active,
                 owner: this._owner,
-                bound: this._bound,
-                name: this._name,
-                length: this._length,
-                effect: this._effect,
+                end: this._end,
                 effected: this._effected,
-                from: this._from
+                interaction: this._interaction,
+                role: this._role
             }])
         }
         
@@ -65,14 +59,22 @@ export namespace Interaction {
             this.reactSetter = reactSetter;
             
             this._owner = reactState.owner;
-            this._bound = reactState.bound;
-            this._name = reactState.name;
-            this._length = reactState.length;
-            this._effect = reactState.effect;
+            this._end = reactState.end;
             this._effected = reactState.effected;
-            this._from = reactState.from;
-            
-            this.applyFunc = getApplyFunc(this._effect)
+            this._interaction = reactState.interaction;
+            this._role = reactState.role;
+        }
+        
+        get isActive() {
+            return this.active
+        }
+        
+        get effect() {
+            if (!this.active) {
+                return Effect.NONE
+            } else {
+                return this._interaction.effect
+            }
         }
         
         get owner() {
@@ -84,15 +86,19 @@ export namespace Interaction {
         }
         
         get name() {
-            return this._name
+            return this._interaction.name
         }
         
-        get key() {
+        get id() {
             return this.UUID
         }
         
-        get from() {
-            return this._from
+        get fromRole() {
+            return this._interaction.role
+        }
+        
+        get role() {
+            return this._role
         }
         
         toJSON() {
@@ -101,58 +107,13 @@ export namespace Interaction {
                 UUID: this.UUID,
                 active: this.active,
                 owner: this._owner,
-                bound: this._bound,
-                name: this._name,
-                length: this._length,
-                effect: this._effect,
+                end: this._end,
                 effected: this._effected,
-                from: this._from
+                interaction: this._interaction,
+                role: this._role
             }
             return JSON.stringify(formatDocument)
         }
     }
-    
-    function getApplyFunc(effect: Effect): (orgState: ReactState) => ReactState {
-        try {
-            return ["_" + Effect[effect]] as any as (orgState: ReactState) => ReactState
-        }
-        catch {
-            return _NONE
-        }
-    }
-    
-    function _CHOOSE(orgState: ReactState) {
-        console.log("choose")
-        return orgState
-    }
-    
-    function _KILL(orgState: ReactState) {
-        return orgState
-    }
-    
-    function _POISON(orgState: ReactState) {
-        return orgState
-    }
-    
-    function _MADDEN(orgState: ReactState) {
-        return orgState
-    }
-    
-    function _IMBIBE(orgState: ReactState) {
-        return orgState
-    }
-    
-    function _PROTECT(orgState: ReactState) {
-        return orgState
-    }
-    
-    function _REVIVE(orgState: ReactState) {
-        return orgState
-    }
-    
-    function _NONE(orgState: ReactState) {
-        return orgState
-    }
-}
 
- 
+}
