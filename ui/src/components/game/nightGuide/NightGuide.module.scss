@@ -10,7 +10,7 @@
     text-align: center;
     
     .turntable {
-        --diameter: 80vw;
+        --diameter: min(80vw, 800px);
         display: flex;
         justify-content: center;
         width: var(--diameter);

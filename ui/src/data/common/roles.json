@@ -60,7 +60,7 @@
         "alignment": 0,
         "classType": 5,
         "interactions": [
-            {"name": "Something Bad", "effect": 0, "setup": false, "length": 1, "sticky": false, "limitToSelf": false, "public": true}
+            {"name": "Something Bad", "effect": 0, "setup": false, "length": 2, "sticky": false, "limitToSelf": false, "public": true}
         ],
         "first_night_desc": "",
         "other_night_desc": "",
@@ -380,7 +380,7 @@
         "alignment": 1,
         "classType": 1,
         "interactions": [
-            {"name": "Master", "effect": 0, "setup": false, "length": 1, "sticky": false, "limitToSelf": false, "public": false}
+            {"name": "Master", "effect": 0, "setup": false, "length": 2, "sticky": false, "limitToSelf": false, "public": false}
         ],
         "first_night_desc": "The Butler points to a player. Mark that player as 'Master'.",
         "other_night_desc": "The Butler points to a player. Mark that player as 'Master'.",
@@ -1686,7 +1686,7 @@
         "alignment": 2,
         "classType": 2,
         "interactions": [
-            {"name": "Poisoned", "effect": 2, "setup": false, "length": 1, "sticky": false, "limitToSelf": false, "public": false}
+            {"name": "Poisoned", "effect": 2, "setup": false, "length": 2, "sticky": false, "limitToSelf": false, "public": false}
         ],
         "first_night_desc": "The Poisoner points to a player. That player is poisoned.",
         "other_night_desc": "The previously poisoned player is no longer poisoned. The Poisoner points to a player. That player is poisoned.",
@@ -2229,7 +2229,7 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Executed", "effect": 0, "setup": false, "length": 1, "sticky": false, "limitToSelf": false, "public": true}
+            {"name": "Executed", "effect": 0, "setup": false, "length": 2, "sticky": false, "limitToSelf": false, "public": true}
         ],
         "first_night_desc": "",
         "other_night_desc": "If a player was executed today: Show that player's character token.",

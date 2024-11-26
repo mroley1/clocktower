@@ -94,6 +94,14 @@ export namespace Player {
             this.useSetter();
         }
         
+        get isDead() {
+            return this._viability.isDead
+        }
+        
+        get looksDead() {
+            return this._viability.looksDead
+        }
+        
         public toJSON() {
             const formatDocument: ReactState = {
                 type: "PlayerCount",
@@ -137,7 +145,7 @@ export namespace Player {
             this._state = ViabilityState.BURIED
         }
         
-        canVote() {
+        get canVote() {
             if (this._state == ViabilityState.DEAD && !this._deadvote) {
                 return false
             }
@@ -148,6 +156,14 @@ export namespace Player {
             if (this._state != ViabilityState.ALIVE) {
                 this._deadvote = false
             }
+        }
+        
+        get isDead() {
+            return this._state == ViabilityState.DEAD
+        }
+        
+        get looksDead() {
+            return this._state != ViabilityState.ALIVE
         }
         
         get reactSafe(): ViabilityJSON {

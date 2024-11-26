@@ -18,6 +18,9 @@ export namespace Interaction {
         BURY     //^10 make it look like they are dead
     }
     
+    // effects that are shown next to player on board
+    export const visibleEffects = [Effect.POISON, Effect.MADDEN, Effect.GRANT, Effect.IMBIBE, Effect.PROTECT, Effect.BURY]
+    
     export interface ReactState extends BaseReactState {
         type: string
         UUID: string

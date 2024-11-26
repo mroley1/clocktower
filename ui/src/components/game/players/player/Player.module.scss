@@ -20,26 +20,31 @@
         touch-action: none;
     }
     
-    .interaction_indicators {
+    .indicators {
         
         .slot {
             position: absolute;
             pointer-events: none;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
         
             .pip {
                 background-color: white;
                 position: absolute;
+                border-radius: 100%;
+                border: solid 1px black;
+            }
+        }
+            
+        .interaction {
+            .pip {
                 bottom: 0;
                 right: 0;
                 width: 40px;
                 height: 40px;
-                border-radius: 100%;
-                border: solid 1px black;
-                
+            
                 img {
                     width: 100%;
                     height: 100%;
@@ -47,8 +52,23 @@
             }
         }
         
-        // splays interaction pips based on hom many there are
-        @for $quantity from 2 through 4 {
+        .effect {
+            .pip {
+                top: 10px;
+                left: 10px;
+                width: 30px;
+                height: 30px;
+            
+                img {
+                    width: 70%;
+                    height: 70%;
+                    margin: 15%;
+                }
+            }
+        }
+        
+        // splays pips based on hom many there are
+        @for $quantity from 2 through 5 {
             @for $i from 1 through $quantity {
                 .slot.quantity-#{$quantity}:nth-child(#{$i}) {
                     $separation: 25deg; // separation between them
@@ -60,6 +80,24 @@
                     }
                 }
             }
+        }
+    }
+    
+    .death_shroud_container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        
+        &:hover {
+            opacity: 0.3;
+        }
+        
+        .death_shroud {
+            height: 70%;
         }
     }
 }

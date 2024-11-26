@@ -9,6 +9,7 @@ import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
 import { EffectKit } from "../game/utility/ApplyEffect";
+import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
 
 export namespace StateManager {
     
@@ -161,12 +162,13 @@ export namespace StateManager {
         
         addInteraction = (interaction: ReferenceData.Interaction, effected: string, role: string|undefined = undefined) => {
             const UUID = this.newUUID()
+            console.log(this.gameState.gameProgression.night)
             const newInteractionJSON = {
                 type: "Interaction",
                 UUID,
                 active: true,
                 owner: this.gameStateJSON.gameProgression.currentTurn,
-                end: 0, // ! NEED TO IMPLEMENT THIS LOGIC
+                end: getExpireeFromLength(interaction.length, this.gameStateJSON.gameProgression.progressId),
                 effected: effected,
                 interaction: interaction,
                 role
@@ -203,7 +205,14 @@ export namespace StateManager {
                 this.setValues(reactState, suppressHistory)
             }
             
-            const newGameState = this.mapObject(this.gameStateJSON, (obj: BaseReactState) => {
+            // expire old interactions
+            this.gameStateJSON.interactions.forEach(interaction => {
+                if (isExpireeExpired(interaction.end, this.gameStateJSON.gameProgression.progressId)) {
+                    interaction.active = false
+                }
+            })
+            
+            const newGameState: GameData = this.mapObject(this.gameStateJSON, (obj: BaseReactState) => {
                 this.usedUUIDs.add(obj.UUID);
                 const storedInstance = this.instanceMap.get(obj.UUID);
                 if (obj.active || !storedInstance) {
@@ -228,6 +237,7 @@ export namespace StateManager {
                 }
             })
             
+            // history integration
             if (!suppressHistory && this.gameStateJSON && (transactionBuffer.new.length > 0 || transactionBuffer.old.length > 0)) {
                 this.historyController.push(transactionBuffer.old, transactionBuffer.new)
             }
@@ -329,9 +339,15 @@ export namespace StateManager {
             return this._controller.gameState.interactions.filter(interaction => interaction.isActive && interaction.effected == playerId)
         }
         
+        // all effects currently acivive for player
         public activeEffects(playerId: string): Interaction.Effect[] {
             const set = new Set(this.activeInteractions(playerId).map(interaction => interaction.effect))
             return Array.from(set)
+        }
+        
+        // all effects that are shown for player
+        public visibleEffects(playerId: string) {
+            return this.activeEffects(playerId).filter(effect => Interaction.visibleEffects.includes(effect))
         }
     }
 }

@@ -20,3 +20,11 @@ export function prgressIdToDayState(progressId: number) {
     }
     return result
 }
+        
+export function getExpireeFromLength(length: number, progressId: number) {
+    return (progressId + (length * 2)) - (progressId & 1)
+}
+
+export function isExpireeExpired(expiree: number, progressId: number) {
+    return (progressId >= expiree)
+}
