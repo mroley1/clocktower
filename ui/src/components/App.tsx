@@ -68,7 +68,7 @@ export default App;
 
 function newSaveJSON(): GameDataJSON {
   return {
-    metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, name: "", gameID: dbIdNew()},
+    metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, name: "", gameID: dbIdNew(), created: Date.now()},
     playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, quantity: 20},
     gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, progressId: 1, currentTurn: undefined},
     players: [],
@@ -83,7 +83,7 @@ function genSaveJsonTag(gameDataJSON: GameDataJSON): GameDataJSONTag {
     gameProgression: gameDataJSON.gameProgression,
     playerRoles: gameDataJSON.players.filter(player => player.role).map(player => player.role!),
     script: undefined,
-    created: Date.now()
+    created: gameDataJSON.metadata.created
   }
 }
 
@@ -121,7 +121,7 @@ function initDatabase() {
         
         const savesObjectStore = db.createObjectStore("saves")
         
-        savesObjectStore.createIndex('tags', 'tags', {unique: false})
+        savesObjectStore.createIndex('tag', 'tag', {unique: false})
         savesObjectStore.createIndex('data', 'data', {unique: false})
         savesObjectStore.createIndex('history', 'history', {unique: false})
         

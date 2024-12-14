@@ -48,6 +48,9 @@ export namespace GameProgression {
                 this._progressId = 0b10
             } else {
                 this._progressId += 0b10
+                if (!this.isNight) {
+                    this._currentTurn = undefined
+                }
             }
             this.useSetter();
             return this;
@@ -98,6 +101,9 @@ export namespace GameProgression {
         }
         
         get currentTurnOwner(): string|undefined {
+            if (!this.isNight) {
+                return undefined
+            }
             if (!this._currentTurn?.startsWith("_")) {
                 return this.currentTurn
             }

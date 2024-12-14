@@ -318,20 +318,21 @@ export namespace StateManager {
             )
         }
         
-        public availableInteractions(): ReferenceData.Interaction[] {
+        public availableInteractions(playerData: Player.Data): ReferenceData.Interaction[] {
+            const inPlayRoles = this._controller.gameState.players.map(player => player.role)
+                .filter(role => role != undefined)
             if (this._controller.gameState.gameProgression.isSetup) {
-                return this._referenceData.interactions.getAllInterations(
-                    this._controller.gameState.players.map(player => player.role)
-                        .filter(role => role != undefined)
-                )
+                return this._referenceData.interactions.getAllInterations(inPlayRoles)
             } else {
-                return this._referenceData.interactions.getInteractions(
-                    this._controller.getPlayerFromId(
-                        this._controller.gameState.gameProgression.currentTurnOwner
-                    )?.role,
-                    this._controller.gameState.players.map(player => player.role)
-                        .filter(role => role != undefined)
-                )
+                const currentTurnRole = this._controller.getPlayerFromId(this._controller.gameState.gameProgression.currentTurnOwner)?.role
+                const interactions = this._referenceData.interactions.getInteractions(currentTurnRole, inPlayRoles)
+                    .filter(interaction => 
+                        (!interaction.limitToSelf || interaction.role == playerData.role) // if effect is limited to self interaction and player role must match
+                        && (interaction.availability != Interaction.EffectAvailability.DAY || this._controller.gameState.gameProgression.isDay) // if effect visibility is only day then it must be day
+                        && (interaction.availability != Interaction.EffectAvailability.NIGHT || this._controller.gameState.gameProgression.isNight) // if the effect visibility is night it must be night
+                        && (interaction.availability != Interaction.EffectAvailability.SETUP || this._controller.gameState.gameProgression.isSetup) // if effect visibility is setup only it must be setup
+                    )
+                return interactions
             }
         }
         

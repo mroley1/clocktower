@@ -2,7 +2,7 @@ import { Interaction } from "../../common/reactStates/Intereaction";
 import { Player } from "@/components/common/reactStates/Player"
 import { ReferenceData } from "@/components/common/ReferenceData";
 import { Alignmant } from "@/components/common/RoleType";
-import { CHANGE, GRANT, KILL, MADDEN } from "@/data/common/roles";
+import { CHANGE, CORRUPT, GRANT, KILL, MADDEN } from "@/data/common/roles";
 
 
         
@@ -20,25 +20,43 @@ export function applyEffect(effectKit: EffectKit): boolean {
     switch (effectKit.interaction.effect) {
         case Interaction.Effect.KILL:
             return _KILL(effectKit)
+        case Interaction.Effect.CHANGE:
+            return _CHANGE(effectKit)
+        case Interaction.Effect.CORRUPT:
+            return _CORRUPT(effectKit)
         case Interaction.Effect.MADDEN:
             return _MADDEN(effectKit)
         case Interaction.Effect.GRANT:
             return _GRANT(effectKit)
-        case Interaction.Effect.CHANGE:
-            return _CHANGE(effectKit)
         default:
-            return _NONE(effectKit)
+            return true
     }
-}
-
-function _NONE(effectKit: EffectKit) {
-    return true
 }
 
 function _KILL(effectKit: EffectKit) {
     effectKit.interaction = effectKit.interaction as KILL & ReferenceData.InteractionAdditions
     effectKit.player.kill()
     return true
+}
+
+function _CHANGE(effectKit: EffectKit) {
+    effectKit.interaction = effectKit.interaction as CHANGE & ReferenceData.InteractionAdditions
+    if (effectKit.interaction.static) {
+        effectKit.roleSelect(effectKit.interaction.static)
+    } else {
+        effectKit.roleSelect(undefined)
+    }
+    return false
+}
+
+function _CORRUPT(effectKit: EffectKit) {
+    effectKit.interaction = effectKit.interaction as CORRUPT & ReferenceData.InteractionAdditions
+    if (effectKit.interaction.static) {
+        effectKit.alignmentSelect(effectKit.interaction.static)
+    } else {
+        effectKit.alignmentSelect(undefined)
+    }
+    return false
 }
 
 function _MADDEN(effectKit: EffectKit) {
@@ -57,16 +75,6 @@ function _GRANT(effectKit: EffectKit) {
         effectKit.grantSelect(effectKit.interaction.static)
     } else {
         effectKit.grantSelect(undefined)
-    }
-    return false
-}
-
-function _CHANGE(effectKit: EffectKit) {
-    effectKit.interaction = effectKit.interaction as CHANGE & ReferenceData.InteractionAdditions
-    if (effectKit.interaction.static) {
-        effectKit.roleSelect(effectKit.interaction.static)
-    } else {
-        effectKit.roleSelect(undefined)
     }
     return false
 }

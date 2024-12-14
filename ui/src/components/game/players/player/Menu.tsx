@@ -61,12 +61,10 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     }, [grantSelect])
     
     const setRoleSelectHandler = (value: string|undefined) => {
-        console.log(value)
         setRoleSelect(value)
     }
     
     const setAlignmentSelectHandler = (value: Alignmant|undefined) => {
-        console.log(value)
         setAlignmentSelect(value)
     }
     
@@ -95,35 +93,14 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     function Setup() {
         
-        const availableInteractions = controllerContext.aggregateData.availableInteractions()
-        
-        const activeInteractions = controllerContext.aggregateData.activeInteractions(playerData.id)
-        
         return (
             <div className={styles.container}>
                 <div className={styles.major_options}>
                     <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
                     <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
                 </div>
-                <div className={styles.interactions}>
-                    AVAILABLE
-                    {
-                        availableInteractions.map(interaction => <div className={styles.interaction} onClick={() => {applyEffectHandler(interaction)}} key={interaction.name + interaction.role}>
-                            <img src={dataContext.image.getRoleImage(interaction.role)}></img>
-                            {interaction.name}
-                        </div>)
-                    }
-                </div>
-                <div className={styles.interactions}>
-                    ACTIVE
-                    {
-                        activeInteractions.map(interaction => <div className={styles.interaction} key={interaction.id}>
-                        <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
-                        {interaction.name}
-                        {interaction.role}
-                    </div>)
-                    }
-                </div>
+                <AvailableInteractions playerData={playerData} applyEffectHandler={applyEffectHandler}></AvailableInteractions>
+                <ActiveInteractions playerData={playerData}></ActiveInteractions>
                 <div className={styles.pictogram}>
                     {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
                         <img className={styles.player_image} src={dataContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
@@ -142,36 +119,14 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     function NightTurn() {
         
-        const availableInteractions = controllerContext.aggregateData.availableInteractions()
-        
-        const activeInteractions = controllerContext.aggregateData.activeInteractions(playerData.id)
-        
-        useEffect(() => {}, [activeInteractions])
-        
         return (
             <div className={styles.container}>
                 <div className={styles.major_options}>
                     <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
                     <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
                 </div>
-                <div className={styles.interactions}>
-                    AVAILABLE
-                    {
-                        availableInteractions.map(interaction => <div className={styles.interaction} onClick={() => {applyEffectHandler(interaction)}} key={interaction.name + interaction.role}>
-                            <img src={dataContext.image.getRoleImage(interaction.role)}></img>
-                            {interaction.name}
-                        </div>)
-                    }
-                </div>
-                <div className={styles.interactions}>
-                    ACTIVE
-                    {
-                        activeInteractions.map(interaction => <div className={styles.interaction} key={interaction.id}>
-                        <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
-                        {interaction.name}
-                    </div>)
-                    }
-                </div>
+                <AvailableInteractions playerData={playerData} applyEffectHandler={applyEffectHandler}></AvailableInteractions>
+                <ActiveInteractions playerData={playerData}></ActiveInteractions>
                 <div className={styles.pictogram}>
                     {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
                         <img className={styles.player_image} src={dataContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
@@ -190,11 +145,15 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     function Day() {
         return (
-            <>
-            voting stuff
-                <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
-                <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
-            </>
+            <div className={styles.container}>
+                <div className={styles.major_options}>
+                    voting stuff
+                    <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
+                    <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
+                </div>
+                <AvailableInteractions playerData={playerData} applyEffectHandler={applyEffectHandler}></AvailableInteractions>
+                <ActiveInteractions playerData={playerData}></ActiveInteractions>
+            </div>
         )
     }
     
@@ -248,3 +207,50 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
 }
 
 export default Menu;
+
+interface AvailableInteractionsProps {
+    applyEffectHandler: (interaction: ReferenceData.Interaction) => void
+    playerData: Player.Data
+}
+function AvailableInteractions({applyEffectHandler, playerData}: AvailableInteractionsProps) {
+    
+    const dataContext = useContext(DataContext)
+    const controllerContext = useContext(ControllerContext)
+        
+    const availableInteractions = controllerContext.aggregateData.availableInteractions(playerData)
+    
+    return (
+        <div className={styles.interactions}>
+        AVAILABLE
+        {
+            availableInteractions.map(interaction => <div className={styles.interaction} onClick={() => {applyEffectHandler(interaction)}} key={interaction.name + interaction.role}>
+                <img src={dataContext.image.getRoleImage(interaction.role)}></img>
+                {interaction.name}
+            </div>)
+        }
+        </div>
+    )
+}
+
+interface ActiveInteractionsProps {
+    playerData: Player.Data
+}
+function ActiveInteractions({playerData}: ActiveInteractionsProps) {
+    
+    const dataContext = useContext(DataContext)
+    const controllerContext = useContext(ControllerContext)
+        
+    const activeInteractions = controllerContext.aggregateData.activeInteractions(playerData.id)
+    
+    return (
+        <div className={styles.interactions}>
+            ACTIVE
+            {
+                activeInteractions.map(interaction => <div className={styles.interaction} key={interaction.id}>
+                <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
+                {interaction.name}
+            </div>)
+            }
+        </div>
+    )
+}

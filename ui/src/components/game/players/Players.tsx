@@ -43,6 +43,9 @@ function PlayerWrapper({player}: {player: Player.Data}) {
 }
 
 const useInteractionHandler = (player: Player.Data) => {
+    
+    const gameContext = useContext(GameContext)
+    
     const wrapperRef = useRef<null|HTMLDivElement>(null);
     
     let xStart = 0;
@@ -69,6 +72,9 @@ const useInteractionHandler = (player: Player.Data) => {
     }
     
     const touchMove = (event: any) => {
+        if (!gameContext.gameProgression.isSetup) {
+            return // moving is only allowed during setup
+        }
         const target = event.target.parentElement as HTMLDivElement
         let candidateX = event.targetTouches[0].clientX - xOffset
         let candidateY = event.targetTouches[0].clientY - yOffset
@@ -80,6 +86,9 @@ const useInteractionHandler = (player: Player.Data) => {
         }
     }
     const pointerMove = (event: PointerEvent) => {
+        if (!gameContext.gameProgression.isSetup) {
+            return // moving is only allowed during setup
+        }
         const active = wrapperRef.current
         if (active) {
             let candidateX = event.clientX - xOffset

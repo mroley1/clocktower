@@ -18,6 +18,20 @@ export namespace Interaction {
         BURY     //^10 make it look like they are dead
     }
     
+    export enum ProtectionCoverage {
+        ALL,       // protected from all forms of death
+        EXECUTION, // protected from execution / exile
+        DEMON      // protected from the demon
+    }
+    // ! /\ and \/ need to be implemented logically !
+    export enum EffectAvailability {
+        PUBLIC, // available everyehere
+        TURN,   // must be owner's turn to use (night time)
+        NIGHT,  // any time during night
+        DAY,    // any time during the day
+        SETUP   // any time during setup
+    }
+    
     // effects that are shown next to player on board
     export const visibleEffects = [Effect.POISON, Effect.MADDEN, Effect.GRANT, Effect.IMBIBE, Effect.PROTECT, Effect.BURY]
     

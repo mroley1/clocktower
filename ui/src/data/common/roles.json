@@ -6,7 +6,7 @@
         "alignment": 1,
         "classType": 1,
         "interactions": [
-            {"name": "dead", "effect": 1, "setup": false, "length": 0, "sticky": false, "limitToSelf": true, "public": false}
+            {"name": "dead", "effect": 1, "length": 0, "sticky": false, "limitToSelf": true, "availability": 1}
         ],
         "first_night_desc": "",
         "other_night_desc": "If a good living neighbour is drunk or poisoned, the Acrobat player dies.",
@@ -20,7 +20,7 @@
         "alignment": 2,
         "classType": 3,
         "interactions": [
-            {"name": "picked", "effect": 0, "setup": false, "length": 1, "sticky": false, "public": false, "quantity": 3}
+            {"name": "picked", "effect": 0, "length": 1, "sticky": false, "availability": 1, "quantity": 3}
         ],
         "first_night_desc": "",
         "other_night_desc": "The Al-Hadikhia chooses 3 players. Announce the first player, wake them to nod yes to live or shake head no to die, kill or resurrect accordingly, then put to sleep and announce the next player. If all 3 are alive after this, all 3 die.",
@@ -34,7 +34,7 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Has Ability", "effect": 4, "setup": true, "length": -1, "sticky": false, "limitToSelf": true, "public": false}
+            {"name": "Has Ability", "effect": 4, "length": -1, "sticky": false, "limitToSelf": true, "availability": 4}
         ],
         "first_night_desc": "Show the Alchemist a not-in-play Minion token",
         "other_night_desc": "",
@@ -60,7 +60,7 @@
         "alignment": 0,
         "classType": 5,
         "interactions": [
-            {"name": "Something Bad", "effect": 0, "setup": false, "length": 2, "sticky": false, "limitToSelf": false, "public": true}
+            {"name": "Something Bad", "effect": 0, "length": 2, "sticky": false, "limitToSelf": false, "availability": 0}
         ],
         "first_night_desc": "",
         "other_night_desc": "",
@@ -75,7 +75,7 @@
         "alignment": 0,
         "classType": 4,
         "interactions": [
-            {"name": "Has Ability", "effect": 4, "setup": false, "length": -1, "sticky": true, "limitToSelf": true, "public": false}
+            {"name": "Has Ability", "effect": 4, "length": -1, "sticky": true, "limitToSelf": true, "availability": 1}
         ],
         "first_night_desc": "Show the Apprentice the 'You are' card, then a Townsfolk or Minion token. In the Grimoire, replace the Apprentice token with that character token, and put the Apprentice's 'Is the Apprentice' reminder by that character token.",
         "other_night_desc": "",
@@ -89,7 +89,7 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Used Ability", "effect": 0, "setup": false, "length": -1, "sticky": false, "limitToSelf": true, "public": true}
+            {"name": "Used Ability", "effect": 0, "length": -1, "sticky": false, "limitToSelf": true, "availability": 0}
         ],
         "first_night_desc": "",
         "other_night_desc": "",
@@ -380,7 +380,7 @@
         "alignment": 1,
         "classType": 1,
         "interactions": [
-            {"name": "Master", "effect": 0, "setup": false, "length": 2, "sticky": false, "limitToSelf": false, "public": false}
+            {"name": "Master", "effect": 0, "length": 2, "sticky": false, "limitToSelf": false, "availability": 1}
         ],
         "first_night_desc": "The Butler points to a player. Mark that player as 'Master'.",
         "other_night_desc": "The Butler points to a player. Mark that player as 'Master'.",
@@ -589,7 +589,7 @@
         "alignment": 1,
         "classType": 1,
         "interactions": [
-            {"name": "Drunk", "effect": 3, "setup": true, "length": -1, "sticky": false, "limitToSelf": true, "public": false}
+            {"name": "Drunk", "effect": 3, "length": -1, "sticky": false, "limitToSelf": true, "availability": 4}
         ],
         "first_night_desc": "",
         "other_night_desc": "",
@@ -814,7 +814,7 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Red Herring", "effect": 0, "setup": false, "length": -1, "sticky": false, "limitToSelf": false, "public": false}
+            {"name": "Red Herring", "effect": 0, "length": -1, "sticky": false, "limitToSelf": false, "availability": 4}
         ],
         "first_night_desc": "The Fortune Teller points to two players. Give the head signal (nod 'yes', shake 'no') for whether one of those players is the Demon.",
         "other_night_desc": "The Fortune Teller points to two players. Show the head signal (nod 'yes', shake 'no') for whether one of those players is the Demon.",
@@ -1106,8 +1106,8 @@
         "alignment": 2,
         "classType": 3,
         "interactions": [
-            {"name": "Dead", "effect": 1, "setup": false, "length": 0, "limitToSelf": false, "public": false},
-            {"name": "New Imp", "effect": 5, "setup": false, "length": 0, "limitToSelf": false, "public": false, "static": "imp"}
+            {"name": "Dead", "effect": 1, "length": 0, "limitToSelf": false, "availability": 1},
+            {"name": "New Imp", "effect": 5, "length": 0, "limitToSelf": false, "availability": 1, "static": "imp"}
         ],
         "first_night_desc": "",
         "other_night_desc": "The Imp points to a player. That player dies. If the Imp chose themselves: Replace the character of 1 alive minion with a spare Imp token. Show the 'You are' card, then the Imp token.",
@@ -1136,8 +1136,8 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Minion", "effect": 0, "setup": true, "length": -1, "sticky": false, "limitToSelf": false, "public": false},
-            {"name": "Wrong", "effect": 0, "setup": true, "length": -1, "sticky": false, "limitToSelf": false, "public": false}
+            {"name": "Minion", "effect": 0, "length": -1, "sticky": false, "limitToSelf": false, "availability": 4},
+            {"name": "Wrong", "effect": 0, "length": -1, "sticky": false, "limitToSelf": false, "availability": 4}
         ],
         "first_night_desc": "Show the character token of a Minion in play. Point to two players, one of which is that character.",
         "other_night_desc": "",
@@ -1288,8 +1288,8 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Outsider", "effect": 0, "setup": true, "length": 0, "sticky": false, "limitToSelf": true, "public": false},
-            {"name": "Wrong", "effect": 0, "setup": true, "length": 0, "sticky": false, "limitToSelf": true, "public": false}
+            {"name": "Outsider", "effect": 0, "length": 0, "sticky": false, "limitToSelf": true, "availability": 4},
+            {"name": "Wrong", "effect": 0, "length": 0, "sticky": false, "limitToSelf": true, "availability": 4}
         ],
         "first_night_desc": "Show the character token of an Outsider in play. Point to two players, one of which is that character.",
         "other_night_desc": "",
@@ -1482,7 +1482,7 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Protected", "effect": 8, "setup": false, "length": 1, "sticky": false, "limitToSelf": false, "public": false, "all": false, "onlyDemon": true, "execution": false}
+            {"name": "Protected", "effect": 8, "length": 1, "sticky": false, "limitToSelf": false, "availability": 1, "coverage": 2}
         ],
         "first_night_desc": "",
         "other_night_desc": "The previously protected player is no longer protected. The Monk points to a player not themself. Mark that player 'Protected'.",
@@ -1686,7 +1686,7 @@
         "alignment": 2,
         "classType": 2,
         "interactions": [
-            {"name": "Poisoned", "effect": 2, "setup": false, "length": 2, "sticky": false, "limitToSelf": false, "public": false}
+            {"name": "Poisoned", "effect": 2, "length": 2, "sticky": false, "limitToSelf": false, "availability": 1}
         ],
         "first_night_desc": "The Poisoner points to a player. That player is poisoned.",
         "other_night_desc": "The previously poisoned player is no longer poisoned. The Poisoner points to a player. That player is poisoned.",
@@ -1911,7 +1911,7 @@
         "alignment": 2,
         "classType": 2,
         "interactions": [
-            {"name": "Demon", "effect": 5, "setup": false, "length": 0, "limitToSelf": true, "public": true}
+            {"name": "Demon", "effect": 5, "length": 0, "limitToSelf": true, "availability": 0}
         ],
         "first_night_desc": "",
         "other_night_desc": "If the Scarlet Woman became the Demon today: Show the 'You are' card, then the demon token.",
@@ -2004,7 +2004,8 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Used Ability", "effect": 0, "setup": false, "length": -1, "sticky": false, "limitToSelf": true, "public": false}
+            {"name": "Used Ability", "effect": 0, "length": -1, "sticky": false, "limitToSelf": true, "availability": 0},
+            {"name": "dead", "effect": 1, "length": 0, "limitToSelf": false, "availability": 0, "force": false}
         ],
         "first_night_desc": "",
         "other_night_desc": "",
@@ -2043,7 +2044,7 @@
         "description": "You are safe from the Demon.",
         "alignment": 1,
         "classType": 0,
-        "interactions": [],
+        "interactions": [{"name": "Protect", "effect": 8, "length": -1, "sticky": true, "limitToSelf": true, "availability": 4, "coverage": 2}],
         "first_night_desc": "",
         "other_night_desc": "",
         "change_makeup": [],
@@ -2229,7 +2230,7 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Executed", "effect": 0, "setup": false, "length": 2, "sticky": false, "limitToSelf": false, "public": true}
+            {"name": "Executed", "effect": 0, "length": 2, "sticky": false, "limitToSelf": false, "availability": 0}
         ],
         "first_night_desc": "",
         "other_night_desc": "If a player was executed today: Show that player's character token.",
@@ -2273,7 +2274,7 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "No Ability", "effect": 0, "setup": false, "length": -1, "sticky": false, "limitToSelf": true, "public": true}
+            {"name": "No Ability", "effect": 0, "length": -1, "sticky": false, "limitToSelf": true, "availability": 0}
         ],
         "first_night_desc": "",
         "other_night_desc": "",
@@ -2325,8 +2326,8 @@
         "alignment": 1,
         "classType": 0,
         "interactions": [
-            {"name": "Townsfolk", "effect": 0, "setup": true, "length": -1, "sticky": false, "limitToSelf": false, "public": false},
-            {"name": "Wrong", "effect": 0, "setup": true, "length": -1, "sticky": false, "limitToSelf": false, "public": false}
+            {"name": "Townsfolk", "effect": 0, "length": -1, "sticky": false, "limitToSelf": false, "availability": 4},
+            {"name": "Wrong", "effect": 0, "length": -1, "sticky": false, "limitToSelf": false, "availability": 4}
         ],
         "first_night_desc": "Show the character token of a Townsfolk in play. Point to two players, one of which is that character.",
         "other_night_desc": "",

@@ -2,6 +2,7 @@ import { InteractionJSON } from "@/data/common/roles"
 import { GameDataJSON } from "./GameData"
 import { Player } from "./reactStates/Player"
 import { Alignmant, ClassType } from "./RoleType"
+import { Interaction } from "./reactStates/Intereaction"
 
 
 export namespace ReferenceData {
@@ -51,7 +52,6 @@ export namespace ReferenceData {
                     })
                 } catch {}
             }
-            console.log(this.roleData)
         }
         
         getRole(roleName: string): RoleData {
@@ -219,7 +219,7 @@ export namespace ReferenceData {
         getInteractions(role: string|undefined = undefined, inPlay: string[]) {
             return this._interactions.filter(interaction => 
                 interaction.role == role ||
-                (interaction.public && inPlay.includes(interaction.role))
+                (interaction.availability != Interaction.EffectAvailability.TURN && inPlay.includes(interaction.role))
             )
         }
         

@@ -33,12 +33,14 @@ function NightGuide() {
     
     useEffect(() => {
         if (gameContext.gameProgression.currentTurn && nightOrder.length > 0) {
-            let focusedIndex = nightOrder.findIndex((value) => value.UUID == gameContext.gameProgression.currentTurn)
-            if (focusedIndex < 0) {
-                focusedIndex = 0
-                controllerContext.initilizeTurn(nightOrder[0].UUID)
+            if (gameContext.gameProgression.isNight) {
+                let focusedIndex = nightOrder.findIndex((value) => value.UUID == gameContext.gameProgression.currentTurn)
+                if (focusedIndex < 0) {
+                    focusedIndex = 0
+                    controllerContext.initilizeTurn(nightOrder[0].UUID)
+                }
+                setFocusedIndex(focusedIndex)
             }
-            setFocusedIndex(focusedIndex)
         }
     }, [gameContext.gameProgression.currentTurn])
     
@@ -66,7 +68,7 @@ function NightGuide() {
     }
     
     return (
-        <div className={style.container}>
+        <div className={style.container} data-show={gameContext.gameProgression.isNight}>
             <div className={style.turntable} style={{transform: `rotate(${focusedIndex*25}deg)`}} onClick={toggleDescription}>
                 {nightOrder.map((turnData, index) => {
                     if (index > focusedIndex - 4 && index < focusedIndex + 4) {
