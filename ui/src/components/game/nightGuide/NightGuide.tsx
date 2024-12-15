@@ -21,12 +21,12 @@ function NightGuide() {
     }
     
     let initalFocusedIndex = 0
-    if (nightOrder.length > 0) {
+    if (nightOrder.length > 0 && gameContext.gameProgression.isNight) {
         initalFocusedIndex = nightOrder.findIndex((value) => value.UUID == gameContext.gameProgression.currentTurn)
         if (initalFocusedIndex < 0) {
             initalFocusedIndex = 0
-            controllerContext.initilizeTurn(nightOrder[0].UUID)
         }
+        
     }
     
     const [focusedIndex, setFocusedIndex] = useState(initalFocusedIndex)
@@ -37,7 +37,6 @@ function NightGuide() {
                 let focusedIndex = nightOrder.findIndex((value) => value.UUID == gameContext.gameProgression.currentTurn)
                 if (focusedIndex < 0) {
                     focusedIndex = 0
-                    controllerContext.initilizeTurn(nightOrder[0].UUID)
                 }
                 setFocusedIndex(focusedIndex)
             }

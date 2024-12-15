@@ -46,7 +46,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     useEffect(() => {
         if (madSelect && effectStore.current) {
-            controllerContext.addInteraction(effectStore.current!, playerData.id, madSelect)
+            controllerContext.aggregateData.addInteraction(effectStore.current!, playerData.id, madSelect)
             setMadSelect("")
             closeFunc()
         }
@@ -54,7 +54,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     useEffect(() => {
         if (grantSelect && effectStore.current) {
-            controllerContext.addInteraction(effectStore.current!, playerData.id, grantSelect)
+            controllerContext.aggregateData.addInteraction(effectStore.current!, playerData.id, grantSelect)
             setGrantSelect("")
             closeFunc()
         }
@@ -83,7 +83,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
             const shouldCreateInteractionNow = applyEffect(effectKit)
             
             if (shouldCreateInteractionNow) {
-                controllerContext.addInteraction(interaction, playerData.id)
+                controllerContext.aggregateData.addInteraction(interaction, playerData.id)
                 closeFunc()
             } else {
                 effectStore.current = interaction

@@ -40,7 +40,7 @@ function Test() {
     <br></br>
     <br></br>
     <br></br>
-    <button onClick={controllerContext.addPlayer}>new player</button>
+    <button onClick={controllerContext.aggregateData.addPlayer}>new player</button>
     {gameContext.players.map((player) => <p key={player.id}>{player.toJSON()}</p>)}
     <br></br>
     <br></br>

@@ -16,12 +16,12 @@ function Players() {
   return (
     <div className={styles.dragContext}>
         <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
-        <button onClick={() => {controllerContext.addPlayer()}}>new</button>
+        <button onClick={() => {controllerContext.aggregateData.addPlayer()}}>new</button>
         <br></br><br></br><br></br>
         <button onClick={gameContext.gameProgression.nextStage}>next</button>{gameContext.gameProgression.night}{GameProgression.State[gameContext.gameProgression.state]}
         <br></br><br></br>
-        <button onClick={controllerContext.undo}>undo</button>
-        <button onClick={controllerContext.redo}>redo</button>
+        <button onClick={controllerContext.historyController.undo}>undo</button>
+        <button onClick={controllerContext.historyController.redo}>redo</button>
         {
             gameContext.players.map(player => 
                 <PlayerWrapper key={player.id} player={player}></PlayerWrapper>

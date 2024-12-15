@@ -101,8 +101,10 @@ export namespace GameProgression {
         }
         
         set currentTurn(currentTurn: string|undefined) {
-            this._currentTurn = currentTurn;
-            this.useSetter()
+            if (this.isNight) {
+                this._currentTurn = currentTurn;
+                this.useSetter()
+            }
         }
         
         get currentTurnOwner(): string|undefined {

@@ -35,7 +35,7 @@ export namespace StateManager {
         private setgameState: React.Dispatch<React.SetStateAction<GameData>>
         
         gameStateJSON: GameDataJSON
-        private historyController: History
+        historyController: History
         aggregateData: AggregateData
         
         private saveGameFunc: (gameDataJSON: GameDataJSON, history: HistoryJSON) => void
@@ -58,7 +58,7 @@ export namespace StateManager {
             this.setgameState(newGameState);
         }
         
-        private newUUID() {
+        public newUUID() {
             let UUID = null;
             while (!UUID || this.usedUUIDs.has(UUID)) {
                 UUID = window.crypto.randomUUID();
@@ -137,67 +137,24 @@ export namespace StateManager {
             })
         }
         
-        undo = () => {
-            this.setValues(this.historyController.undo(), true)
-        }
-        
-        redo = () => {
-            this.setValues(this.historyController.redo(), true)
-        }
-        
-        addPlayer = () => {
-            const newPlayerJSON = {
-                type: "Player",
-                UUID: this.newUUID(),
-                active: true,
-                stale: false,
-                name: "",
-                role: undefined,
-                viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
-                position: {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75},
-                alignment: Alignmant.NONE
-            };
-            this.gameStateJSON?.players.push(newPlayerJSON);
-            this.build();
-        }
-        
-        addInteraction = (interaction: ReferenceData.Interaction, effected: string, role: string|undefined = undefined) => {
-            const UUID = this.newUUID()
-            console.log(this.gameState.gameProgression.night)
-            const newInteractionJSON = {
-                type: "Interaction",
-                UUID,
-                active: true,
-                stale: false,
-                owner: this.gameStateJSON.gameProgression.currentTurn,
-                end: getExpireeFromLength(interaction.length, this.gameStateJSON.gameProgression.progressId),
-                effected: effected,
-                interaction: interaction,
-                role
-            } as Interaction.ReactState
-            console.log(newInteractionJSON)
-            this.gameStateJSON.interactions.push(newInteractionJSON)
-            this.build()
-        }
-        
-        initilizeTurn = (currentTurn: string|undefined) => {
-            this.gameStateJSON.gameProgression.currentTurn = currentTurn;
-            this.build(true);
-        }
-        
         // used to group separate edits into one build
-        batchBuild(callback: () => void) {
+        batchBuild(callback: () => void, suppressHistory = false) {
             this.batchBuildEntry()
-            callback()
-            this.batchBuildExit()
+            try {
+                callback()
+            } catch(e) {
+                this.batchBuildExit()
+                throw(e)
+            }
+            this.batchBuildExit(suppressHistory)
         }
         // manually enter or leave batch
         batchBuildEntry() {
             this.inBatchBuild = true
         }
-        batchBuildExit() {
+        batchBuildExit(suppressHistory = false) {
             this.inBatchBuild = false
-            this.build()
+            this.build(suppressHistory)
         }
         
         public build(suppressHistory = false) {
@@ -222,6 +179,7 @@ export namespace StateManager {
                         return storedInstance.instance
                     } else {
                         const newClass = new (classMap.get(obj.type) as any)(obj, callback);
+                        obj.stale = false
                         if (!suppressHistory && !obj.type.startsWith("_")) {
                             transactionBuffer.new.push(obj)
                             if (storedInstance) {
@@ -253,6 +211,7 @@ export namespace StateManager {
         }
     }
     
+    // ! unused
     interface Patch {
         UUID: string
         path: string[]
@@ -261,8 +220,8 @@ export namespace StateManager {
     
     export class History {
         
-        _head
-        _transactions
+        private _head
+        private _transactions
         
         constructor(head: number = 0, transactions: TransactionJSON[] = []) {
             this._head = head
@@ -320,6 +279,22 @@ export namespace StateManager {
             )
         }
         
+        addPlayer = () => {
+            const newPlayerJSON = {
+                type: "Player",
+                UUID: this._controller.newUUID(),
+                active: true,
+                stale: false,
+                name: "",
+                role: undefined,
+                viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
+                position: {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75},
+                alignment: Alignmant.NONE
+            };
+            this._controller.gameStateJSON?.players.push(newPlayerJSON);
+            this._controller.build();
+        }
+        
         public availableInteractions(playerData: Player.Data): ReferenceData.Interaction[] {
             const inPlayRoles = this._controller.gameState.players.map(player => player.role)
                 .filter(role => role != undefined)
@@ -340,6 +315,23 @@ export namespace StateManager {
         
         public activeInteractions(playerId: string): Interaction.Data[] {
             return this._controller.gameState.interactions.filter(interaction => interaction.isActive && interaction.effected == playerId)
+        }
+        
+        addInteraction = (interaction: ReferenceData.Interaction, effected: string, role: string|undefined = undefined) => {
+            const UUID = this._controller.newUUID()
+            const newInteractionJSON = {
+                type: "Interaction",
+                UUID,
+                active: true,
+                stale: false,
+                owner: this._controller.gameStateJSON.gameProgression.currentTurn,
+                end: getExpireeFromLength(interaction.length, this._controller.gameStateJSON.gameProgression.progressId),
+                effected: effected,
+                interaction: interaction,
+                role
+            } as Interaction.ReactState
+            this._controller.gameStateJSON.interactions.push(newInteractionJSON)
+            this._controller.build()
         }
         
         // all effects currently acivive for player
