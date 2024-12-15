@@ -2,13 +2,11 @@ import { GameData, GameDataJSON, HistoryJSON, TransactionJSON } from "./GameData
 import { PlayerCount } from "./reactStates/PlayerCount";
 import { GameProgression } from "./reactStates/GameProgression";
 import { Player } from "./reactStates/Player";
-import sha256 from "crypto-js/sha256";
 import BaseReactState from "./reactStates/_BaseReactState";
 import { Interaction } from "./reactStates/Intereaction";
 import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
-import { EffectKit } from "../game/utility/ApplyEffect";
 import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
 
 export namespace StateManager {
@@ -56,6 +54,14 @@ export namespace StateManager {
             }
             this.usedUUIDs.add(UUID);
             return UUID;
+        }
+        
+        undo = () => {
+            this.setValues(this.historyController.undo(), true)
+        }
+        
+        redo = () => {
+            this.setValues(this.historyController.redo(), true)
         }
         
         // return copy of object with fn run on all sub-objects with "type" field
@@ -211,8 +217,8 @@ export namespace StateManager {
     
     export class History {
         
-        private _head
-        private _transactions
+        _head
+        _transactions
         
         constructor(head: number = 0, transactions: TransactionJSON[] = []) {
             this._head = head
@@ -228,12 +234,18 @@ export namespace StateManager {
         
         public undo(): BaseReactState[] {
             if (this._head == 0) { return [] }
-            return this._transactions[--this._head].old
+            return this._transactions[--this._head].old.map(transaction => {
+                transaction.stale = true;
+                return transaction
+            })
         }
         
         public redo(): BaseReactState[] {
             if (this._head == this._transactions.length) { return [] }
-            return this._transactions[this._head++].new
+            return this._transactions[this._head++].new.map(transaction => {
+                transaction.stale = true;
+                return transaction
+            })
         }
         
         private cleanHead() {
