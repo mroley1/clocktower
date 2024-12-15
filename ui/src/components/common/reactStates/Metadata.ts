@@ -6,6 +6,7 @@ export namespace Metadata {
         type: string
         UUID: string
         active: boolean
+        stale: boolean
         gameID: number
         name: string
         created: number
@@ -15,16 +16,19 @@ export namespace Metadata {
         private reactSetter
         private UUID
         private active
+        private stale
         
         private _gameID: number
         private _name: string
         private _created: number
         
         private useSetter() {
+            this.stale = true;
             this.reactSetter([{
                 type: "Metadata",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 gameID: this._gameID,
                 name: this._name,
                 created: this._created
@@ -34,6 +38,7 @@ export namespace Metadata {
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
+            this.stale = false;
             this.reactSetter = reactSetter;
             this._gameID = reactState.gameID;
             this._name = reactState.name;
@@ -45,6 +50,7 @@ export namespace Metadata {
                 type: "Metadata",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 gameID: this._gameID,
                 name: this._name,
                 created: this._created

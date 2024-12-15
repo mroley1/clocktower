@@ -68,9 +68,9 @@ export default App;
 
 function newSaveJSON(): GameDataJSON {
   return {
-    metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, name: "", gameID: dbIdNew(), created: Date.now()},
-    playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, quantity: 20},
-    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, progressId: 1, currentTurn: undefined},
+    metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, stale: false, name: "", gameID: dbIdNew(), created: Date.now()},
+    playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, stale: false, quantity: 20},
+    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, stale: false, progressId: 1, currentTurn: undefined},
     players: [],
     interactions: []
   }

@@ -12,6 +12,7 @@ export namespace GameProgression {
         type: string
         UUID: string
         active: boolean
+        stale: boolean
         progressId: number
         currentTurn: string|undefined
     }
@@ -20,15 +21,18 @@ export namespace GameProgression {
         private reactSetter
         private UUID
         private active
+        private stale
         
         private _progressId: number = 0;
         private _currentTurn: string|undefined
         
         private useSetter() {
+            this.stale = true;
             this.reactSetter([{
                 type: "GameProgression",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 progressId: this._progressId,
                 currentTurn: this._currentTurn
             }])
@@ -38,6 +42,7 @@ export namespace GameProgression {
             this.reactSetter = reactSetter;
             this.UUID = reactState.UUID;
             this.active = reactState.active;
+            this.stale = false;
             
             this._progressId = reactState.progressId;
             this._currentTurn = reactState.currentTurn;
@@ -114,6 +119,7 @@ export namespace GameProgression {
                 type: "GameProgression",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 progressId: this._progressId,
                 currentTurn: this._currentTurn
             }

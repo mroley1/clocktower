@@ -5,6 +5,7 @@ export namespace PlayerCount {
         type: string
         UUID: string
         active: boolean
+        stale: boolean
         quantity: number
     }
     
@@ -12,6 +13,7 @@ export namespace PlayerCount {
         private reactSetter
         private UUID
         private active
+        private stale
         
         private _quantity: number
     
@@ -24,10 +26,12 @@ export namespace PlayerCount {
         private CAP = 15;
         
         private useSetter() {
+            this.stale = true;
             this.reactSetter([{
                 type: "PlayerCount",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 quantity: this._quantity
             }])
         }
@@ -35,6 +39,7 @@ export namespace PlayerCount {
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
+            this.stale = false;
             this._quantity = reactState.quantity;
             this.reactSetter = reactSetter;
         }
@@ -74,6 +79,7 @@ export namespace PlayerCount {
                 type: "PlayerCount",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 quantity: this._quantity
             }
             return JSON.stringify(formatDocument)

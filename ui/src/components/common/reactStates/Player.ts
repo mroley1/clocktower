@@ -3,13 +3,14 @@ import BaseReactState from "./_BaseReactState"
 
 export namespace Player {
     export interface ReactState extends BaseReactState {
-        type: string,
-        UUID: string,
-        active: boolean,
-        name: string,
-        role: string|undefined,
-        viability: ViabilityJSON,
-        position: Position,
+        type: string
+        UUID: string
+        active: boolean
+        stale: boolean
+        name: string
+        role: string|undefined
+        viability: ViabilityJSON
+        position: Position
         alignment: Alignmant
     }
     
@@ -22,6 +23,7 @@ export namespace Player {
         private reactSetter
         private UUID
         private active
+        private stale
         
         private _name: string
         private _role: string|undefined
@@ -30,10 +32,12 @@ export namespace Player {
         private _alignment: Alignmant
         
         private useSetter() {
+            this.stale = true;
             this.reactSetter([{
                 type: "Player",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 name: this._name,
                 role: this._role,
                 viability: this._viability.reactSafe,
@@ -45,6 +49,7 @@ export namespace Player {
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
+            this.stale = false;
             this.reactSetter = reactSetter;
             this._name = reactState.name;
             this._role = reactState.role;
@@ -107,6 +112,7 @@ export namespace Player {
                 type: "PlayerCount",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 name: this._name,
                 role: this._role,
                 viability: this._viability.reactSafe,

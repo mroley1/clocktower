@@ -42,7 +42,7 @@ export namespace StateManager {
         private inBatchBuild = false;
         
         private usedUUIDs = new Set<string>()
-        private instanceMap = new Map<string, {json: BaseReactState, jsonHash: string, instance: Object}>()
+        private instanceMap = new Map<string, {json: BaseReactState, instance: Object}>()
         
         constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, history: HistoryJSON, gameStateJSON: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON, history: HistoryJSON) => void, referenceData: ReferenceData.ContextFormat) {
             this.gameState = gameState;
@@ -150,6 +150,7 @@ export namespace StateManager {
                 type: "Player",
                 UUID: this.newUUID(),
                 active: true,
+                stale: false,
                 name: "",
                 role: undefined,
                 viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
@@ -167,6 +168,7 @@ export namespace StateManager {
                 type: "Interaction",
                 UUID,
                 active: true,
+                stale: false,
                 owner: this.gameStateJSON.gameProgression.currentTurn,
                 end: getExpireeFromLength(interaction.length, this.gameStateJSON.gameProgression.progressId),
                 effected: effected,
@@ -216,7 +218,7 @@ export namespace StateManager {
                 this.usedUUIDs.add(obj.UUID);
                 const storedInstance = this.instanceMap.get(obj.UUID);
                 if (obj.active || !storedInstance) {
-                    if (storedInstance && sha256(JSON.stringify(obj)).toString() == storedInstance.jsonHash) {
+                    if (storedInstance && !obj.stale) {
                         return storedInstance.instance
                     } else {
                         const newClass = new (classMap.get(obj.type) as any)(obj, callback);
@@ -231,7 +233,7 @@ export namespace StateManager {
                             }
                         }
                         
-                        this.instanceMap.set(obj.UUID, {json: obj, jsonHash: sha256(JSON.stringify(obj)).toString(), instance: newClass})
+                        this.instanceMap.set(obj.UUID, {json: obj, instance: newClass})
                         return newClass
                     }
                 }

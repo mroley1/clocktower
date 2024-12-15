@@ -3,27 +3,32 @@ import BaseReactState from "./_BaseReactState";
 export namespace _ {
     
     export interface ReactState extends BaseReactState {
-        type: string,
-        UUID: string,
+        type: string
+        UUID: string
         active: boolean
+        stale: boolean
     }
     
     export class Data {
         private reactSetter
         private UUID
         private active
+        private stale
         
         private useSetter() {
+            this.stale = true;
             this.reactSetter([{
                 type: "_",
                 UUID: this.UUID,
-                active: this.active
+                active: this.active,
+                stale: this.stale
             }])
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
+            this.stale = false;
             this.reactSetter = reactSetter;
         }
         
@@ -31,7 +36,8 @@ export namespace _ {
             const formatDocument: ReactState = {
                 type: "_",
                 UUID: this.UUID,
-                active: this.active
+                active: this.active,
+                stale: this.stale
             }
             return JSON.stringify(formatDocument)
         }

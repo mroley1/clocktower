@@ -39,6 +39,7 @@ export namespace Interaction {
         type: string
         UUID: string
         active: boolean
+        stale: boolean
         owner: string // who applied effect (by current turn)
         end: number // when this effect expires (use GameProgression format)
         effected: string // who was effected (user id)
@@ -50,6 +51,7 @@ export namespace Interaction {
         private reactSetter
         private UUID
         private active
+        private stale
         
         private _owner: string
         private _end: number
@@ -58,10 +60,12 @@ export namespace Interaction {
         private _role: string|undefined
         
         private useSetter() {
+            this.stale = true;
             this.reactSetter([{
                 type: "Interaction",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 owner: this._owner,
                 end: this._end,
                 effected: this._effected,
@@ -73,6 +77,7 @@ export namespace Interaction {
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
+            this.stale = false;
             this.reactSetter = reactSetter;
             
             this._owner = reactState.owner;
@@ -123,6 +128,7 @@ export namespace Interaction {
                 type: "Interaction",
                 UUID: this.UUID,
                 active: this.active,
+                stale: this.stale,
                 owner: this._owner,
                 end: this._end,
                 effected: this._effected,
