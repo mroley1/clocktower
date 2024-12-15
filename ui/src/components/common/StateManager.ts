@@ -13,15 +13,6 @@ import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTransla
 
 export namespace StateManager {
     
-    /*
-    
-    ^ DO we need to not owner in history? Interactions should handle this
-    
-    ? Interactions can have effective range where their start and end are recorded making revisiting and ending prematurly easier
-    ? possibly mark them inactive to remove from built structure but an interaction scanner is run against JSON? kinda sketch.
-    
-    */
-    
     const classMap = new Map<string, Object>()
     classMap.set("GameProgression", GameProgression.Data)
     classMap.set("PlayerCount", PlayerCount.Data)
@@ -67,6 +58,7 @@ export namespace StateManager {
             return UUID;
         }
         
+        // return copy of object with fn run on all sub-objects with "type" field
         private mapObject(obj: any, fn: (obj: BaseReactState) => any): any {
             if (obj.hasOwnProperty("type")) {
                 return fn(obj)
@@ -93,16 +85,14 @@ export namespace StateManager {
             return mapped;
         }
         
+        // take game state and history and pass to game save function
         public saveGame() {
             if (this.gameStateJSON) {
                 this.saveGameFunc(this.gameStateJSON, this.historyController.json())
             }
         }
         
-        getPlayerFromId = (UUID: string|undefined) => {
-            return this.gameStateJSON.players.find((player) => player.UUID == UUID)
-        }
-        
+        // takes list of changes and applys them to JSON copy. then builds rich copy
         private setValues(values: BaseReactState[], suppressHistory?: boolean) {
             const valuesMap = new Map<string, BaseReactState>();
             values.forEach(value => valuesMap.set(value.UUID, value))
@@ -157,6 +147,7 @@ export namespace StateManager {
             this.build(suppressHistory)
         }
         
+        // build JSON copy into rich copy with misc housekeeping functions
         public build(suppressHistory = false) {
             if (this.inBatchBuild) {return}
             const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
@@ -269,6 +260,7 @@ export namespace StateManager {
             this._referenceData = referenceData
         }
         
+        // return all current players RoleData
         public players() {
             return this._controller.gameState.players.filter(player =>
                 player.role
@@ -279,6 +271,12 @@ export namespace StateManager {
             )
         }
         
+        // get player's reactstate from UUID
+        getPlayerFromId = (UUID: string|undefined) => {
+            return this._controller.gameStateJSON.players.find((player) => player.UUID == UUID)
+        }
+        
+        // add unassigned player
         addPlayer = () => {
             const newPlayerJSON = {
                 type: "Player",
@@ -295,13 +293,14 @@ export namespace StateManager {
             this._controller.build();
         }
         
+        // returns any availabe interactions to apply based on the playerdata of who it will be applied to
         public availableInteractions(playerData: Player.Data): ReferenceData.Interaction[] {
             const inPlayRoles = this._controller.gameState.players.map(player => player.role)
                 .filter(role => role != undefined)
             if (this._controller.gameState.gameProgression.isSetup) {
                 return this._referenceData.interactions.getAllInterations(inPlayRoles)
             } else {
-                const currentTurnRole = this._controller.getPlayerFromId(this._controller.gameState.gameProgression.currentTurnOwner)?.role
+                const currentTurnRole = this.getPlayerFromId(this._controller.gameState.gameProgression.currentTurnOwner)?.role
                 const interactions = this._referenceData.interactions.getInteractions(currentTurnRole, inPlayRoles)
                     .filter(interaction => 
                         (!interaction.limitToSelf || interaction.role == playerData.role) // if effect is limited to self interaction and player role must match
@@ -313,10 +312,12 @@ export namespace StateManager {
             }
         }
         
+        // returns all active intearaction for the specified player
         public activeInteractions(playerId: string): Interaction.Data[] {
             return this._controller.gameState.interactions.filter(interaction => interaction.isActive && interaction.effected == playerId)
         }
         
+        // add interaction
         addInteraction = (interaction: ReferenceData.Interaction, effected: string, role: string|undefined = undefined) => {
             const UUID = this._controller.newUUID()
             const newInteractionJSON = {
