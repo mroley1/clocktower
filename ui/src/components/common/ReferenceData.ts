@@ -20,6 +20,24 @@ export namespace ReferenceData {
         }
     }
     
+    export class Script {
+        private script
+        private _roleNames: string[]
+        
+        constructor(scriptJSON: any) {
+            this.script = scriptJSON;
+            this._roleNames = this.script.filter((obj: any) => typeof(obj) == "string");
+        }
+        
+        get roleNames(): string[] {
+            return this._roleNames;
+        }
+        
+        hasRoleName(roleName: string) {
+            return this._roleNames.includes(roleName)
+        }
+    }
+    
     export type InteractionAdditions = {
         role: string,
         UUID: string
@@ -40,9 +58,12 @@ export namespace ReferenceData {
         hide_face: boolean
     }
     export class Roles {
+        private _script: Script
+        
         private roleData
         
-        constructor() {
+        constructor(script: Script) {
+            this._script = script;
             this.roleData = require("../../data/common/roles.json");
             for (let role of Object.keys(this.roleData)) {
                 try { // ! REMOVE TRY WHEN ALL ROLES ARE UPDATED
@@ -54,40 +75,20 @@ export namespace ReferenceData {
             }
         }
         
+        hasRoleName(roleName: string) {
+            return this._script.hasRoleName(roleName);
+        }
+        
         getRole(roleName: string): RoleData {
             return this.roleData[roleName]
         }
         
-        getAll() {
+        get roles() {
             return this.roleData
         }
-    }
-    
-    export class Script {
-        private script
-        private _roleNames: string[]
-        private _roles: RoleData[]
         
-        constructor(roles: Roles) {
-            this.script = require('../../data/scripts/trouble_brewing.json');
-            this._roleNames = this.script.filter((obj: any) => typeof(obj) == "string");
-            this._roles = this._roleNames.map((roleName) => roles.getRole(roleName));
-        }
-        
-        get roleNames(): string[] {
-            return this._roleNames;
-        }
-        
-        get roles(): RoleData[] {
-            return this._roles;
-        }
-        
-        hasRoleName(roleName: string) {
-            return this._roleNames.includes(roleName)
-        }
-        
-        getRole(roleName: string) {
-            return this._roles.find((role) => role.id == roleName);
+        get roleList(): RoleData[] {
+            return Object.values(this.roleData)
         }
     }
     
@@ -102,7 +103,7 @@ export namespace ReferenceData {
     
     export class NightOrder {
         private nightOrder
-        private script
+        private roles
         private _firstNight: {id: string, description: string}[]
         private _otherNight: {id: string, description: string}[]
         
@@ -113,11 +114,11 @@ export namespace ReferenceData {
             {id: "DAWN", info: "Wait approximately 10 seconds. Call for eyes open; immediately announce which players (if anyone) died."}
         ]
         
-        constructor(script: Script) {
+        constructor(roles: Roles) {
             this.nightOrder = require('../../data/common/nightsheet.json');
-            this.script = script;
+            this.roles = roles;
             const transform = (roleList: string[]) => {
-                return roleList.filter((roleName: string) => this.script.hasRoleName(roleName) || this.KEYWORDS.some((keyword) => keyword.id == roleName))
+                return roleList.filter((roleName: string) => this.roles.hasRoleName(roleName) || this.KEYWORDS.some((keyword) => keyword.id == roleName))
                 .map((roleName: string) => {
                     const keyword = this.KEYWORDS.find((keyword) => keyword.id == roleName)
                     if (keyword) {
@@ -126,7 +127,7 @@ export namespace ReferenceData {
                             description: keyword.info
                         }
                     } else {
-                        const role = this.script.getRole(roleName)
+                        const role = this.roles.getRole(roleName)
                         return {
                             id: role!.id,
                             description: role!.first_night_desc
@@ -203,14 +204,14 @@ export namespace ReferenceData {
     
     export class Interactions {
         
-        private _script
+        private _roles
         private _interactions: Interaction[] = []
         
         private _map: Map<string, Interaction> = new Map()
         
-        constructor(script: Script) {
-            this._script = script
-            this._interactions = this._script.roles.flatMap(role => role.interactions)
+        constructor(roles: Roles) {
+            this._roles = roles
+            this._interactions = this._roles.roleList.flatMap((role: RoleData) => role.interactions)
             this._interactions.forEach(interaction => {
                 this._map.set(interaction.UUID, interaction)
             })
@@ -240,10 +241,10 @@ export namespace ReferenceData {
     
     export class Image {
         
-        private _script
+        private _roles
         
-        constructor(script: Script) {
-            this._script = script
+        constructor(roles: Roles) {
+            this._roles = roles
         }
         
         getPlayerImage(playerData: Player.Data) {
@@ -259,7 +260,7 @@ export namespace ReferenceData {
         
         getRoleImage(roleName: string, alignment: Alignmant|undefined = undefined) {
             if (!alignment) {
-                alignment = this._script.getRole(roleName)?.alignment
+                alignment = this._roles.getRole(roleName)?.alignment
             }
             if (roleName) {
                 if (alignment == Alignmant.GOOD) {

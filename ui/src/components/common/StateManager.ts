@@ -278,7 +278,7 @@ export namespace StateManager {
                 player.role
             ).map(player => 
                 player.role
-                    ? this._referenceData.script.getRole(player.role)
+                    ? this._referenceData.roles.getRole(player.role)
                     : undefined
             )
         }

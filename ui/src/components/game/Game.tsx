@@ -19,12 +19,14 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
   
   const [gameState, setGameState] = useState(gameSettings as any as GameData)
   
+  const [scriptJSON, setScriptJSON] = useState(require('../../data/scripts/trouble_brewing.json'));
+  
   const referenceData = useMemo(() => {
-    const roles = new ReferenceData.Roles();
-    const script = new ReferenceData.Script(roles);
-    const image = new ReferenceData.Image(script)
-    const nightOrder = new ReferenceData.NightOrder(script);
-    const interactions = new ReferenceData.Interactions(script);
+    const script = new ReferenceData.Script(scriptJSON);
+    const roles = new ReferenceData.Roles(script);
+    const image = new ReferenceData.Image(roles);
+    const nightOrder = new ReferenceData.NightOrder(roles);
+    const interactions = new ReferenceData.Interactions(roles);
     const jinxes = new ReferenceData.Jinxes();
     const fabled = new ReferenceData.Fabled();
     return {
@@ -39,7 +41,7 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
     interactions,
     jinxes,
     fabled,
-  } as ReferenceData.ContextFormat}, [])
+  } as ReferenceData.ContextFormat}, [scriptJSON])
   
   const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, history, gameSettings, saveGame, referenceData), [])
   
