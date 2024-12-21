@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import styles from './Player.module.scss';
-import { ControllerContext, DataContext, GameContext } from '../../Game';
+import { ControllerContext, ReferenceContext, GameContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
 import { Alignmant } from '../../../../components/common/RoleType';
 import RolePick from '../../utility/RolePick';
@@ -13,7 +13,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     const gameContext = useContext(GameContext);
     const controllerContext = useContext(ControllerContext)
-    const dataContext = useContext(DataContext)
+    const referenceContext = useContext(ReferenceContext)
     
     const [roleSelect, setRoleSelect] = useState<string|undefined>(playerData.role)
         
@@ -29,7 +29,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
         if (roleSelect) {
             controllerContext.batchBuild(() => {
                 playerData.role = roleSelect
-                const roleData = dataContext.roles.getRole(playerData.role)
+                const roleData = referenceContext.roles.getRole(playerData.role)
                 if (playerData.alignment == Alignmant.NONE) {
                     playerData.alignment = roleData.alignment
                     setAlignmentSelect(roleData.alignment)
@@ -102,16 +102,16 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 <AvailableInteractions playerData={playerData} applyEffectHandler={applyEffectHandler}></AvailableInteractions>
                 <ActiveInteractions playerData={playerData}></ActiveInteractions>
                 <div className={styles.pictogram}>
-                    {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
-                        <img className={styles.player_image} src={dataContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
-                        {dataContext.roles.getRole(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!.role!).description}
+                    {/* {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
+                        <img className={styles.player_image} src={referenceContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
+                        {referenceContext.roles.getRole(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!.role!).description}
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-right-long-solid.png')}></img>
                     </>}
-                    <img className={styles.player_image} src={dataContext.image.getPlayerImage(playerData)}></img>
-                    {dataContext.roles.getRole(playerData.role!).description}
+                    <img className={styles.player_image} src={referenceContext.image.getPlayerImage(playerData)}></img>
+                    {referenceContext.roles.getRole(playerData.role!).description}
                     {gameContext.gameProgression.currentTurnOwner == playerData.id && <>
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-loop-left-solid.png')}></img>
-                    </>}
+                    </>} */}
                 </div>
             </div>
         )
@@ -128,16 +128,16 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 <AvailableInteractions playerData={playerData} applyEffectHandler={applyEffectHandler}></AvailableInteractions>
                 <ActiveInteractions playerData={playerData}></ActiveInteractions>
                 <div className={styles.pictogram}>
-                    {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
-                        <img className={styles.player_image} src={dataContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
-                        {dataContext.roles.getRole(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!.role!).description}
+                    {/* {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
+                        <img className={styles.player_image} src={referenceContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
+                        {referenceContext.roles.getRole(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!.role!).description}
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-right-long-solid.png')}></img>
                     </>}
-                    <img className={styles.player_image} src={dataContext.image.getPlayerImage(playerData)}></img>
-                    {dataContext.roles.getRole(playerData.role!).description}
+                    <img className={styles.player_image} src={referenceContext.image.getPlayerImage(playerData)}></img>
+                    {referenceContext.roles.getRole(playerData.role!).description}
                     {gameContext.gameProgression.currentTurnOwner == playerData.id && <>
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-loop-left-solid.png')}></img>
-                    </>}
+                    </>} */}
                 </div>
             </div>
         )
@@ -214,7 +214,7 @@ interface AvailableInteractionsProps {
 }
 function AvailableInteractions({applyEffectHandler, playerData}: AvailableInteractionsProps) {
     
-    const dataContext = useContext(DataContext)
+    const referenceContext = useContext(ReferenceContext)
     const controllerContext = useContext(ControllerContext)
         
     const availableInteractions = controllerContext.aggregateData.availableInteractions(playerData)
@@ -224,7 +224,7 @@ function AvailableInteractions({applyEffectHandler, playerData}: AvailableIntera
         AVAILABLE
         {
             availableInteractions.map(interaction => <div className={styles.interaction} onClick={() => {applyEffectHandler(interaction)}} key={interaction.name + interaction.role}>
-                <img src={dataContext.image.getRoleImage(interaction.role)}></img>
+                <img src={referenceContext.image.getRoleImage(interaction.role)}></img>
                 {interaction.name}
             </div>)
         }
@@ -237,7 +237,7 @@ interface ActiveInteractionsProps {
 }
 function ActiveInteractions({playerData}: ActiveInteractionsProps) {
     
-    const dataContext = useContext(DataContext)
+    const referenceContext = useContext(ReferenceContext)
     const controllerContext = useContext(ControllerContext)
         
     const activeInteractions = controllerContext.aggregateData.activeInteractions(playerData.id)
@@ -247,7 +247,7 @@ function ActiveInteractions({playerData}: ActiveInteractionsProps) {
             ACTIVE
             {
                 activeInteractions.map(interaction => <div className={styles.interaction} key={interaction.id}>
-                <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
+                <img src={referenceContext.image.getRoleImage(interaction.fromRole)}></img>
                 {interaction.name}
             </div>)
             }

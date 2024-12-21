@@ -1,12 +1,12 @@
 import { useContext, useState } from 'react';
 import styles from './Menu.module.scss';
-import { ControllerContext, DataContext } from '../Game';
+import { ControllerContext, ReferenceContext } from '../Game';
 
 
 function Menu() {
   
   const controllerContext = useContext(ControllerContext)
-  const referenceData = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
   
   const [open, setOpen] = useState(false);
   
@@ -16,7 +16,7 @@ function Menu() {
   
   function saveAndReturn() {
     controllerContext.saveGame()
-    referenceData.utilies.quitGame()
+    referenceContext.utilies.quitGame()
   }
   
   return (

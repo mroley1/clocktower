@@ -1,35 +1,37 @@
-import { useContext, useEffect, useState } from 'react';
+import { MutableRefObject, useContext, useEffect, useState } from 'react';
 import styles from './Player.module.scss';
-import { ControllerContext, DataContext, GameContext } from '../../Game';
+import { ControllerContext, ReferenceContext, GameContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
 import Menu from './Menu';
 import { Interaction } from '../../../common/reactStates/Intereaction';
 
-interface PlayerPartialProps {playerData: Player.Data}
-function PlayerPartial({playerData}: PlayerPartialProps) {
+interface PlayerPartialProps {playerData: Player.Data, wrapper: MutableRefObject<HTMLDivElement|null>}
+function PlayerPartial({playerData, wrapper}: PlayerPartialProps) {
   
   const controllerContext = useContext(ControllerContext)
   const gameContext = useContext(GameContext)
-  const referenceData = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
   
-  const image = referenceData.image.getPlayerImage(playerData);
+  const image = referenceContext.image.getPlayerImage(playerData);
+  
   
   const [menuOpen, setMenuOpen] = useState(false);
+  
   function openMenu() {
     setMenuOpen(true);
   }
+  
   function closeMenu() {
     setMenuOpen(false)
   }
   
   useEffect(() => {
-    const token = document.querySelector(`div[data-id='${playerData.id}']`)
-    if (token) {
-        token.addEventListener("data-select", openMenu)
+    if (wrapper.current) {
+        wrapper.current.addEventListener("data-select", openMenu)
     }
     return () => {
-        if (token) {
-            token.removeEventListener("data-select", openMenu)
+        if (wrapper.current) {
+            wrapper.current.removeEventListener("data-select", openMenu)
         }
     }
   }, [playerData])
@@ -57,7 +59,7 @@ interface InteractionIndicatorsProps {
 }
 function InteractionIndicators({activeInteractions}: InteractionIndicatorsProps) {
   
-  const dataContext = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
   
   const displayNumber = 4 // how many inteasractions to show
   
@@ -80,7 +82,7 @@ function InteractionIndicators({activeInteractions}: InteractionIndicatorsProps)
           return (
             <div key={interaction.id} className={`${styles.slot} ${styles.interaction} ${styles["quantity-" + displayed.length]}`}>
               <div className={styles.pip}>
-                <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
+                <img src={referenceContext.image.getRoleImage(interaction.fromRole)}></img>
               </div>
             </div>
           )
@@ -95,7 +97,7 @@ interface EffectIndicatorsProps {
 }
 function EffectIndicators({visibleEffects}: EffectIndicatorsProps) {
   
-  const dataContext = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
   
   const displayNumber = 5 // how many effects to show
   

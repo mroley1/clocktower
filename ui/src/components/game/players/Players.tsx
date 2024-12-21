@@ -1,6 +1,6 @@
 import { MutableRefObject, useContext, useRef, useState } from 'react';
 import styles from './Players.module.scss';
-import { ControllerContext, DataContext, GameContext } from '../Game';
+import { ControllerContext, ReferenceContext, GameContext } from '../Game';
 import PlayerPartial from './player/Player';
 import React from 'react';
 import { Player } from '@/components/common/reactStates/Player';
@@ -11,7 +11,7 @@ function Players() {
   
   const gameContext = useContext(GameContext)
   const controllerContext = useContext(ControllerContext)
-  const referenceData = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
   
   return (
     <div className={styles.dragContext}>
@@ -36,8 +36,8 @@ export default Players;
 function PlayerWrapper({player}: {player: Player.Data}) {
     const interactionHandles = useInteractionHandler(player)
     return (
-        <div  data-id={player.id} style={{left: player.position.x, top: player.position.y}} className={styles.playerWrapper} onPointerDown={interactionHandles.pointerDown} ref={interactionHandles.wrapperRef}>
-            <PlayerPartial playerData={player}></PlayerPartial>
+        <div style={{left: player.position.x, top: player.position.y}} className={styles.playerWrapper} onPointerDown={interactionHandles.pointerDown} ref={interactionHandles.wrapperRef}>
+            <PlayerPartial playerData={player} wrapper={interactionHandles.wrapperRef}></PlayerPartial>
         </div>
     )
 }
