@@ -1,4 +1,4 @@
-import { MutableRefObject, useContext, useEffect, useState } from 'react';
+import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react';
 import styles from './Player.module.scss';
 import { ControllerContext, ReferenceContext, GameContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
@@ -14,24 +14,33 @@ function PlayerPartial({playerData, wrapper}: PlayerPartialProps) {
   
   const image = referenceContext.image.getPlayerImage(playerData);
   
+  const currentSelectedRef = useRef(gameContext._global.currentSelected)
+  useEffect(() => { // ? keep current selected reference updated with game state
+    currentSelectedRef.current = gameContext._global.currentSelected
+  }, [gameContext._global.currentSelected])
   
   const [menuOpen, setMenuOpen] = useState(false);
   
-  function openMenu() {
-    setMenuOpen(true);
-  }
-  
   function closeMenu() {
     setMenuOpen(false)
+    gameContext._global.currentSelected = undefined
+  }
+  
+  function handleSelect() {
+    if (currentSelectedRef.current) {
+      setMenuOpen(true)
+    } else {
+      gameContext._global.currentSelected = playerData.id
+    }
   }
   
   useEffect(() => {
     if (wrapper.current) {
-        wrapper.current.addEventListener("data-select", openMenu)
+        wrapper.current.addEventListener("data-select", handleSelect)
     }
     return () => {
         if (wrapper.current) {
-            wrapper.current.removeEventListener("data-select", openMenu)
+            wrapper.current.removeEventListener("data-select", handleSelect)
         }
     }
   }, [playerData])
@@ -41,13 +50,12 @@ function PlayerPartial({playerData, wrapper}: PlayerPartialProps) {
   const visibleEffects = controllerContext.aggregateData.visibleEffects(playerData.id)
   
   return (
-    <div className={styles.token}>
+    <div className={styles.token} data-selected={gameContext._global.currentSelected == playerData.id}>
         <img className={styles.image} src={image}></img>
         <InteractionIndicators activeInteractions={activeInteractions}></InteractionIndicators>
         <EffectIndicators visibleEffects={visibleEffects}></EffectIndicators>
         <Menu isOpen={menuOpen} closeFunc={closeMenu} playerData={playerData}></Menu>
         <DeathShroud playerData={playerData}></DeathShroud>
-        
     </div>
   );
 }

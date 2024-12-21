@@ -102,16 +102,16 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 <AvailableInteractions playerData={playerData} applyEffectHandler={applyEffectHandler}></AvailableInteractions>
                 <ActiveInteractions playerData={playerData}></ActiveInteractions>
                 <div className={styles.pictogram}>
-                    {/* {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
-                        <img className={styles.player_image} src={referenceContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
-                        {referenceContext.roles.getRole(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!.role!).description}
+                    {gameContext._global.currentSelected && gameContext._global.currentSelected != playerData.id && <>
+                        <img className={styles.player_image} src={referenceContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext._global.currentSelected)!)}></img>
+                        {referenceContext.roles.getRole(gameContext.players.find(player => player.id == gameContext._global.currentSelected)!.role!).description}
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-right-long-solid.png')}></img>
                     </>}
                     <img className={styles.player_image} src={referenceContext.image.getPlayerImage(playerData)}></img>
                     {referenceContext.roles.getRole(playerData.role!).description}
-                    {gameContext.gameProgression.currentTurnOwner == playerData.id && <>
+                    {gameContext._global.currentSelected == playerData.id && <>
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-loop-left-solid.png')}></img>
-                    </>} */}
+                    </>}
                 </div>
             </div>
         )
@@ -128,16 +128,16 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 <AvailableInteractions playerData={playerData} applyEffectHandler={applyEffectHandler}></AvailableInteractions>
                 <ActiveInteractions playerData={playerData}></ActiveInteractions>
                 <div className={styles.pictogram}>
-                    {/* {gameContext.gameProgression.currentTurnOwner && gameContext.gameProgression.currentTurnOwner != playerData.id && <>
-                        <img className={styles.player_image} src={referenceContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!)}></img>
-                        {referenceContext.roles.getRole(gameContext.players.find(player => player.id == gameContext.gameProgression.currentTurnOwner)!.role!).description}
+                    {gameContext._global.currentSelected && gameContext._global.currentSelected != playerData.id && <>
+                        <img className={styles.player_image} src={referenceContext.image.getPlayerImage(gameContext.players.find(player => player.id == gameContext._global.currentSelected)!)}></img>
+                        {referenceContext.roles.getRole(gameContext.players.find(player => player.id == gameContext._global.currentSelected)!.role!).description}
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-right-long-solid.png')}></img>
                     </>}
                     <img className={styles.player_image} src={referenceContext.image.getPlayerImage(playerData)}></img>
                     {referenceContext.roles.getRole(playerData.role!).description}
-                    {gameContext.gameProgression.currentTurnOwner == playerData.id && <>
+                    {gameContext._global.currentSelected == playerData.id && <>
                         <img className={styles.relationship_image} src={require('../../../../assets/arrow-loop-left-solid.png')}></img>
-                    </>} */}
+                    </>}
                 </div>
             </div>
         )

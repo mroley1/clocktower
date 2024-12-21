@@ -314,8 +314,7 @@ export namespace StateManager {
             if (this._controller.gameState.gameProgression.isSetup) {
                 return this._referenceData.interactions.getAllInterations(inPlayRoles)
             } else {
-                // ! IMPLEMENT
-                const currentTurnRole = this.getPlayerFromId("this._controller.gameState.gameProgression.currentTurnOwner")?.role
+                const currentTurnRole = this.getPlayerFromId(this._controller.gameState._global.currentSelected)?.role
                 const interactions = this._referenceData.interactions.getInteractions(currentTurnRole, inPlayRoles)
                     .filter(interaction => 
                         (!interaction.limitToSelf || interaction.role == playerData.role) // if effect is limited to self interaction and player role must match

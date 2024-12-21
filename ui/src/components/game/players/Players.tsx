@@ -13,8 +13,12 @@ function Players() {
   const controllerContext = useContext(ControllerContext)
   const referenceContext = useContext(ReferenceContext)
   
+  function neutralClick() {
+    gameContext._global.currentSelected = undefined
+  }
+  
   return (
-    <div className={styles.dragContext}>
+    <div className={styles.dragContext} onPointerDown={neutralClick}>
         <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
         <button onClick={() => {controllerContext.aggregateData.addPlayer()}}>new</button>
         <br></br><br></br><br></br>
@@ -59,6 +63,7 @@ const useInteractionHandler = (player: Player.Data) => {
     let yOffset = 0;
     
     const pointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+        event.stopPropagation()
         const active = wrapperRef.current
         if (!active) {return}
         const boundingRect = active.getBoundingClientRect()
