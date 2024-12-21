@@ -5,6 +5,7 @@ import { Interaction } from "./reactStates/Intereaction"
 import ScriptData from "./ScriptData"
 import { Metadata } from "./reactStates/Metadata"
 import BaseReactState from "./reactStates/_BaseReactState"
+import { _Global } from "./reactStates/_Global"
 
 export interface GameData {
     metadata: Metadata.Data
@@ -12,6 +13,7 @@ export interface GameData {
     gameProgression: GameProgression.Data
     players: Player.Data[]
     interactions: Interaction.Data[]
+    _global: _Global.Data
 }
 
 export interface GameDataJSON {
@@ -20,6 +22,7 @@ export interface GameDataJSON {
     gameProgression: GameProgression.ReactState
     players: Player.ReactState[]
     interactions: Interaction.ReactState[]
+    _global: _Global.ReactState
 }
 
 export interface TransactionJSON {

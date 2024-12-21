@@ -8,6 +8,7 @@ import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
 import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
+import { _Global } from "./reactStates/_Global";
 
 export namespace StateManager {
     
@@ -17,6 +18,7 @@ export namespace StateManager {
     classMap.set("Player", Player.Data)
     classMap.set("Interaction", Interaction.Data)
     classMap.set("Metadata", Metadata.Data)
+    classMap.set("_Global", _Global.Data)
     
     export class Controller {
         

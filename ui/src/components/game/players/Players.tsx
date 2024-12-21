@@ -22,6 +22,11 @@ function Players() {
         <br></br><br></br>
         <button onClick={controllerContext.undo}>undo</button>
         <button onClick={controllerContext.redo}>redo</button>
+        <br></br><br></br><br></br>
+        {gameContext._global.currentSelected!=undefined?gameContext._global.currentSelected:null}
+        <br></br>
+        <button onClick={() => {gameContext._global.currentSelected = "ABC"}}>ABC</button>
+        <button onClick={() => {gameContext._global.currentSelected = "DEF"}}>DEF</button>
         {
             gameContext.players.map(player => 
                 <PlayerWrapper key={player.id} player={player}></PlayerWrapper>

@@ -72,7 +72,8 @@ function newSaveJSON(): GameDataJSON {
     playerCount: {type: "PlayerCount", UUID: window.crypto.randomUUID(), active: true, stale: false, quantity: 20},
     gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, stale: false, progressId: 1},
     players: [],
-    interactions: []
+    interactions: [],
+    _global: {type: "_Global", UUID: window.crypto.randomUUID(), active: true, stale: false, currentSelected: undefined}
   }
 }
 
