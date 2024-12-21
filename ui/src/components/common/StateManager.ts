@@ -312,7 +312,8 @@ export namespace StateManager {
             if (this._controller.gameState.gameProgression.isSetup) {
                 return this._referenceData.interactions.getAllInterations(inPlayRoles)
             } else {
-                const currentTurnRole = this.getPlayerFromId(this._controller.gameState.gameProgression.currentTurnOwner)?.role
+                // ! IMPLEMENT
+                const currentTurnRole = this.getPlayerFromId("this._controller.gameState.gameProgression.currentTurnOwner")?.role
                 const interactions = this._referenceData.interactions.getInteractions(currentTurnRole, inPlayRoles)
                     .filter(interaction => 
                         (!interaction.limitToSelf || interaction.role == playerData.role) // if effect is limited to self interaction and player role must match
@@ -337,7 +338,7 @@ export namespace StateManager {
                 UUID,
                 active: true,
                 stale: false,
-                owner: this._controller.gameStateJSON.gameProgression.currentTurn,
+                owner: "this._controller.gameStateJSON.gameProgression.currentTurn",
                 end: getExpireeFromLength(interaction.length, this._controller.gameStateJSON.gameProgression.progressId),
                 effected: effected,
                 interaction: interaction,

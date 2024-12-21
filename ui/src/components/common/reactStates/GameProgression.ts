@@ -14,7 +14,6 @@ export namespace GameProgression {
         active: boolean
         stale: boolean
         progressId: number
-        currentTurn: string|undefined
     }
     
     export class Data {
@@ -24,7 +23,6 @@ export namespace GameProgression {
         private stale
         
         private _progressId: number = 0;
-        private _currentTurn: string|undefined
         
         private useSetter() {
             this.stale = true;
@@ -33,8 +31,7 @@ export namespace GameProgression {
                 UUID: this.UUID,
                 active: this.active,
                 stale: this.stale,
-                progressId: this._progressId,
-                currentTurn: this._currentTurn
+                progressId: this._progressId
             }])
         }
         
@@ -45,7 +42,6 @@ export namespace GameProgression {
             this.stale = false;
             
             this._progressId = reactState.progressId;
-            this._currentTurn = reactState.currentTurn;
         }
         
         nextStage = (): Data => {
@@ -53,9 +49,6 @@ export namespace GameProgression {
                 this._progressId = 0b10
             } else {
                 this._progressId += 0b10
-                if (!this.isNight) {
-                    this._currentTurn = undefined
-                }
             }
             this.useSetter();
             return this;
@@ -96,34 +89,13 @@ export namespace GameProgression {
             return this.state == State.NIGHT;
         }
         
-        get currentTurn(): string|undefined {
-            return this._currentTurn;
-        }
-        
-        set currentTurn(currentTurn: string|undefined) {
-            if (this.isNight) {
-                this._currentTurn = currentTurn;
-                this.useSetter()
-            }
-        }
-        
-        get currentTurnOwner(): string|undefined {
-            if (!this.isNight) {
-                return undefined
-            }
-            if (!this._currentTurn?.startsWith("_")) {
-                return this.currentTurn
-            }
-        }
-        
         toJSON() {
             const formatDocument: ReactState = {
                 type: "GameProgression",
                 UUID: this.UUID,
                 active: this.active,
                 stale: this.stale,
-                progressId: this._progressId,
-                currentTurn: this._currentTurn
+                progressId: this._progressId
             }
             return JSON.stringify(formatDocument)
         }
