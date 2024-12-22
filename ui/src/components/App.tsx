@@ -81,7 +81,7 @@ function genSaveJsonTag(gameDataJSON: GameDataJSON): GameDataJSONTag {
   return {
     name: gameDataJSON.metadata.name,
     gameID: gameDataJSON.metadata.gameID,
-    gameProgression: gameDataJSON.gameProgression,
+    gameProgression: gameDataJSON.gameProgression.progressId,
     playerRoles: gameDataJSON.players.filter(player => player.role).map(player => player.role!),
     script: undefined,
     created: gameDataJSON.metadata.created

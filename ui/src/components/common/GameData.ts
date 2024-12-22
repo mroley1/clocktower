@@ -38,7 +38,7 @@ export interface HistoryJSON {
 export interface GameDataJSONTag {
     gameID: number
     name: string
-    gameProgression: GameProgression.ReactState
+    gameProgression: number
     playerRoles: string[]
     script: ScriptData|undefined
     created: number
