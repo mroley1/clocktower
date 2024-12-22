@@ -1,35 +1,46 @@
-import { useContext, useEffect, useState } from 'react';
+import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react';
 import styles from './Player.module.scss';
-import { ControllerContext, DataContext, GameContext } from '../../Game';
+import { ControllerContext, ReferenceContext, GameContext } from '../../Game';
 import { Player } from '@/components/common/reactStates/Player';
 import Menu from './Menu';
 import { Interaction } from '../../../common/reactStates/Intereaction';
 
-interface PlayerPartialProps {playerData: Player.Data}
-function PlayerPartial({playerData}: PlayerPartialProps) {
+interface PlayerPartialProps {playerData: Player.Data, wrapper: MutableRefObject<HTMLDivElement|null>}
+function PlayerPartial({playerData, wrapper}: PlayerPartialProps) {
   
   const controllerContext = useContext(ControllerContext)
   const gameContext = useContext(GameContext)
-  const referenceData = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
   
-  const image = referenceData.image.getPlayerImage(playerData);
+  const image = referenceContext.image.getPlayerImage(playerData);
+  
+  const currentSelectedRef = useRef(gameContext._global.currentSelected)
+  useEffect(() => { // ? keep current selected reference updated with game state
+    currentSelectedRef.current = gameContext._global.currentSelected
+  }, [gameContext._global.currentSelected])
   
   const [menuOpen, setMenuOpen] = useState(false);
-  function openMenu() {
-    setMenuOpen(true);
-  }
+  
   function closeMenu() {
     setMenuOpen(false)
+    gameContext._global.currentSelected = undefined
+  }
+  
+  function handleSelect() {
+    if (currentSelectedRef.current) {
+      setMenuOpen(true)
+    } else {
+      gameContext._global.currentSelected = playerData.id
+    }
   }
   
   useEffect(() => {
-    const token = document.querySelector(`div[data-id='${playerData.id}']`)
-    if (token) {
-        token.addEventListener("data-select", openMenu)
+    if (wrapper.current) {
+        wrapper.current.addEventListener("data-select", handleSelect)
     }
     return () => {
-        if (token) {
-            token.removeEventListener("data-select", openMenu)
+        if (wrapper.current) {
+            wrapper.current.removeEventListener("data-select", handleSelect)
         }
     }
   }, [playerData])
@@ -39,13 +50,12 @@ function PlayerPartial({playerData}: PlayerPartialProps) {
   const visibleEffects = controllerContext.aggregateData.visibleEffects(playerData.id)
   
   return (
-    <div className={styles.token}>
+    <div className={styles.token} data-selected={gameContext._global.currentSelected == playerData.id}>
         <img className={styles.image} src={image}></img>
         <InteractionIndicators activeInteractions={activeInteractions}></InteractionIndicators>
         <EffectIndicators visibleEffects={visibleEffects}></EffectIndicators>
         <Menu isOpen={menuOpen} closeFunc={closeMenu} playerData={playerData}></Menu>
         <DeathShroud playerData={playerData}></DeathShroud>
-        
     </div>
   );
 }
@@ -57,7 +67,7 @@ interface InteractionIndicatorsProps {
 }
 function InteractionIndicators({activeInteractions}: InteractionIndicatorsProps) {
   
-  const dataContext = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
   
   const displayNumber = 4 // how many inteasractions to show
   
@@ -80,7 +90,7 @@ function InteractionIndicators({activeInteractions}: InteractionIndicatorsProps)
           return (
             <div key={interaction.id} className={`${styles.slot} ${styles.interaction} ${styles["quantity-" + displayed.length]}`}>
               <div className={styles.pip}>
-                <img src={dataContext.image.getRoleImage(interaction.fromRole)}></img>
+                <img src={referenceContext.image.getRoleImage(interaction.fromRole)}></img>
               </div>
             </div>
           )
@@ -95,7 +105,7 @@ interface EffectIndicatorsProps {
 }
 function EffectIndicators({visibleEffects}: EffectIndicatorsProps) {
   
-  const dataContext = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
   
   const displayNumber = 5 // how many effects to show
   
@@ -137,5 +147,7 @@ function DeathShroud({playerData}: DeathShroudProps) {
     return <div className={styles.death_shroud_container}>
       <img className={styles.death_shroud} src={shroudImg}></img>
     </div>
+  } else {
+    return null
   }
 }

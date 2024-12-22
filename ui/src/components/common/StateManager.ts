@@ -8,6 +8,7 @@ import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
 import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
+import { _Global } from "./reactStates/_Global";
 
 export namespace StateManager {
     
@@ -17,6 +18,7 @@ export namespace StateManager {
     classMap.set("Player", Player.Data)
     classMap.set("Interaction", Interaction.Data)
     classMap.set("Metadata", Metadata.Data)
+    classMap.set("_Global", _Global.Data)
     
     export class Controller {
         
@@ -307,12 +309,11 @@ export namespace StateManager {
         
         // returns any availabe interactions to apply based on the playerdata of who it will be applied to
         public availableInteractions(playerData: Player.Data): ReferenceData.Interaction[] {
-            const inPlayRoles = this._controller.gameState.players.map(player => player.role)
-                .filter(role => role != undefined)
+            const inPlayRoles = this._controller.gameState.players.map(player => player.role).filter(role => role != undefined) as string[]
             if (this._controller.gameState.gameProgression.isSetup) {
                 return this._referenceData.interactions.getAllInterations(inPlayRoles)
             } else {
-                const currentTurnRole = this.getPlayerFromId(this._controller.gameState.gameProgression.currentTurnOwner)?.role
+                const currentTurnRole = this.getPlayerFromId(this._controller.gameState._global.currentSelected)?.role
                 const interactions = this._referenceData.interactions.getInteractions(currentTurnRole, inPlayRoles)
                     .filter(interaction => 
                         (!interaction.limitToSelf || interaction.role == playerData.role) // if effect is limited to self interaction and player role must match
@@ -337,7 +338,7 @@ export namespace StateManager {
                 UUID,
                 active: true,
                 stale: false,
-                owner: this._controller.gameStateJSON.gameProgression.currentTurn,
+                owner: this._controller.gameStateJSON._global.currentSelected,
                 end: getExpireeFromLength(interaction.length, this._controller.gameStateJSON.gameProgression.progressId),
                 effected: effected,
                 interaction: interaction,

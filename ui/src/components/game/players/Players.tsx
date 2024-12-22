@@ -1,6 +1,6 @@
 import { MutableRefObject, useContext, useRef, useState } from 'react';
 import styles from './Players.module.scss';
-import { ControllerContext, DataContext, GameContext } from '../Game';
+import { ControllerContext, ReferenceContext, GameContext } from '../Game';
 import PlayerPartial from './player/Player';
 import React from 'react';
 import { Player } from '@/components/common/reactStates/Player';
@@ -11,10 +11,14 @@ function Players() {
   
   const gameContext = useContext(GameContext)
   const controllerContext = useContext(ControllerContext)
-  const referenceData = useContext(DataContext)
+  const referenceContext = useContext(ReferenceContext)
+  
+  function neutralClick() {
+    gameContext._global.currentSelected = undefined
+  }
   
   return (
-    <div className={styles.dragContext}>
+    <div className={styles.dragContext} onPointerDown={neutralClick}>
         <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
         <button onClick={() => {controllerContext.aggregateData.addPlayer()}}>new</button>
         <br></br><br></br><br></br>
@@ -22,6 +26,11 @@ function Players() {
         <br></br><br></br>
         <button onClick={controllerContext.undo}>undo</button>
         <button onClick={controllerContext.redo}>redo</button>
+        <br></br><br></br><br></br>
+        {gameContext._global.currentSelected!=undefined?gameContext._global.currentSelected:null}
+        <br></br>
+        <button onClick={() => {gameContext._global.currentSelected = "ABC"}}>ABC</button>
+        <button onClick={() => {gameContext._global.currentSelected = "DEF"}}>DEF</button>
         {
             gameContext.players.map(player => 
                 <PlayerWrapper key={player.id} player={player}></PlayerWrapper>
@@ -36,8 +45,8 @@ export default Players;
 function PlayerWrapper({player}: {player: Player.Data}) {
     const interactionHandles = useInteractionHandler(player)
     return (
-        <div  data-id={player.id} style={{left: player.position.x, top: player.position.y}} className={styles.playerWrapper} onPointerDown={interactionHandles.pointerDown} ref={interactionHandles.wrapperRef}>
-            <PlayerPartial playerData={player}></PlayerPartial>
+        <div style={{left: player.position.x, top: player.position.y}} className={styles.playerWrapper} onPointerDown={interactionHandles.pointerDown} ref={interactionHandles.wrapperRef}>
+            <PlayerPartial playerData={player} wrapper={interactionHandles.wrapperRef}></PlayerPartial>
         </div>
     )
 }
@@ -54,6 +63,7 @@ const useInteractionHandler = (player: Player.Data) => {
     let yOffset = 0;
     
     const pointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+        event.stopPropagation()
         const active = wrapperRef.current
         if (!active) {return}
         const boundingRect = active.getBoundingClientRect()
