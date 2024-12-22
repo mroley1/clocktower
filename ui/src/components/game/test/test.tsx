@@ -28,15 +28,15 @@ function Test() {
     <br></br>
     <br></br>
     <br></br>
-    Travellers: {gameContext.playerCount.travellers}
+    Travellers: {gameContext.bag.travellers}
     <br></br>
-    Quantity: {gameContext.playerCount.quantity}
+    Quantity: {gameContext.bag.quantity}
     <br></br>
-    Town: {gameContext.playerCount.townsfolk}
+    Town: {gameContext.bag.townsfolk}
     <br></br>
-    <button onClick={() => {gameContext.playerCount.quantity = 2}}>set 2</button>
-    <button onClick={() => {gameContext.playerCount.quantity = 13}}>set 13</button>
-    <button onClick={() => {gameContext.playerCount.quantity = 20}}>set 20</button>
+    <button onClick={() => {gameContext.bag.quantity = 2}}>set 2</button>
+    <button onClick={() => {gameContext.bag.quantity = 13}}>set 13</button>
+    <button onClick={() => {gameContext.bag.quantity = 20}}>set 20</button>
     <br></br>
     <br></br>
     <br></br>

@@ -1,4 +1,3 @@
-import { PlayerCount } from "./reactStates/PlayerCount"
 import { GameProgression } from "./reactStates/GameProgression"
 import { Player } from "./reactStates/Player"
 import { Interaction } from "./reactStates/Intereaction"
@@ -6,23 +5,24 @@ import ScriptData from "./ScriptData"
 import { Metadata } from "./reactStates/Metadata"
 import BaseReactState from "./reactStates/_BaseReactState"
 import { _Global } from "./reactStates/_Global"
+import { Bag } from "./reactStates/Bag"
 
 export interface GameData {
     metadata: Metadata.Data
-    playerCount: PlayerCount.Data
     gameProgression: GameProgression.Data
     players: Player.Data[]
     interactions: Interaction.Data[]
     _global: _Global.Data
+    bag: Bag.Data
 }
 
 export interface GameDataJSON {
     metadata: Metadata.ReactState
-    playerCount: PlayerCount.ReactState
     gameProgression: GameProgression.ReactState
     players: Player.ReactState[]
     interactions: Interaction.ReactState[]
     _global: _Global.ReactState
+    bag: Bag.ReactState
 }
 
 export interface TransactionJSON {

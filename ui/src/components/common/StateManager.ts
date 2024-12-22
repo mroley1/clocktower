@@ -1,5 +1,4 @@
 import { GameData, GameDataJSON, HistoryJSON, TransactionJSON } from "./GameData";
-import { PlayerCount } from "./reactStates/PlayerCount";
 import { GameProgression } from "./reactStates/GameProgression";
 import { Player } from "./reactStates/Player";
 import BaseReactState from "./reactStates/_BaseReactState";
@@ -9,16 +8,17 @@ import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
 import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
 import { _Global } from "./reactStates/_Global";
+import { Bag } from "./reactStates/Bag";
 
 export namespace StateManager {
     
     const classMap = new Map<string, Object>()
     classMap.set("GameProgression", GameProgression.Data)
-    classMap.set("PlayerCount", PlayerCount.Data)
     classMap.set("Player", Player.Data)
     classMap.set("Interaction", Interaction.Data)
     classMap.set("Metadata", Metadata.Data)
     classMap.set("_Global", _Global.Data)
+    classMap.set("Bag", Bag.Data)
     
     export class Controller {
         

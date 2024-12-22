@@ -1,11 +1,14 @@
-import BaseReactState from "./_BaseReactState"
+import BaseReactState from "./_BaseReactState";
 
-export namespace PlayerCount {
+export namespace Bag {
+    
     export interface ReactState extends BaseReactState {
         type: string
         UUID: string
         active: boolean
         stale: boolean
+        
+        roles: string[]
         quantity: number
     }
     
@@ -15,7 +18,8 @@ export namespace PlayerCount {
         private active
         private stale
         
-        private _quantity: number
+        private _roles
+        private _quantity
     
         private breakdown = {
             town: [0, 0, 0, 0, 0, 3, 3, 5, 5, 5, 7, 7, 7, 9, 9, 9],
@@ -28,10 +32,11 @@ export namespace PlayerCount {
         private useSetter() {
             this.stale = true;
             this.reactSetter([{
-                type: "PlayerCount",
+                type: "Bag",
                 UUID: this.UUID,
                 active: this.active,
                 stale: this.stale,
+                roles: this._roles,
                 quantity: this._quantity
             }])
         }
@@ -40,8 +45,10 @@ export namespace PlayerCount {
             this.UUID = reactState.UUID;
             this.active = reactState.active;
             this.stale = false;
-            this._quantity = reactState.quantity;
             this.reactSetter = reactSetter;
+            
+            this._roles = reactState.roles;
+            this._quantity = reactState.quantity;
         }
         
         set quantity(quantity: number) {
@@ -74,15 +81,18 @@ export namespace PlayerCount {
             return Math.max(0, this._quantity - this.CAP);
         }
         
-        public toJSON() {
+        toJSON() {
             const formatDocument: ReactState = {
-                type: "PlayerCount",
+                type: "Bag",
                 UUID: this.UUID,
                 active: this.active,
                 stale: this.stale,
+                roles: this._roles,
                 quantity: this._quantity
             }
             return JSON.stringify(formatDocument)
         }
     }
 }
+
+ 
