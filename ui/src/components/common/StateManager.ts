@@ -309,8 +309,7 @@ export namespace StateManager {
         
         // returns any availabe interactions to apply based on the playerdata of who it will be applied to
         public availableInteractions(playerData: Player.Data): ReferenceData.Interaction[] {
-            const inPlayRoles = this._controller.gameState.players.map(player => player.role)
-                .filter(role => role != undefined)
+            const inPlayRoles = this._controller.gameState.players.map(player => player.role).filter(role => role != undefined) as string[]
             if (this._controller.gameState.gameProgression.isSetup) {
                 return this._referenceData.interactions.getAllInterations(inPlayRoles)
             } else {
@@ -339,7 +338,7 @@ export namespace StateManager {
                 UUID,
                 active: true,
                 stale: false,
-                owner: "this._controller.gameStateJSON.gameProgression.currentTurn",
+                owner: this._controller.gameStateJSON._global.currentSelected,
                 end: getExpireeFromLength(interaction.length, this._controller.gameStateJSON.gameProgression.progressId),
                 effected: effected,
                 interaction: interaction,
