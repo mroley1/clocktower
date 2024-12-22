@@ -1,24 +1,20 @@
 import { GameProgression } from "./reactStates/GameProgression"
 
-export function prgressIdToDayState(progressId: number) {
-    let result = {state: GameProgression.State.SETUP, night: 0}
-    const isSetup = progressId & 1
-    progressId >>= 1
-    if (progressId % 2) {
-        result = {
-            state: GameProgression.State.NIGHT,
-            night: (progressId + 1) / 2
-        }
-    } else {
-        result = {
-            state: GameProgression.State.DAY,
-            night: progressId / 2
-        }
+interface prgressIdToDayStateReturn {
+    state: GameProgression.State,
+    night: number
+}
+export function prgressIdToDayState(progressId: number): prgressIdToDayStateReturn {
+    var state = GameProgression.State.SETUP
+    if (!(progressId & 0b1)) {
+        state = progressId & 0b10
+            ? GameProgression.State.NIGHT
+            : GameProgression.State.DAY
     }
-    if (isSetup) {
-        result.state = GameProgression.State.SETUP
+    return {
+        state,
+        night: (progressId + 0b10) >> 2
     }
-    return result
 }
         
 export function getExpireeFromLength(length: number, progressId: number) {

@@ -45,11 +45,8 @@ export namespace GameProgression {
         }
         
         nextStage = (): Data => {
-            if (this._progressId == 1) {
-                this._progressId = 0b10
-            } else {
-                this._progressId += 0b10
-            }
+            this._progressId &= ~0b1
+            this._progressId += 0b10
             this.useSetter();
             return this;
         }
@@ -60,13 +57,24 @@ export namespace GameProgression {
         }
         
         leaveSetup = (): void => {
-            this._progressId &= 0b1
+            if (this._progressId == 1) {
+                this.nextStage()
+            } else {
+                this._progressId &= ~0b1
+            }
             this.useSetter()
         }
         
         toggleSetup = (): void => {
-            this._progressId ^= 0b1
-            this.useSetter()
+            if (this.isSetup) {
+                this.leaveSetup()
+            } else {
+                this.enterSetup()
+            }
+        }
+        
+        get progressId() {
+            return this._progressId;
         }
         
         get state(): State {

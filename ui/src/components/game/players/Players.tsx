@@ -22,7 +22,7 @@ function Players() {
         <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
         <button onClick={() => {controllerContext.aggregateData.addPlayer()}}>new</button>
         <br></br><br></br><br></br>
-        <button onClick={gameContext.gameProgression.nextStage}>next</button>{gameContext.gameProgression.night}{GameProgression.State[gameContext.gameProgression.state]}
+        <button onClick={gameContext.gameProgression.nextStage}>next</button>{gameContext.gameProgression.night}{GameProgression.State[gameContext.gameProgression.state]}&nbsp;&nbsp;{gameContext.gameProgression.progressId.toString(2)}
         <br></br><br></br>
         <button onClick={controllerContext.undo}>undo</button>
         <button onClick={controllerContext.redo}>redo</button>
