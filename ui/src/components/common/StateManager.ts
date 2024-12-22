@@ -309,8 +309,7 @@ export namespace StateManager {
         
         // returns any availabe interactions to apply based on the playerdata of who it will be applied to
         public availableInteractions(playerData: Player.Data): ReferenceData.Interaction[] {
-            const inPlayRoles = this._controller.gameState.players.map(player => player.role)
-                .filter(role => role != undefined)
+            const inPlayRoles = this._controller.gameState.players.map(player => player.role).filter(role => role != undefined) as string[]
             if (this._controller.gameState.gameProgression.isSetup) {
                 return this._referenceData.interactions.getAllInterations(inPlayRoles)
             } else {

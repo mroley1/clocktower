@@ -147,5 +147,7 @@ function DeathShroud({playerData}: DeathShroudProps) {
     return <div className={styles.death_shroud_container}>
       <img className={styles.death_shroud} src={shroudImg}></img>
     </div>
+  } else {
+    return null
   }
 }
