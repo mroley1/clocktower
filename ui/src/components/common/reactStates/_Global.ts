@@ -1,3 +1,4 @@
+import { CTUUID } from "../../../components/game/utility/UUID";
 import BaseReactState from "./_BaseReactState";
 
 export namespace _Global {
@@ -8,6 +9,16 @@ export namespace _Global {
         active: boolean
         stale: boolean
         currentSelected: string|undefined
+    }
+    
+    export function create(): ReactState {
+        return {
+            type: "_Global",
+            UUID: CTUUID.create(),
+            active: true,
+            stale: false,
+            currentSelected: undefined
+        }
     }
     
     export class Data {

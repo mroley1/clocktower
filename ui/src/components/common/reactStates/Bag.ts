@@ -1,3 +1,4 @@
+import { CTUUID } from "../../../components/game/utility/UUID";
 import BaseReactState from "./_BaseReactState";
 
 export namespace Bag {
@@ -10,6 +11,16 @@ export namespace Bag {
         
         roles: string[]
         quantity: number
+    }
+    
+    export function create(): ReactState {
+        return {type: "Bag",
+            UUID: CTUUID.create(),
+            active: true,
+            stale: false,
+            roles: [],
+            quantity: 20
+        }
     }
     
     export class Data {

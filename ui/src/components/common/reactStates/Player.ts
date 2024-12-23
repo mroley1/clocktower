@@ -1,3 +1,4 @@
+import { CTUUID } from "../../../components/game/utility/UUID";
 import { Alignmant } from "../RoleType"
 import BaseReactState from "./_BaseReactState"
 
@@ -12,6 +13,19 @@ export namespace Player {
         viability: ViabilityJSON
         position: Position
         alignment: Alignmant
+    }
+    
+    export function create(): ReactState {
+        return {type: "Player",
+            UUID: CTUUID.create(),
+            active: true,
+            stale: false,
+            name: "",
+            role: undefined,
+            viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
+            position: {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75},
+            alignment: Alignmant.NONE
+        }
     }
     
     export interface Position {

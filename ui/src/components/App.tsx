@@ -3,6 +3,9 @@ import './App.scss';
 import { GameDataJSON, GameDataJSONTag, HistoryJSON } from './common/GameData';
 import { GameProgression } from './common/reactStates/GameProgression';
 import Game from './game/Game';
+import { _Global } from './common/reactStates/_Global';
+import { Bag } from './common/reactStates/Bag';
+import { Metadata } from './common/reactStates/Metadata';
 
 function App() {
   
@@ -68,12 +71,12 @@ export default App;
 
 function newSaveJSON(): GameDataJSON {
   return {
-    metadata: {type: "Metadata", UUID: window.crypto.randomUUID(), active: true, stale: false, name: "", gameID: dbIdNew(), created: Date.now()},
-    gameProgression: {type: "GameProgression", UUID: window.crypto.randomUUID(), active: true, stale: false, progressId: 1},
+    metadata: Metadata.create(),
+    gameProgression: GameProgression.create(),
     players: [],
     interactions: [],
-    _global: {type: "_Global", UUID: window.crypto.randomUUID(), active: true, stale: false, currentSelected: undefined},
-    bag: {type: "Bag", UUID: window.crypto.randomUUID(), active: true, stale: false, roles: [], quantity: 20}
+    _global: _Global.create(),
+    bag: Bag.create()
   }
 }
 
@@ -85,18 +88,6 @@ function genSaveJsonTag(gameDataJSON: GameDataJSON): GameDataJSONTag {
     playerRoles: gameDataJSON.players.filter(player => player.role).map(player => player.role!),
     script: undefined,
     created: gameDataJSON.metadata.created
-  }
-}
-
-function dbIdNew() {
-  const current = localStorage.getItem("dbCurrentIndex")
-  if (!current) {
-    localStorage.setItem("dbCurrentIndex", "0")
-    return 0
-  } else {
-    const next = parseInt(current) + 1
-    localStorage.setItem("dbCurrentIndex", next.toString())
-    return next
   }
 }
 

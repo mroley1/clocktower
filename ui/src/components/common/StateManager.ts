@@ -9,6 +9,7 @@ import { ReferenceData } from "./ReferenceData";
 import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
 import { _Global } from "./reactStates/_Global";
 import { Bag } from "./reactStates/Bag";
+import { CTUUID } from "../game/utility/UUID";
 
 export namespace StateManager {
     
@@ -42,20 +43,16 @@ export namespace StateManager {
             this.saveGameFunc = saveGame;
             this.historyController = new History(history.head, history.transactions)
             this.aggregateData = new AggregateData(this, referenceData)
+            
+            CTUUID.reset()
+            this.forEachObject(this.gameStateJSON, (obj) => {
+                CTUUID.warmup(obj.UUID);
+            })
         }
         
         private useSetGameState(newGameState: any) {
             this.gameState = newGameState;
             this.setgameState(newGameState);
-        }
-        
-        public newUUID() {
-            let UUID = null;
-            while (!UUID || this.usedUUIDs.has(UUID)) {
-                UUID = window.crypto.randomUUID();
-            }
-            this.usedUUIDs.add(UUID);
-            return UUID;
         }
         
         undo = () => {
@@ -91,6 +88,24 @@ export namespace StateManager {
                 }
             }
             return mapped;
+        }
+        
+        // return copy of object with fn run on all sub-objects with "type" field
+        private forEachObject(obj: any, fn: (obj: BaseReactState) => any): any {
+            if (obj.hasOwnProperty("type")) {
+                return fn(obj)
+            }
+            if (Array.isArray(obj)) {
+                obj.forEach((member) => {
+                    this.forEachObject(member, fn)
+                })
+            } else {
+                for (const value in obj) {
+                    if (typeof obj[value] == "object") {
+                        this.forEachObject(obj[value], fn)
+                    }
+                }
+            }
         }
         
         // take game state and history and pass to game save function
@@ -292,18 +307,7 @@ export namespace StateManager {
         
         // add unassigned player
         addPlayer = () => {
-            const newPlayerJSON = {
-                type: "Player",
-                UUID: this._controller.newUUID(),
-                active: true,
-                stale: false,
-                name: "",
-                role: undefined,
-                viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
-                position: {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75},
-                alignment: Alignmant.NONE
-            };
-            this._controller.gameStateJSON?.players.push(newPlayerJSON);
+            this._controller.gameStateJSON?.players.push(Player.create());
             this._controller.build();
         }
         
@@ -332,7 +336,7 @@ export namespace StateManager {
         
         // add interaction
         addInteraction = (interaction: ReferenceData.Interaction, effected: string, role: string|undefined = undefined) => {
-            const UUID = this._controller.newUUID()
+            const UUID = CTUUID.create();
             const newInteractionJSON = {
                 type: "Interaction",
                 UUID,

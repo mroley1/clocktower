@@ -3,6 +3,7 @@ import { GameDataJSON } from "./GameData"
 import { Player } from "./reactStates/Player"
 import { Alignmant, ClassType } from "./RoleType"
 import { Interaction } from "./reactStates/Intereaction"
+import { CTUUID } from "../game/utility/UUID"
 
 
 export namespace ReferenceData {
@@ -69,7 +70,7 @@ export namespace ReferenceData {
                 try { // ! REMOVE TRY WHEN ALL ROLES ARE UPDATED
                     this.roleData[role].interactions.forEach((effect: any) => {
                         effect.role = role
-                        effect.UUID = window.crypto.randomUUID()
+                        effect.UUID = CTUUID.create()
                     })
                 } catch {}
             }

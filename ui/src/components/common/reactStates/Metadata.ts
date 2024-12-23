@@ -1,3 +1,4 @@
+import { CTUUID } from "../../../components/game/utility/UUID";
 import BaseReactState from "./_BaseReactState";
 
 export namespace Metadata {
@@ -10,6 +11,30 @@ export namespace Metadata {
         gameID: number
         name: string
         created: number
+    }
+    
+
+    function dbIdNew() {
+        const current = localStorage.getItem("dbCurrentIndex")
+        if (!current) {
+            localStorage.setItem("dbCurrentIndex", "0")
+            return 0
+        } else {
+            const next = parseInt(current) + 1
+            localStorage.setItem("dbCurrentIndex", next.toString())
+            return next
+        }
+    }
+    
+    export function create(): ReactState {
+        return {type: "Metadata",
+            UUID: CTUUID.create(),
+            active: true,
+            stale: false,
+            name: "",
+            gameID: dbIdNew(),
+            created: Date.now()
+        }
     }
     
     export class Data {

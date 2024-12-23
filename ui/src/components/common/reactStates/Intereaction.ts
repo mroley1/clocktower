@@ -1,3 +1,5 @@
+import { CTUUID } from "../../../components/game/utility/UUID";
+import { getExpireeFromLength } from "../GameProgressionTranslator";
 import { ReferenceData } from "../ReferenceData";
 import BaseReactState from "./_BaseReactState";
 import { Player } from "./Player";
@@ -40,11 +42,24 @@ export namespace Interaction {
         UUID: string
         active: boolean
         stale: boolean
-        owner: string // who applied effect (by current turn)
+        owner: string // who applied effect
         end: number // when this effect expires (use GameProgression format)
         effected: string // who was effected (user id)
         interaction: ReferenceData.Interaction // what role 
         role: string|undefined // optianal role associated with this interaction
+    }
+    
+    export function create(interaction: ReferenceData.Interaction, effected: string, owner: string, role: string|undefined = undefined, progressId: number): ReactState {
+        return {type: "Interaction",
+            UUID: CTUUID.create(),
+            active: true,
+            stale: false,
+            owner,
+            end: getExpireeFromLength(interaction.length, progressId),
+            effected,
+            interaction,
+            role
+        }
     }
     
     export class Data {

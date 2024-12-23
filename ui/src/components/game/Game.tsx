@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { StateManager } from '../common/StateManager';
 import { GameData, GameDataJSON, HistoryJSON } from '../common/GameData';
 import Menu from './menu/Menu';
@@ -58,9 +58,7 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
       <GameContext.Provider value={gameState}>
         <ControllerContext.Provider value={stateManager}>
           <ReferenceContext.Provider value={referenceData}>
-            <Players></Players>
-            <Menu></Menu>
-            <Setup></Setup>
+            <Content/>
           </ReferenceContext.Provider>
         </ControllerContext.Provider>
       </GameContext.Provider>
@@ -69,3 +67,27 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
 }
 
 export default Game;
+
+function Content() {
+  
+  const gameContext = useContext(GameContext);
+  
+  const [initalSetup, setInitalSetup] = useState(gameContext.gameProgression.progressId == 1)
+  
+  if (initalSetup) {
+    return ( // * inital bag setup
+      <div>
+        <div>hi</div>
+        <button onClick={()=>{setInitalSetup(false)}}>start</button>
+      </div>
+    )
+  } else {
+    return ( // * proper game
+      <>
+        <Players></Players>
+        <Menu></Menu>
+        <Setup></Setup>
+      </>
+    )
+  }
+}

@@ -1,3 +1,4 @@
+import { CTUUID } from "../../../components/game/utility/UUID";
 import { prgressIdToDayState } from "../GameProgressionTranslator";
 import BaseReactState from "./_BaseReactState";
 
@@ -14,6 +15,15 @@ export namespace GameProgression {
         active: boolean
         stale: boolean
         progressId: number
+    }
+    
+    export function create(): ReactState {
+        return {type: "GameProgression",
+            UUID: CTUUID.create(),
+            active: true,
+            stale: false,
+            progressId: 1
+        }
     }
     
     export class Data {
