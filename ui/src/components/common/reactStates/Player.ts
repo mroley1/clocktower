@@ -1,6 +1,6 @@
 import { CTUUID } from "../../../components/game/utility/UUID";
 import { Alignmant } from "../RoleType"
-import BaseReactState from "./_BaseReactState"
+import { BaseReactState, BaseReactData } from "./_BaseReactState";
 
 export namespace Player {
     export interface ReactState extends BaseReactState {
@@ -15,10 +15,10 @@ export namespace Player {
         alignment: Alignmant
     }
     
-    export function create(): ReactState {
+    export function create(UUID?: string): ReactState {
         return {
             type: "Player",
-            UUID: CTUUID.create(),
+            UUID: UUID || CTUUID.create(),
             active: true,
             stale: false,
             name: "",
@@ -34,7 +34,7 @@ export namespace Player {
         y: number
     }
     
-    export class Data {
+    export class Data implements BaseReactData {
         private reactSetter
         private UUID
         private active
@@ -59,6 +59,10 @@ export namespace Player {
                 position: this.position,
                 alignment: this._alignment
             }])
+        }
+        
+        public resetToDefaults() {
+            Object.assign(this, new Data(create(this.UUID), this.reactSetter))
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {

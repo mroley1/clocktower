@@ -1,5 +1,5 @@
 import { CTUUID } from "../../../components/game/utility/UUID";
-import BaseReactState from "./_BaseReactState";
+import { BaseReactState, BaseReactData } from "./_BaseReactState";
 
 export namespace _ {
     
@@ -10,7 +10,7 @@ export namespace _ {
         stale: boolean
     }
     
-    export function create(): ReactState {
+    export function create(UUID?: string): ReactState {
         return {
             type: "_",
             UUID: CTUUID.create(),
@@ -19,7 +19,7 @@ export namespace _ {
         }
     }
     
-    export class Data {
+    export class Data implements BaseReactData {
         private reactSetter
         private UUID
         private active
@@ -33,6 +33,10 @@ export namespace _ {
                 active: this.active,
                 stale: this.stale
             }])
+        }
+        
+        public resetToDefaults() {
+            Object.assign(this, new Data(create(this.UUID), this.reactSetter))
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {

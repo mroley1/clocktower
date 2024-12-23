@@ -1,5 +1,5 @@
 import { CTUUID } from "../../../components/game/utility/UUID";
-import BaseReactState from "./_BaseReactState";
+import { BaseReactState, BaseReactData } from "./_BaseReactState";
 
 export namespace Bag {
     
@@ -13,10 +13,10 @@ export namespace Bag {
         quantity: number
     }
     
-    export function create(): ReactState {
+    export function create(UUID?: string): ReactState {
         return {
             type: "Bag",
-            UUID: CTUUID.create(),
+            UUID: UUID || CTUUID.create(),
             active: true,
             stale: false,
             roles: [],
@@ -24,7 +24,7 @@ export namespace Bag {
         }
     }
     
-    export class Data {
+    export class Data implements BaseReactData {
         private reactSetter
         private UUID
         private active
@@ -51,6 +51,10 @@ export namespace Bag {
                 roles: this._roles,
                 quantity: this._quantity
             }])
+        }
+        
+        public resetToDefaults() {
+            Object.assign(this, new Data(create(this.UUID), this.reactSetter))
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {

@@ -3,7 +3,7 @@ import { Player } from "./reactStates/Player"
 import { Interaction } from "./reactStates/Intereaction"
 import ScriptData from "./ScriptData"
 import { Metadata } from "./reactStates/Metadata"
-import BaseReactState from "./reactStates/_BaseReactState"
+import { BaseReactState } from "./reactStates/_BaseReactState"
 import { _Global } from "./reactStates/_Global"
 import { Bag } from "./reactStates/Bag"
 

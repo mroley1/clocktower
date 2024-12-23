@@ -1,6 +1,6 @@
 import { CTUUID } from "../../../components/game/utility/UUID";
 import { prgressIdToDayState } from "../GameProgressionTranslator";
-import BaseReactState from "./_BaseReactState";
+import { BaseReactState, BaseReactData } from "./_BaseReactState";
 
 export namespace GameProgression {
     export enum State {
@@ -17,17 +17,17 @@ export namespace GameProgression {
         progressId: number
     }
     
-    export function create(): ReactState {
+    export function create(UUID?: string): ReactState {
         return {
             type: "GameProgression",
-            UUID: CTUUID.create(),
+            UUID: UUID || CTUUID.create(),
             active: true,
             stale: false,
             progressId: 1
         }
     }
     
-    export class Data {
+    export class Data implements BaseReactData {
         private reactSetter
         private UUID
         private active
@@ -44,6 +44,10 @@ export namespace GameProgression {
                 stale: this.stale,
                 progressId: this._progressId
             }])
+        }
+        
+        public resetToDefaults() {
+            Object.assign(this, new Data(create(this.UUID), this.reactSetter))
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {

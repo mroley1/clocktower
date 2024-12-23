@@ -1,7 +1,7 @@
 import { CTUUID } from "../../../components/game/utility/UUID";
 import { getExpireeFromLength } from "../GameProgressionTranslator";
 import { ReferenceData } from "../ReferenceData";
-import BaseReactState from "./_BaseReactState";
+import { BaseReactState, BaseReactData } from "./_BaseReactState";
 import { Player } from "./Player";
 
 export namespace Interaction {
@@ -42,34 +42,34 @@ export namespace Interaction {
         UUID: string
         active: boolean
         stale: boolean
-        owner: string // who applied effect
+        owner: string|undefined // who applied effect
         end: number // when this effect expires (use GameProgression format)
         effected: string // who was effected (user id)
         interaction: ReferenceData.Interaction // what role 
         role: string|undefined // optianal role associated with this interaction
     }
     
-    export function create(interaction: ReferenceData.Interaction, effected: string, owner: string, role: string|undefined = undefined, progressId: number): ReactState {
+    export function create(interaction: ReferenceData.Interaction, effected: string, owner: string|undefined, role: string|undefined = undefined, end: number, UUID?: string): ReactState {
         return {
             type: "Interaction",
-            UUID: CTUUID.create(),
+            UUID: UUID || CTUUID.create(),
             active: true,
             stale: false,
             owner,
-            end: getExpireeFromLength(interaction.length, progressId),
+            end,
             effected,
             interaction,
             role
         }
     }
     
-    export class Data {
+    export class Data implements BaseReactData {
         private reactSetter
         private UUID
         private active
         private stale
         
-        private _owner: string
+        private _owner: string|undefined
         private _end: number
         private _effected: string
         private _interaction: ReferenceData.Interaction
@@ -88,6 +88,10 @@ export namespace Interaction {
                 interaction: this._interaction,
                 role: this._role
             }])
+        }
+        
+        public resetToDefaults() {
+            Object.assign(this, new Data(create(this._interaction, this._effected, this._owner, this._role, this._end, this.UUID), this.reactSetter))
         }
         
         constructor(reactState: ReactState, reactSetter: (reactState: ReactState[]) => void) {

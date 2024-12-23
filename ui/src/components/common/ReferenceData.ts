@@ -61,19 +61,21 @@ export namespace ReferenceData {
     export class Roles {
         private _script: Script
         
-        private roleData
+        private _roleData
+        private _roleList
         
         constructor(script: Script) {
             this._script = script;
-            this.roleData = require("../../data/common/roles.json");
-            for (let role of Object.keys(this.roleData)) {
+            this._roleData = require("../../data/common/roles.json");
+            for (let role of Object.keys(this._roleData)) {
                 try { // ! REMOVE TRY WHEN ALL ROLES ARE UPDATED
-                    this.roleData[role].interactions.forEach((effect: any) => {
+                    this._roleData[role].interactions.forEach((effect: any) => {
                         effect.role = role
                         effect.UUID = CTUUID.create()
                     })
                 } catch {}
             }
+            this._roleList = this._script.roleNames.map(roleName => this._roleData[roleName])
         }
         
         hasRoleName(roleName: string) {
@@ -81,15 +83,11 @@ export namespace ReferenceData {
         }
         
         getRole(roleName: string): RoleData {
-            return this.roleData[roleName]
-        }
-        
-        get roles() {
-            return this.roleData
+            return this._roleData[roleName]
         }
         
         get roleList(): RoleData[] {
-            return Object.values(this.roleData)
+            return this._roleList
         }
     }
     

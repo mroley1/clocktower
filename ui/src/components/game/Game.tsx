@@ -5,6 +5,7 @@ import Menu from './menu/Menu';
 import { ReferenceData } from '../common/ReferenceData';
 import Players from './players/Players';
 import Setup from './setup/Setup';
+import Bag from './bag/Bag';
 
 
 export const GameContext = createContext({} as GameData)
@@ -74,11 +75,14 @@ function Content() {
   
   const [initalSetup, setInitalSetup] = useState(gameContext.gameProgression.progressId == 1)
   
+  function completeSetup() {
+    setInitalSetup(false)
+  }
+  
   if (initalSetup) {
     return ( // * inital bag setup
       <div>
-        <div>hi</div>
-        <button onClick={()=>{setInitalSetup(false)}}>start</button>
+        <Bag completeSetupFunc={completeSetup}></Bag>
       </div>
     )
   } else {

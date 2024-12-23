@@ -1,7 +1,7 @@
 import { GameData, GameDataJSON, HistoryJSON, TransactionJSON } from "./GameData";
 import { GameProgression } from "./reactStates/GameProgression";
 import { Player } from "./reactStates/Player";
-import BaseReactState from "./reactStates/_BaseReactState";
+import { BaseReactState, BaseReactData } from "./reactStates/_BaseReactState";
 import { Interaction } from "./reactStates/Intereaction";
 import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
@@ -14,12 +14,12 @@ import { CTUUID } from "../game/utility/UUID";
 export namespace StateManager {
     
     const classMap = new Map<string, Object>()
-    classMap.set("GameProgression", GameProgression.Data)
-    classMap.set("Player", Player.Data)
-    classMap.set("Interaction", Interaction.Data)
-    classMap.set("Metadata", Metadata.Data)
-    classMap.set("_Global", _Global.Data)
-    classMap.set("Bag", Bag.Data)
+    classMap.set("GameProgression", GameProgression)
+    classMap.set("Player", Player)
+    classMap.set("Interaction", Interaction)
+    classMap.set("Metadata", Metadata)
+    classMap.set("_Global", _Global)
+    classMap.set("Bag", Bag)
     
     export class Controller {
         
@@ -111,7 +111,14 @@ export namespace StateManager {
         // take game state and history and pass to game save function
         public saveGame() {
             if (this.gameStateJSON) {
-                this.saveGameFunc(this.gameStateJSON, this.historyController.json())
+                const saveObj = this.mapObject(this.gameStateJSON, (obj) => {
+                    if (obj.type.startsWith("_")) {
+                        return (classMap.get(obj.type) as any).create()
+                    } else {
+                        return obj
+                    }
+                })
+                this.saveGameFunc(saveObj, this.historyController.json())
             }
         }
         
@@ -192,7 +199,7 @@ export namespace StateManager {
                     if (storedInstance && !obj.stale) {
                         return storedInstance.instance
                     } else {
-                        const newClass = new (classMap.get(obj.type) as any)(obj, callback);
+                        const newClass: BaseReactData = new (classMap.get(obj.type) as any).Data(obj, callback);
                         obj.stale = false
                         if (!suppressHistory && !obj.type.startsWith("_")) {
                             transactionBuffer.new.push(obj)
@@ -336,19 +343,10 @@ export namespace StateManager {
         
         // add interaction
         addInteraction = (interaction: ReferenceData.Interaction, effected: string, role: string|undefined = undefined) => {
-            const UUID = CTUUID.create();
-            const newInteractionJSON = {
-                type: "Interaction",
-                UUID,
-                active: true,
-                stale: false,
-                owner: this._controller.gameStateJSON._global.currentSelected,
-                end: getExpireeFromLength(interaction.length, this._controller.gameStateJSON.gameProgression.progressId),
-                effected: effected,
-                interaction: interaction,
-                role
-            } as Interaction.ReactState
-            this._controller.gameStateJSON.interactions.push(newInteractionJSON)
+            const owner = this._controller.gameStateJSON._global.currentSelected;
+            const end = getExpireeFromLength(interaction.length, this._controller.gameStateJSON.gameProgression.progressId);
+            const UUID = CTUUID.create()
+            this._controller.gameStateJSON.interactions.push(Interaction.create(interaction, effected, owner, role, end, UUID))
             this._controller.build()
         }
         
