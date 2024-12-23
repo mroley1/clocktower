@@ -11,7 +11,8 @@ export namespace _ {
     }
     
     export function create(): ReactState {
-        return {type: "_",
+        return {
+            type: "_",
             UUID: CTUUID.create(),
             active: true,
             stale: false

@@ -14,7 +14,8 @@ export namespace Bag {
     }
     
     export function create(): ReactState {
-        return {type: "Bag",
+        return {
+            type: "Bag",
             UUID: CTUUID.create(),
             active: true,
             stale: false,

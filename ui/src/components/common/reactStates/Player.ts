@@ -16,7 +16,8 @@ export namespace Player {
     }
     
     export function create(): ReactState {
-        return {type: "Player",
+        return {
+            type: "Player",
             UUID: CTUUID.create(),
             active: true,
             stale: false,

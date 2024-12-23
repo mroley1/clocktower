@@ -50,7 +50,8 @@ export namespace Interaction {
     }
     
     export function create(interaction: ReferenceData.Interaction, effected: string, owner: string, role: string|undefined = undefined, progressId: number): ReactState {
-        return {type: "Interaction",
+        return {
+            type: "Interaction",
             UUID: CTUUID.create(),
             active: true,
             stale: false,

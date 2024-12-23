@@ -18,7 +18,8 @@ export namespace GameProgression {
     }
     
     export function create(): ReactState {
-        return {type: "GameProgression",
+        return {
+            type: "GameProgression",
             UUID: CTUUID.create(),
             active: true,
             stale: false,

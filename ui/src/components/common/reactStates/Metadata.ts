@@ -27,7 +27,8 @@ export namespace Metadata {
     }
     
     export function create(): ReactState {
-        return {type: "Metadata",
+        return {
+            type: "Metadata",
             UUID: CTUUID.create(),
             active: true,
             stale: false,
