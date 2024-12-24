@@ -28,6 +28,8 @@ function Players() {
         <button onClick={controllerContext.redo}>redo</button>
         <br></br><br></br><br></br>
         {gameContext._global.currentSelected!=undefined?gameContext._global.currentSelected:null}
+        <br></br><br></br><br></br>
+        # of players: {gameContext.bag.quantity} 
         <br></br>
         {
             gameContext.players.map(player => 
