@@ -19,13 +19,13 @@ function Selector({selectedRole, setSelectedRole}: SelectorProps) {
     return (
         <div className={styles.selector}>
         <span>townsfolk:</span>
-        {referenceContext.roles.townsfolk.map(role => <Option role={role} selectFunc={select}></Option>)}
+        {referenceContext.roles.townsfolk.map(role => <Option key={role.id} role={role} selectFunc={select}></Option>)}
         <span>outsiders:</span>
-        {referenceContext.roles.outsiders.map(role => <Option role={role} selectFunc={select}></Option>)}
+        {referenceContext.roles.outsiders.map(role => <Option key={role.id} role={role} selectFunc={select}></Option>)}
         <span>minions:</span>
-        {referenceContext.roles.minions.map(role => <Option role={role} selectFunc={select}></Option>)}
+        {referenceContext.roles.minions.map(role => <Option key={role.id} role={role} selectFunc={select}></Option>)}
         <span>demons:</span>
-        {referenceContext.roles.demons.map(role => <Option role={role} selectFunc={select}></Option>)}
+        {referenceContext.roles.demons.map(role => <Option key={role.id} role={role} selectFunc={select}></Option>)}
         </div>
     );
 }

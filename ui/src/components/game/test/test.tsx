@@ -28,11 +28,8 @@ function Test() {
     <br></br>
     <br></br>
     <br></br>
-    Travellers: {gameContext.bag.travellers}
-    <br></br>
     Quantity: {gameContext.bag.quantity}
     <br></br>
-    Town: {gameContext.bag.townsfolk}
     <br></br>
     <button onClick={() => {gameContext.bag.quantity = 2}}>set 2</button>
     <button onClick={() => {gameContext.bag.quantity = 13}}>set 13</button>

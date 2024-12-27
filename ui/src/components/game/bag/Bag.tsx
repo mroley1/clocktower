@@ -36,7 +36,7 @@ function Bag({completeSetupFunc}: BagProps) {
             <h1>Pre-game Setup</h1>
             <h3>Player Count</h3>
             <Slider playerCount={playerCountSlider} setPlayerCount={setPlayerCount}></Slider>
-            <Picker></Picker>
+            <Picker playerCount={playerCountSlider}></Picker>
         </div>
     );
 }

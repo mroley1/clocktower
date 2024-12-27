@@ -15,7 +15,10 @@ export interface BagItem {
     quantity: number
 }
 
-function Picker() {
+interface PickerProps {
+    playerCount: number
+}
+function Picker({playerCount}: PickerProps) {
     
     const referenceContext = useContext(ReferenceContext)
     
@@ -33,9 +36,17 @@ function Picker() {
     function toggleIsDown() {
         setIsDown(!isDown)
     }
+    function setIsDownFunc(state: boolean) {
+        setIsDown(state)
+    }
     
     const [bagItems, setBagItems] = useState<BagItem[]>([])
-    const columns = classes.map((classType) => bagItems.filter(bagItem => classType == bagItem.roleData.classType))
+    const columns = classes.map((classType) => {
+        return {
+            classType,
+            roles: bagItems.filter(bagItem => classType == bagItem.roleData.classType)
+        }
+    })
     
     function addToBagRoles(role: ReferenceData.RoleData) {
         const existing = bagItems.find(bagItem => bagItem.roleData.id == role.id)
@@ -74,9 +85,11 @@ function Picker() {
         <div className={styles.picker}>
             <div className={styles.sliding_panels}>
                 <div className={styles.columns} data-showing={!isDown} >
-                    {columns.map((column, i) => <Column key={i} roles={column}></Column>)}
+                    <div className={styles.container}>
+                        {columns.map((column, i) => <Column key={i} roles={column} playerCount={playerCount} selectedRole={selectedRole} setSelectedRole={setSelectedRoleFunc} setIsDownFunc={setIsDownFunc}></Column>)}
+                    </div>
                 </div>
-                <div className={styles.switching_divider} onClick={toggleIsDown}></div>
+                <div className={styles.switching_divider} onClick={toggleIsDown} data-is-down={isDown}></div>
                 <div className={styles.selector_wrapper} data-showing={isDown}>
                     <Selector selectedRole={selectedRole} setSelectedRole={setSelectedRoleFunc}></Selector>
                 </div>
