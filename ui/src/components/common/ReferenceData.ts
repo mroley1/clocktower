@@ -46,7 +46,7 @@ export namespace ReferenceData {
     
     export type Interaction = InteractionJSON & InteractionAdditions
     
-    interface RoleData {
+    export interface RoleData {
         id: string
         name: string
         description: string
@@ -62,7 +62,7 @@ export namespace ReferenceData {
         private _script: Script
         
         private _roleData
-        private _roleList
+        private _roleList: RoleData[]
         
         constructor(script: Script) {
             this._script = script;
@@ -88,6 +88,30 @@ export namespace ReferenceData {
         
         get roleList(): RoleData[] {
             return this._roleList
+        }
+        
+        get townsfolk(): RoleData[] {
+            return this._roleList.filter((roleData) => roleData.classType == ClassType.TOWNSFOLK)
+        }
+        
+        get outsiders(): RoleData[] {
+            return this._roleList.filter((roleData) => roleData.classType == ClassType.OUTSIDER)
+        }
+        
+        get minions(): RoleData[] {
+            return this._roleList.filter((roleData) => roleData.classType == ClassType.MINION)
+        }
+        
+        get demons(): RoleData[] {
+            return this._roleList.filter((roleData) => roleData.classType == ClassType.DEMON)
+        }
+        
+        get travellers(): RoleData[] {
+            return this._roleList.filter((roleData) => roleData.classType == ClassType.TRAVELLER)
+        }
+        
+        get fabled(): RoleData[] {
+            return this._roleList.filter((roleData) => roleData.classType == ClassType.FABLED)
         }
     }
     

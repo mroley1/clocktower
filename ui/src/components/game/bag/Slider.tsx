@@ -29,7 +29,6 @@ function Slider({playerCount, setPlayerCount}: SliderProps) {
     
     function getClosestValueFromBinNumber(selectedBin: number) {
         if (slider.current) {
-            console.log(selectedBin)
             const sliderRect = slider.current.getBoundingClientRect()
             const binWidth = sliderRect.width / (MAXPLAYERCOUNT - MINPLAYERCOUNT + 1)
             return ((selectedBin + 0.5) * binWidth)

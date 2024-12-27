@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import styles from './Bag.module.scss';
 import { ControllerContext, GameContext, ReferenceContext } from '../Game';
 import Slider from './Slider';
+import Picker from './picker/Picker';
 
 interface BagProps {
     completeSetupFunc: () => void
@@ -17,6 +18,10 @@ function Bag({completeSetupFunc}: BagProps) {
         setPlayerCountSlider(count)
     }
     
+    function cancel() {
+        referenceContext.utilies.quitGame()
+    }
+    
     function done() {
         controllerContext.batchBuild(() => {
             gameContext.bag.quantity = playerCountSlider
@@ -25,17 +30,14 @@ function Bag({completeSetupFunc}: BagProps) {
     }
   
     return (
-        <>
+        <div className={styles.bag}>
+            <button className={styles.cancel} onClick={cancel}>Cancel</button>
+            <button className={styles.done} onClick={done}>Done</button>
+            <h1>Pre-game Setup</h1>
+            <h3>Player Count</h3>
             <Slider playerCount={playerCountSlider} setPlayerCount={setPlayerCount}></Slider>
-            {referenceContext.roles.roleList.map((role) => {
-                return (
-                    <div key={role.id}>
-                        {role.name}
-                    </div>
-                )
-            })}
-            <button onClick={done}>start</button>
-        </>
+            <Picker></Picker>
+        </div>
     );
 }
 
