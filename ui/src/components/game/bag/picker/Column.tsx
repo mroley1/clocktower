@@ -2,7 +2,7 @@
 import { ReferenceData } from '@/components/common/ReferenceData';
 import { ClassType } from '../../../../components/common/RoleType';
 import styles from './Picker.module.scss';
-import { BagItem } from './Picker';
+import { BagItem } from '../Bag';
 import { useContext } from 'react';
 import { ReferenceContext } from '../../Game';
 
@@ -54,7 +54,7 @@ function Column({roles, playerCount, selectedRole, setSelectedRole, setIsDownFun
     }, 0)
     
     return (
-        <div className={styles.column}>
+        <div className={styles.column} onClick={() => {setSelectedRole(undefined)}}>
                 <div className={styles.header} onClick={()=>{setIsDownFunc(false)}} data-color={ratioColor(quantity, expectedClassNumberBreakdown)}>
                     {ClassType[roles.classType]}
                     <br></br>
@@ -64,7 +64,7 @@ function Column({roles, playerCount, selectedRole, setSelectedRole, setIsDownFun
                 </div>
                 <div className={styles.body}>
                     {roles.roles.map((bagItem) => (
-                        <Item key={bagItem.roleData.id} bagItem={bagItem} setSelectedRole={setSelectedRole}></Item>
+                        <Item key={bagItem.roleData.id} bagItem={bagItem} setSelectedRole={setSelectedRole} highlight={selectedRole?.id == bagItem.roleData.id}></Item>
                     ))}
                 </div>
             </div>
@@ -76,9 +76,16 @@ export default Column;
 interface ItemProps {
     bagItem: BagItem
     setSelectedRole: (role: ReferenceData.RoleData|undefined) => void
+    highlight: boolean
 }
-function Item({bagItem, setSelectedRole}: ItemProps) {
+function Item({bagItem, setSelectedRole, highlight}: ItemProps) {
   
+    function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        e.preventDefault()
+        e.stopPropagation()
+        select(bagItem)
+    }
+    
     function select(bagItem: BagItem|undefined) {
         if (bagItem) {
             setSelectedRole(bagItem.roleData)
@@ -90,7 +97,7 @@ function Item({bagItem, setSelectedRole}: ItemProps) {
     const image = referenceContext.image.getRoleImage(bagItem.roleData.id)
     
     return (
-        <div className={styles.item} onClick={()=>{select(bagItem)}}>
+        <div className={styles.item} data-highlight={highlight} onClick={handleClick}>
             <img src={image}></img>
             {bagItem.quantity==1?null:
                 <div className={styles.quantity}>{bagItem.quantity}</div>

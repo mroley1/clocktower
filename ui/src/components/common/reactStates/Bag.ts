@@ -69,6 +69,15 @@ export namespace Bag {
             return this._quantity;
         }
         
+        get roles() {
+            return this._roles;
+        }
+        
+        set roles(roles: string[]) {
+            this._roles = roles;
+            this.useSetter()
+        }
+        
         toJSON() {
             const formatDocument: ReactState = {
                 type: "Bag",

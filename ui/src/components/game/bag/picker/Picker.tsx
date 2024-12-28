@@ -7,18 +7,16 @@ import styles from './Picker.module.scss';
 import Selector from './Selector';
 import { ReferenceData } from '@/components/common/ReferenceData';
 import { ReferenceContext } from '../../Game';
+import { BagItem } from '../Bag';
 
 const classes = [ClassType.TOWNSFOLK, ClassType.OUTSIDER, ClassType.MINION, ClassType.DEMON]
-    
-export interface BagItem {
-    roleData: ReferenceData.RoleData
-    quantity: number
-}
 
 interface PickerProps {
     playerCount: number
+    bagItems: BagItem[]
+    setBagItems: React.Dispatch<React.SetStateAction<BagItem[]>>
 }
-function Picker({playerCount}: PickerProps) {
+function Picker({playerCount, bagItems, setBagItems}: PickerProps) {
     
     const referenceContext = useContext(ReferenceContext)
     
@@ -28,7 +26,7 @@ function Picker({playerCount}: PickerProps) {
         setInfoIsVisible(false)
     }
     function setSelectedRoleFunc(role: ReferenceData.RoleData|undefined) {
-        setInfoIsVisible(true)
+        setInfoIsVisible(role!=undefined)
         setSelectedRole(role)
     }
     
@@ -40,7 +38,6 @@ function Picker({playerCount}: PickerProps) {
         setIsDown(state)
     }
     
-    const [bagItems, setBagItems] = useState<BagItem[]>([])
     const columns = classes.map((classType) => {
         return {
             classType,
