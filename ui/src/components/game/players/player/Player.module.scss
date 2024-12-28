@@ -76,7 +76,7 @@
             @for $i from 1 through $quantity {
                 .slot.quantity-#{$quantity}:nth-child(#{$i}) {
                     $separation: 25deg; // separation between them
-                    $rotation: calc(calc($i * $separation) - calc(calc($separation / 2) * $quantity) - calc($separation / 2));
+                    $rotation: (($i * $separation) - (($separation / 2) * $quantity) - ($separation / 2));
                     transform: rotate($rotation);
                     
                     .pip {

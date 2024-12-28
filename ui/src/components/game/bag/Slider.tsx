@@ -42,8 +42,20 @@ function Slider({playerCount, setPlayerCount}: SliderProps) {
         document.removeEventListener("pointercancel", cancelSlide)
     }
     
+    const playerCountRef = useRef(playerCount)
     useEffect(() => {
+        playerCountRef.current = playerCount
+    }, [playerCount])
+    function onResize() {
+        if (cursor.current) {
+            cursor.current.style.left = cursorPositionToLeft(getClosestValueFromBinNumber(playerCountRef.current - MINPLAYERCOUNT))
+        }
+    }
+    
+    useEffect(() => {
+        window.addEventListener("resize", onResize)
         return () => {
+            window.removeEventListener("resize", onResize)
             if (sliding) {
                 cancelSlide()
             }

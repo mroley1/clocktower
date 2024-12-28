@@ -191,6 +191,7 @@
         overflow: hidden;
         transition: height 0.3s ease-in-out;
         height: 0;
+        position: relative;
         
         &[data-visible="true"] {
             height: 200px;
@@ -198,6 +199,69 @@
         
         .info {
             height: 100%;
+            background-image: url(../../../../assets/bg_vines.png);
+            display: flex;
+            border: 1px solid white;
+            padding-right: 100px;
+            
+            img {
+                height: 100%;
+            }
+            
+            .text {
+                color: white;
+                padding: 10px 20px;
+                flex-grow: 1;
+                
+                .title {
+                    font-size: 30pt;
+                }
+                
+                .description {
+                    font-size: 16pt;
+                }
+            }
+            
+            .options {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                
+                * {
+                    width: 200px;
+                    height: 40pt;
+                    margin: 5px;
+                    border-radius: 5px;
+                    text-align: center;
+                    cursor: pointer;
+                    
+                    span {
+                        font-size: 20pt;
+                        color: white;
+                        display: block;
+                        margin: 10pt 0;
+                    }
+                }
+                
+                .add {
+                    background-color: green;
+                }
+                
+                .remove {
+                    background-color: red;
+                }
+            }
+            
+            .close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                height: 50px;
+                width: 50px;
+                cursor: pointer;
+                background: no-repeat center/contain url(../../../../assets/close.svg);
+            }
         }
     }
 }

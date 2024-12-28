@@ -5,6 +5,7 @@ import styles from './Picker.module.scss';
 import { BagItem } from '../Bag';
 import { useContext } from 'react';
 import { ReferenceContext } from '../../Game';
+import { ColumnFormat, PickerContext } from './Picker';
 
 
 const ExpectedClassNumberBreakdown = {
@@ -15,13 +16,12 @@ const ExpectedClassNumberBreakdown = {
 }
 
 interface ColumnProps {
-    roles: {roles: BagItem[], classType: ClassType}
-    playerCount: number
-    selectedRole: ReferenceData.RoleData|undefined
-    setSelectedRole: (role: ReferenceData.RoleData|undefined) => void
+    roles: ColumnFormat
     setIsDownFunc: (state: boolean) => void
 }
-function Column({roles, playerCount, selectedRole, setSelectedRole, setIsDownFunc}: ColumnProps) {
+function Column({roles, setIsDownFunc}: ColumnProps) {
+    
+    const {playerCount, selectedRole, setSelectedRole, closeInfo, infoIsVisible} = useContext(PickerContext)
     
     function getExpectedClassNumberBreakdown() {
         switch (roles.classType) {
@@ -54,20 +54,20 @@ function Column({roles, playerCount, selectedRole, setSelectedRole, setIsDownFun
     }, 0)
     
     return (
-        <div className={styles.column} onClick={() => {setSelectedRole(undefined)}}>
-                <div className={styles.header} onClick={()=>{setIsDownFunc(false)}} data-color={ratioColor(quantity, expectedClassNumberBreakdown)}>
-                    {ClassType[roles.classType]}
-                    <br></br>
-                    <div className={styles.ratio}>
-                        {quantity}/{expectedClassNumberBreakdown}
-                    </div>
-                </div>
-                <div className={styles.body}>
-                    {roles.roles.map((bagItem) => (
-                        <Item key={bagItem.roleData.id} bagItem={bagItem} setSelectedRole={setSelectedRole} highlight={selectedRole?.id == bagItem.roleData.id}></Item>
-                    ))}
+        <div className={styles.column} onClick={closeInfo}>
+            <div className={styles.header} onClick={()=>{setIsDownFunc(false)}} data-color={ratioColor(quantity, expectedClassNumberBreakdown)}>
+                {ClassType[roles.classType]}
+                <br></br>
+                <div className={styles.ratio}>
+                    {quantity}/{expectedClassNumberBreakdown}
                 </div>
             </div>
+            <div className={styles.body}>
+                {roles.roles.map((bagItem) => (
+                    <Item key={bagItem.roleData.id} bagItem={bagItem} setSelectedRole={setSelectedRole} closeInfo={closeInfo} highlight={selectedRole?.id == bagItem.roleData.id && infoIsVisible}></Item>
+                ))}
+            </div>
+        </div>
     );
 }
 
@@ -75,19 +75,18 @@ export default Column;
 
 interface ItemProps {
     bagItem: BagItem
-    setSelectedRole: (role: ReferenceData.RoleData|undefined) => void
+    setSelectedRole: (role: ReferenceData.RoleData) => void
+    closeInfo: () => void
     highlight: boolean
 }
-function Item({bagItem, setSelectedRole, highlight}: ItemProps) {
+function Item({bagItem, setSelectedRole, closeInfo, highlight}: ItemProps) {
   
     function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
         e.preventDefault()
         e.stopPropagation()
-        select(bagItem)
-    }
-    
-    function select(bagItem: BagItem|undefined) {
-        if (bagItem) {
+        if (highlight) {
+            closeInfo()
+        } else {
             setSelectedRole(bagItem.roleData)
         }
     }
