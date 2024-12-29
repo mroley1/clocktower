@@ -18,19 +18,19 @@ function Selector() {
         <div className={styles.selector} onClick={closeInfo}>
             <span className={styles.header}>Townsfolk</span>
             <div className={styles.grouping}>
-                {referenceContext.roles.townsfolk.map(role => <Option key={role.id} role={role} selectFunc={select} closeInfo={closeInfo} highlight={selectedRole?.id==role.id && infoIsVisible}></Option>)}
+                {referenceContext.roles.townsfolk.map(role => <Option key={role.id} role={role}></Option>)}
             </div>
             <span className={styles.header}>Outsiders</span>
             <div className={styles.grouping}>
-                {referenceContext.roles.outsiders.map(role => <Option key={role.id} role={role} selectFunc={select} closeInfo={closeInfo} highlight={selectedRole?.id==role.id && infoIsVisible}></Option>)}
+                {referenceContext.roles.outsiders.map(role => <Option key={role.id} role={role}></Option>)}
             </div>
             <span className={styles.header}>Minions</span>
             <div className={styles.grouping}>
-                {referenceContext.roles.minions.map(role => <Option key={role.id} role={role} selectFunc={select} closeInfo={closeInfo} highlight={selectedRole?.id==role.id && infoIsVisible}></Option>)}
+                {referenceContext.roles.minions.map(role => <Option key={role.id} role={role}></Option>)}
             </div>
             <span className={styles.header}>Demons</span>
             <div className={styles.grouping}>
-                {referenceContext.roles.demons.map(role => <Option key={role.id} role={role} selectFunc={select} closeInfo={closeInfo} highlight={selectedRole?.id==role.id && infoIsVisible}></Option>)}
+                {referenceContext.roles.demons.map(role => <Option key={role.id} role={role}></Option>)}
             </div>
         </div>
     );
@@ -40,19 +40,18 @@ export default Selector;
 
 interface OptionProps {
     role: ReferenceData.RoleData
-    selectFunc: (roleId: ReferenceData.RoleData) => void
-    closeInfo: () => void
-    highlight: boolean
 }
-function Option({role, selectFunc, closeInfo, highlight}: OptionProps) {
+function Option({role}: OptionProps) {
+    
+    const {bagItems, selectedRole, setSelectedRole, closeInfo, infoIsVisible} = useContext(PickerContext)
     
     function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
         e.preventDefault()
         e.stopPropagation()
-        if (highlight) {
+        if (selectedRole?.id==role.id && infoIsVisible) {
             closeInfo()
         } else {
-            selectFunc(role)
+            setSelectedRole(role)
         }
     }
     
@@ -60,7 +59,12 @@ function Option({role, selectFunc, closeInfo, highlight}: OptionProps) {
     
     const image = referenceContext.image.getRoleImage(role.id)
     
-    return <div className={styles.option} onClick={handleClick} data-highlight={highlight}>
+    const quantity = bagItems.find(bagItem => bagItem.roleData.id == role.id)?.quantity||0
+    
+    return <div className={styles.option} onClick={handleClick} data-highlight={selectedRole?.id==role.id && infoIsVisible}>
         <img src={image}></img>
+        {quantity==0?null:
+            <div className={styles.quantity} data-warn={quantity>1}>{quantity}</div>
+        }
     </div>
 }

@@ -173,6 +173,7 @@
                         width: 200px;
                         background-image: radial-gradient(black 5%, transparent 55%, transparent 100%);
                         cursor: pointer;
+                        position: relative;
                         
                         &[data-highlight="true"] {
                             background-image: radial-gradient(rgb(37, 35, 0) 5%, transparent 55%, transparent 100%);
@@ -180,6 +181,25 @@
                         
                         img {
                             width: 100%;
+                        }
+                            
+                        .quantity {
+                            position: absolute;
+                            top: 20px;
+                            right: 20px;
+                            width: 25px;
+                            height: 25px;
+                            background-color: lightgrey;
+                            border-radius: 100%;
+                            color: black;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border: 2px solid black;
+                            
+                            &[data-warn="true"] {
+                                background-color: rgb(255, 255, 136);
+                            }
                         }
                     }
                 }

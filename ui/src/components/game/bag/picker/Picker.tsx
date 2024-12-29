@@ -17,6 +17,7 @@ export interface ColumnFormat {
 }
 
 interface PickerContextFormat {
+    bagItems: BagItem[]
     playerCount: number
     selectedRole: ReferenceData.RoleData|undefined
     setSelectedRole: (role: ReferenceData.RoleData) => void
@@ -24,6 +25,7 @@ interface PickerContextFormat {
     infoIsVisible: boolean
 }
 export const PickerContext = createContext<PickerContextFormat>({
+    bagItems: [],
     playerCount: 5,
     selectedRole: undefined,
     setSelectedRole: (role: ReferenceData.RoleData) => {},
@@ -99,6 +101,7 @@ function Picker({playerCount, bagItems, setBagItems}: PickerProps) {
     }
     
     const pickerContext: PickerContextFormat = {
+        bagItems,
         playerCount,
         selectedRole,
         setSelectedRole: setSelectedRoleFunc,

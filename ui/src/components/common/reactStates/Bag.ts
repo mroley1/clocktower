@@ -20,7 +20,7 @@ export namespace Bag {
             active: true,
             stale: false,
             roles: [],
-            quantity: 20
+            quantity: 5
         }
     }
     
