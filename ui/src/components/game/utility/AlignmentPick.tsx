@@ -1,7 +1,7 @@
 import styles from './AlignmentPick.module.scss'
 import { Alignmant } from '../../../components/common/RoleType';
 
-interface AlignmentPickProps {setAlignmentSelect: React.Dispatch<React.SetStateAction<Alignmant|undefined>>}
+interface AlignmentPickProps {setAlignmentSelect: (alignment: Alignmant) => void}
 function AlignmentPick({setAlignmentSelect}: AlignmentPickProps) {
     
     const selectAlignment = (alignment: Alignmant) => {

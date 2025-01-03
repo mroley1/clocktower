@@ -14,11 +14,6 @@ function PlayerPartial({playerData, wrapper}: PlayerPartialProps) {
   
   const image = referenceContext.image.getPlayerImage(playerData);
   
-  const currentSelectedRef = useRef(gameContext._global.currentSelected)
-  useEffect(() => { // ? keep current selected reference updated with game state
-    currentSelectedRef.current = gameContext._global.currentSelected
-  }, [gameContext._global.currentSelected])
-  
   const [menuOpen, setMenuOpen] = useState(false);
   
   function closeMenu() {
@@ -26,8 +21,8 @@ function PlayerPartial({playerData, wrapper}: PlayerPartialProps) {
     gameContext._global.currentSelected = undefined
   }
   
-  function handleSelect() {
-    if (currentSelectedRef.current) {
+  const handleSelect = () => {
+    if (gameContext._global.currentSelected || !gameContext.gameProgression.isNight) {
       setMenuOpen(true)
     } else {
       gameContext._global.currentSelected = playerData.id
@@ -43,7 +38,7 @@ function PlayerPartial({playerData, wrapper}: PlayerPartialProps) {
             wrapper.current.removeEventListener("data-select", handleSelect)
         }
     }
-  }, [playerData])
+  }, [gameContext])
   
   const activeInteractions = controllerContext.aggregateData.activeInteractions(playerData.id)
   

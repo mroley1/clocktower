@@ -3,16 +3,18 @@ import { Player } from "@/components/common/reactStates/Player"
 import { ReferenceData } from "@/components/common/ReferenceData";
 import { Alignmant } from "@/components/common/RoleType";
 import { CHANGE, CORRUPT, GRANT, KILL, MADDEN } from "@/data/common/roles";
+import { MenuOption } from "../players/player/Menu";
 
 
         
 export interface EffectKit {
     interaction: ReferenceData.Interaction
     player: Player.Data,
-    roleSelect: (value: string|undefined) => void,
-    alignmentSelect: (value: Alignmant|undefined) => void,
-    madSelect: (value: string|undefined) => void,
-    grantSelect: (value: string|undefined) => void
+    openMenu: (menuOption: MenuOption) => void,
+    roleSelect: (roleId: string) => void,
+    alignmentSelect: (alignment: Alignmant) => void,
+    madSelect: (roleId: string) => void,
+    grantSelect: (roleId: string) => void
 }
 
 // returns true if interaction should be made false if interaction will be made later
@@ -44,7 +46,7 @@ function _CHANGE(effectKit: EffectKit) {
     if (effectKit.interaction.static) {
         effectKit.roleSelect(effectKit.interaction.static)
     } else {
-        effectKit.roleSelect(undefined)
+        effectKit.openMenu(MenuOption.SELECTROLE)
     }
     return false
 }
@@ -54,7 +56,7 @@ function _CORRUPT(effectKit: EffectKit) {
     if (effectKit.interaction.static) {
         effectKit.alignmentSelect(effectKit.interaction.static)
     } else {
-        effectKit.alignmentSelect(undefined)
+        effectKit.openMenu(MenuOption.SELECTALIGNMENT)
     }
     return false
 }
@@ -64,7 +66,7 @@ function _MADDEN(effectKit: EffectKit) {
     if (effectKit.interaction.static) {
         effectKit.madSelect(effectKit.interaction.static)
     } else {
-        effectKit.madSelect(undefined)
+        effectKit.openMenu(MenuOption.SELECTMADNESS)
     }
     return false
 }
@@ -74,7 +76,7 @@ function _GRANT(effectKit: EffectKit) {
     if (effectKit.interaction.static) {
         effectKit.grantSelect(effectKit.interaction.static)
     } else {
-        effectKit.grantSelect(undefined)
+        effectKit.openMenu(MenuOption.SELECTMADNESS)
     }
     return false
 }

@@ -363,7 +363,6 @@ export namespace StateManager {
             const unaccountedForRoles = this.players().map(player => player.id)
             return this._controller.gameState.bag.roles.filter(role => {
                 const index = unaccountedForRoles.indexOf(role)
-                console.log(unaccountedForRoles)
                 if (index != -1) {
                     unaccountedForRoles.splice(index, 1)
                     return false
