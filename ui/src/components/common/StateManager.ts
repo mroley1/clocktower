@@ -301,9 +301,7 @@ export namespace StateManager {
             return this._controller.gameState.players.filter(player =>
                 player.role
             ).map(player => 
-                player.role
-                    ? this._referenceData.roles.getRole(player.role)
-                    : undefined
+                this._referenceData.roles.getRole(player.role!)
             )
         }
         
@@ -359,6 +357,19 @@ export namespace StateManager {
         // all effects that are shown for player
         public visibleEffects(playerId: string) {
             return this.activeEffects(playerId).filter(effect => Interaction.visibleEffects.includes(effect))
+        }
+        
+        public leftInBag() {
+            const unaccountedForRoles = this.players().map(player => player.id)
+            return this._controller.gameState.bag.roles.filter(role => {
+                const index = unaccountedForRoles.indexOf(role)
+                console.log(unaccountedForRoles)
+                if (index != -1) {
+                    unaccountedForRoles.splice(index, 1)
+                    return false
+                }
+                return unaccountedForRoles.indexOf(role) == -1;
+            })
         }
     }
 }

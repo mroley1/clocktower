@@ -119,11 +119,12 @@ function EffectIndicators({visibleEffects}: EffectIndicatorsProps) {
       {displayed.map(effect => {
         if (effect == null) {
           return (
-          <div key="etc" className={`${styles.slot} ${styles.effect} ${styles["quantity-" + displayed.length]}`}>
-            <div className={styles.pip}>
-              <img src={require("../../../../assets/dots.png")}></img>
+            <div key="etc" className={`${styles.slot} ${styles.effect} ${styles["quantity-" + displayed.length]}`}>
+              <div className={styles.pip}>
+                <img src={require("../../../../assets/dots.png")}></img>
+              </div>
             </div>
-          </div>)
+          )
         } else {
           return (
             <div key={effect} className={`${styles.slot} ${styles.effect} ${styles["quantity-" + displayed.length]}`}>

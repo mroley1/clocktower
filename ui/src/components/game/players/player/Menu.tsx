@@ -7,6 +7,7 @@ import RolePick from '../../utility/RolePick';
 import AlignmentPick from '../../utility/AlignmentPick';
 import { ReferenceData } from '@/components/common/ReferenceData';
 import { applyEffect, EffectKit } from '../../utility/ApplyEffect';
+import BagSelect from '../../utility/BagSelect';
 
 interface MenuProps {isOpen: boolean, closeFunc: ()=>void, playerData: Player.Data}
 function Menu({isOpen, closeFunc, playerData}: MenuProps) {
@@ -21,14 +22,16 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     
     const effectStore = useRef<ReferenceData.Interaction|null>(null)
     
+    const [bagSelect, setBagSelect] = useState<string|undefined>("")
+    
     const [madSelect, setMadSelect] = useState<string|undefined>("")
     
     const [grantSelect, setGrantSelect] = useState<string|undefined>("")
     
-    useEffect(() => {
-        if (roleSelect) {
+    function setNewRole(roleId: string|undefined) {
+        if (roleId) {
             controllerContext.batchBuild(() => {
-                playerData.role = roleSelect
+                playerData.role = roleId
                 const roleData = referenceContext.roles.getRole(playerData.role)
                 if (playerData.alignment == Alignmant.NONE) {
                     playerData.alignment = roleData.alignment
@@ -36,6 +39,10 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 }
             })
         }
+    }
+    
+    useEffect(() => {
+        setNewRole(roleSelect)
     }, [roleSelect])
     
     useEffect(() => {
@@ -51,6 +58,10 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
             closeFunc()
         }
     }, [madSelect])
+    
+    useEffect(() => {
+        setNewRole(bagSelect)
+    }, [bagSelect])
     
     useEffect(() => {
         if (grantSelect && effectStore.current) {
@@ -98,6 +109,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 <div className={styles.major_options}>
                     <button onClick={()=>{setRoleSelect(undefined)}}>Change Role</button>
                     <button onClick={()=>{setAlignmentSelect(undefined)}}>Change Alignment</button>
+                    <button onClick={()=>{setBagSelect(undefined)}}>Pick from bag</button>
                 </div>
                 <AvailableInteractions playerData={playerData} applyEffectHandler={applyEffectHandler}></AvailableInteractions>
                 <ActiveInteractions playerData={playerData}></ActiveInteractions>
@@ -158,6 +170,10 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     }
     
     function ModalContent() {
+        
+        if (!bagSelect) {
+            return <BagSelect setRoleSelect={setBagSelect}></BagSelect>
+        }
         
         if (!roleSelect) {
             return <RolePick setRoleSelect={setRoleSelect}></RolePick>
