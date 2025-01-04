@@ -67,8 +67,14 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
     }
     
     function pickFromBag(roleId: string) {
-        setRole(roleId)
-        setSelctedMenuOption(undefined)
+        if (roleId) {
+            controllerContext.batchBuild(() => {
+                playerData.role = roleId
+                const roleData = referenceContext.roles.getRole(playerData.role)
+                setAlignment(roleData.alignment)
+            })
+            setSelctedMenuOption(undefined)
+        }
     }
     
     const applyEffectHandler = (interaction: ReferenceData.Interaction) => {
@@ -148,7 +154,7 @@ function Menu({isOpen, closeFunc, playerData}: MenuProps) {
                 case MenuOption.SELECTALIGNMENT:
                     return <AlignmentPick setAlignmentSelect={setAlignment}></AlignmentPick>
                 case MenuOption.PICKFROMBAG:
-                    return <BagSelect setRoleSelect={pickFromBag}></BagSelect>
+                    return <BagSelect pickFromBag={pickFromBag}></BagSelect>
                 case MenuOption.SELECTMADNESS:
                     return <RolePick setRoleSelect={addMad}></RolePick>
                 case MenuOption.SELECTGRANTABILITY:
