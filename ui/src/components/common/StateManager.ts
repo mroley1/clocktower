@@ -3,7 +3,6 @@ import { GameProgression } from "./reactStates/GameProgression";
 import { Player } from "./reactStates/Player";
 import { BaseReactState, BaseReactData } from "./reactStates/_BaseReactState";
 import { Interaction } from "./reactStates/Intereaction";
-import { Alignmant } from "./RoleType";
 import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
 import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
@@ -31,7 +30,7 @@ export namespace StateManager {
         aggregateData: AggregateData
         
         private saveGameFunc: (gameDataJSON: GameDataJSON, history: HistoryJSON) => void
-        private inBatchBuild = false;
+        private batchBuildIndex = 0;
         
         private usedUUIDs = new Set<string>()
         private instanceMap = new Map<string, {json: BaseReactState, instance: Object}>()
@@ -170,16 +169,20 @@ export namespace StateManager {
         }
         // manually enter or leave batch
         batchBuildEntry() {
-            this.inBatchBuild = true
+            this.batchBuildIndex++
         }
         batchBuildExit(suppressHistory = false) {
-            this.inBatchBuild = false
-            this.build(suppressHistory)
+            if (this.batchBuildIndex > 0) {
+                this.batchBuildIndex--
+            }
+            if (this.batchBuildIndex == 0) {
+                this.build(suppressHistory)
+            }
         }
         
         // build JSON copy into rich copy with misc housekeeping functions
         public build(suppressHistory = false) {
-            if (this.inBatchBuild) {return}
+            if (this.batchBuildIndex > 0) {return}
             const transactionBuffer: {new: BaseReactState[], old: BaseReactState[]} = {new: [], old: []}
             const callback = (reactState: BaseReactState[], suppressHistory?: boolean) => {
                 this.setValues(reactState, suppressHistory)
@@ -314,6 +317,28 @@ export namespace StateManager {
         addPlayer = () => {
             this._controller.gameStateJSON?.players.push(Player.create());
             this._controller.build();
+        }
+        
+        initPlayersInCircle = () => {
+            const width = window.innerWidth
+            const height = window.innerHeight
+            const centerAdjusted = {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75}
+            const displacmentConst = Math.min(width, height) * 0.4
+            const displace = (rad: number) => {
+                let pos = structuredClone(centerAdjusted)
+                pos.x += Math.cos(rad) * displacmentConst
+                pos.y += Math.sin(rad) * displacmentConst
+                return pos
+            }
+            this._controller.batchBuild(() => {
+                this._controller.gameStateJSON.players = []
+                const q = this._controller.gameState.bag.quantity
+                const radT = (2 * Math.PI) / q
+                for (let n = 0; n < q; n++) {
+                    console.log(n)
+                    this._controller.gameStateJSON?.players.push(Player.create(undefined, displace(n * radT)));
+                }
+            })
         }
         
         // returns any availabe interactions to apply based on the playerdata of who it will be applied to

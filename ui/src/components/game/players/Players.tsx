@@ -31,6 +31,9 @@ function Players() {
         <br></br><br></br><br></br>
         # of players: {gameContext.bag.quantity} 
         <br></br>
+        <br></br>
+        <br></br>
+        <button onClick={controllerContext.aggregateData.initPlayersInCircle}>init</button>
         {
             gameContext.players.map(player => 
                 <PlayerWrapper key={player.id} player={player}></PlayerWrapper>

@@ -15,7 +15,7 @@ export namespace Player {
         alignment: Alignmant
     }
     
-    export function create(UUID?: string): ReactState {
+    export function create(UUID?: string, position?: {x: number, y: number}): ReactState {
         return {
             type: "Player",
             UUID: UUID || CTUUID.create(),
@@ -24,7 +24,7 @@ export namespace Player {
             name: "",
             role: undefined,
             viability: {state: Player.ViabilityState.ALIVE, deadVote: true},
-            position: {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75},
+            position: position || {x: (window.innerWidth / 2) - 75, y: (window.innerHeight / 2) - 75},
             alignment: Alignmant.NONE
         }
     }

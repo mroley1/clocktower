@@ -45,6 +45,9 @@ function Bag({completeSetupFunc}: BagProps) {
         controllerContext.batchBuild(() => {
             gameContext.bag.quantity = playerCountSlider
             gameContext.bag.roles = bagItems.map(bagItem => bagItem.roleData.id)
+            if (gameContext.players.length == 0) {
+                controllerContext.aggregateData.initPlayersInCircle()
+            }
         })
     }
     
