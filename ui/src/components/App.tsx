@@ -3,6 +3,7 @@ import './App.scss';
 import { GameDataJSON, GameDataJSONTag, HistoryJSON } from './common/GameData';
 import { GameProgression } from './common/reactStates/GameProgression';
 import Game from './game/Game';
+import ScriptMenu from './scriptMenu/ScriptMenu';
 
 function App() {
   
@@ -11,6 +12,9 @@ function App() {
   let loadedGameInit: {data: GameDataJSON, history: HistoryJSON}|undefined
   const [loadedGame, setLoadedGame] = useState(loadedGameInit)
   
+  //used for script menu, set to undefined for now
+  const [loadedScript, setLoadedScript] = useState("a")
+
   const dbPromise = useMemo(initDatabase, [])
   
   function saveGame(gameDataJSON: GameDataJSON, history: HistoryJSON) {
@@ -36,6 +40,14 @@ function App() {
       })
     })
   }
+
+  function handleScriptMenu() {
+    setLoadedScript("b");
+  }
+
+  function quitScriptMenu() {
+    setLoadedScript("a");
+  }
   
   useEffect(() => {
     dbPromise.then(db => {
@@ -51,11 +63,14 @@ function App() {
   
   if (loadedGame) {
     return <Game gameSettings={loadedGame.data} history={loadedGame.history} saveGame={saveGame} quitGame={quitGame}></Game>
-  } else {
+  }else if(loadedScript == "b"){
+    return <ScriptMenu quitScriptMenu={quitScriptMenu}></ScriptMenu>
+  }else {
     return <div>
       <br></br>
       <br></br>
       <button onClick={handleNewSave}>new save</button>
+      <button onClick={handleScriptMenu}>script menu</button>
       <br></br>
       {saves.map((save) => 
         <div key={save.gameID} onClick={()=>{handleLoadSave(save.gameID)}}>{JSON.stringify(save)}</div>

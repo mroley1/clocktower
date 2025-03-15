@@ -1,0 +1,36 @@
+.mainLayout {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .scriptList {
+    border-right: 1px solid black;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .contentArea {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .divider {
+    width: 5px;
+    cursor: ew-resize;
+    background-color: #ccc;
+    height: 100%;
+  }
+  
+  .headerButtons {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    border-bottom: 1px solid black;
+  }
+  
+  .headerButtons button {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
