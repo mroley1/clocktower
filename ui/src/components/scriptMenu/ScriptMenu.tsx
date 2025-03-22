@@ -13,6 +13,8 @@ interface ScriptMenuProps {quitScriptMenu: ()=>void}
 function ScriptMenu({quitScriptMenu}: ScriptMenuProps){
   //make center line draggable
   
+  const [selectedScript, setSelectedScript] = useState<string | null>(null);
+
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -45,7 +47,7 @@ function ScriptMenu({quitScriptMenu}: ScriptMenuProps){
               <button>Create New Script</button>
               <button>Upload JSON</button>
           </div>
-          <ScriptBrowser />
+          <ScriptBrowser onScriptSelect={setSelectedScript} selectedScript={selectedScript} />
         </div>
         {/* Divider */}
         <div
