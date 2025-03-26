@@ -23,7 +23,7 @@ function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
   };
 
   const [selectedScript, setSelectedScript] = useState<ScriptData | null>(null);
-
+  const [editMode, setEditMode] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -105,9 +105,9 @@ function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
             <button onClick={handleNewSaveClick}>Start New Game</button>
             <button onClick={handleDownloadJSON}>Download JSON</button>
             <button onClick={handleDownloadPDF}>Download PDF</button>
-            <button>Edit</button>
+            <button onClick={() => setEditMode(!editMode)}>{editMode ? 'Exit Edit Mode' : 'Edit'}</button>
           </div>
-          <ScriptViewer script={selectedScript}/>
+          <ScriptViewer script={selectedScript} editMode={editMode}/>
         </div>
     </div>
     </>
