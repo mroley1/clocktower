@@ -7,6 +7,7 @@ import { ReferenceData } from '../common/ReferenceData';
 import ScriptBrowser from './scriptBrowser/ScriptBrowser';
 import ScriptViewer from './scriptViewer/ScriptViewer';
 import ScriptData from '../common/ScriptData';
+import jsPDF from 'jspdf';
 
 type MouseEventHandler = React.MouseEvent<HTMLDivElement>;
 
@@ -41,6 +42,41 @@ function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
     setIsDragging(false);
   };
   
+  const handleDownloadPDF = () => {
+    if (!selectedScript) return;
+  
+    const doc = new jsPDF();
+  
+    const title = `${selectedScript.name} by ${selectedScript.author}`;
+    doc.setFontSize(16);
+    doc.text(title, 10, 20);
+  
+    doc.setFontSize(12);
+    selectedScript.data.forEach((role, index) => {
+      doc.text(`- ${role}`, 10, 30 + index * 8); // vertical spacing
+    });
+  
+    doc.save(`${selectedScript.name || 'script'}.pdf`);
+  };
+
+  const handleDownloadJSON = () => {
+    if (!selectedScript) return;
+  
+    const json = JSON.stringify(selectedScript, null, 2); // pretty format
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${selectedScript.name || 'script'}.json`;
+    document.body.appendChild(link);
+    link.click();
+  
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+  
   return (
     <>
       <Menu quitScriptMenu={quitScriptMenu} ></Menu>
@@ -67,9 +103,9 @@ function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
         <div className={styles.contentArea} style={{ width: `calc(100% - ${sidebarWidth}px)` }}>
           <div className={`${styles.headerButtons} ${selectedScript ? '' : styles['headerButtons--disabled']}`}>
             <button onClick={handleNewSaveClick}>Start New Game</button>
-            <button>Download JSON</button>
+            <button onClick={handleDownloadJSON}>Download JSON</button>
+            <button onClick={handleDownloadPDF}>Download PDF</button>
             <button>Edit</button>
-            <button>Other Buttons</button>
           </div>
           <ScriptViewer script={selectedScript}/>
         </div>
