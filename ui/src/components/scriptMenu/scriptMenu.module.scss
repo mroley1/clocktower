@@ -27,6 +27,18 @@
     justify-content: space-around;
     padding: 10px;
     border-bottom: 1px solid black;
+  
+    &--disabled {
+      opacity: 0.5;
+      pointer-events: none; // disables clicks
+      cursor: not-allowed;
+  
+      button {
+        background-color: #ddd;
+        color: #888;
+        border: 1px solid #ccc;
+      }
+    }
   }
   
   .headerButtons button {

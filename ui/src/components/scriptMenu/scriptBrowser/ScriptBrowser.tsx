@@ -1,24 +1,23 @@
 import { useContext, useState } from 'react';
 import styles from './ScriptBrowser.module.scss';
-
-const testScripts = [
-    {"name":"Trouble Brewing","author":"Official"},
-    {"name":"Sects & Violets"}
-
+import ScriptData from '@/components/common/ScriptData';
+const testScripts: ScriptData[] = [
+    {"name":"Trouble Brewing","author":"Official","data":['chef', 'empath']},
+    {"name":"Sects & Violets","author":"Official","data":['vortox', 'flowergirl']}
 ]
 
 
 
 interface ScriptBrowserProps {
-    onScriptSelect: (script: string) => void;
-    selectedScript: string | null;
+    onScriptSelect: (script: ScriptData) => void;//sets selected script
+    selectedScript: ScriptData | null;
   }
 
 function ScriptBrowser({ onScriptSelect, selectedScript }: ScriptBrowserProps){
 
     let scripts = testScripts
 
-    const handleClick = (script: string) => {
+    const handleClick = (script: ScriptData) => {
         onScriptSelect(script);
       };
     //a lot of this is temporary, and will be changed when a more finalized system is decided upon
@@ -29,8 +28,8 @@ function ScriptBrowser({ onScriptSelect, selectedScript }: ScriptBrowserProps){
             <ul> 
             {scripts.map((script, index) => (
                 <li key={index}
-                className={`${styles.SCRIPT_ITEM} ${selectedScript === script.name ? styles.SCRIPT_ITEM_SELECTED : ''}`}
-                onClick={() => onScriptSelect(script.name)}
+                className={`${styles.SCRIPT_ITEM} ${selectedScript === script ? styles.SCRIPT_ITEM_SELECTED : ''}`}
+                onClick={() => onScriptSelect(script)}
         >
           {script.name}
         </li>

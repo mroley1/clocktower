@@ -6,14 +6,22 @@ import styles from './scriptMenu.module.scss'
 import { ReferenceData } from '../common/ReferenceData';
 import ScriptBrowser from './scriptBrowser/ScriptBrowser';
 import ScriptViewer from './scriptViewer/ScriptViewer';
+import ScriptData from '../common/ScriptData';
 
 type MouseEventHandler = React.MouseEvent<HTMLDivElement>;
 
-interface ScriptMenuProps {quitScriptMenu: ()=>void}
-function ScriptMenu({quitScriptMenu}: ScriptMenuProps){
+interface ScriptMenuProps {
+  quitScriptMenu: ()=>void;
+  handleNewSave: ()=>void
+}
+function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
   //make center line draggable
-  
-  const [selectedScript, setSelectedScript] = useState<string | null>(null);
+
+  const handleNewSaveClick = () => {
+    handleNewSave();
+  };
+
+  const [selectedScript, setSelectedScript] = useState<ScriptData | null>(null);
 
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [isDragging, setIsDragging] = useState(false);
@@ -57,13 +65,13 @@ function ScriptMenu({quitScriptMenu}: ScriptMenuProps){
         ></div>
         {/* Main Content Area */}
         <div className={styles.contentArea} style={{ width: `calc(100% - ${sidebarWidth}px)` }}>
-          <div className={styles.headerButtons}>
-            <button>Start New Game</button>
+          <div className={`${styles.headerButtons} ${selectedScript ? '' : styles['headerButtons--disabled']}`}>
+            <button onClick={handleNewSaveClick}>Start New Game</button>
             <button>Download JSON</button>
             <button>Edit</button>
             <button>Other Buttons</button>
           </div>
-          <ScriptViewer />
+          <ScriptViewer script={selectedScript}/>
         </div>
     </div>
     </>

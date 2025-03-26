@@ -64,7 +64,7 @@ function App() {
   if (loadedGame) {
     return <Game gameSettings={loadedGame.data} history={loadedGame.history} saveGame={saveGame} quitGame={quitGame}></Game>
   }else if(loadedScript == "b"){
-    return <ScriptMenu quitScriptMenu={quitScriptMenu}></ScriptMenu>
+    return <ScriptMenu quitScriptMenu={quitScriptMenu} handleNewSave={handleNewSave}></ScriptMenu>
   }else {
     return <div>
       <br></br>
