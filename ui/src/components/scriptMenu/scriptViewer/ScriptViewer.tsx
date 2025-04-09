@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from 'react';
 import ScriptData from '@/components/common/ScriptData';
+import { Role } from '@/components/common/Types';
 interface ScriptViewerProps {
     script: ScriptData | null;
     editMode: boolean;
   }
   
-const testScript: ScriptData = {"author":"Official","name":"Trouble Brewing", data:["chef","empath","fortuneteller","investigator","librarian","mayor","monk","ravenkeeper","slayer","soldier","undertaker","virgin","washerwoman","butler","drunk","recluse","saint","baron","poisoner","scarletwoman","spy","imp"]}
+//const testScript: ScriptData = {"author":"Official","name":"Trouble Brewing", data:["chef","empath","fortuneteller","investigator","librarian","mayor","monk","ravenkeeper","slayer","soldier","undertaker","virgin","washerwoman","butler","drunk","recluse","saint","baron","poisoner","scarletwoman","spy","imp"]}
 
 function ScriptViewer({ script, editMode }: ScriptViewerProps) {
     const [editableScript, setEditableScript] = useState<ScriptData | null>(null);
@@ -15,7 +16,7 @@ function ScriptViewer({ script, editMode }: ScriptViewerProps) {
       }, [script]);
     //if no script selected tell use to select a script
     if (!script) return <div>Select a script to view details</div>;
-    
+    console.log("editableScript", editableScript?.roles)
 
     
   
@@ -23,12 +24,12 @@ function ScriptViewer({ script, editMode }: ScriptViewerProps) {
     if (!editableScript) return <div>Select a script to view details</div>;
   
     const handleRemoveRole = (indexToRemove: number) => {
-        const newRoles = [...editableScript.data];
+        const newRoles = [...editableScript.roles];
         newRoles.splice(indexToRemove, 1);
       
         setEditableScript({
           ...editableScript,
-          data: newRoles
+          roles: newRoles
         });
       };
 
@@ -66,16 +67,16 @@ function ScriptViewer({ script, editMode }: ScriptViewerProps) {
   
         {/* List of roles */}
         <ul>
-  {editableScript.data.map((role, index) => (
+  {editableScript && editableScript?.roles?.map((roles: Role, index: number) => (
     <li key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      {role}
+      {roles.role_name}
       {editMode && (
         <button onClick={() => handleRemoveRole(index)}>Remove</button>
       )}
-    </li>
-  ))}
-</ul>
+    </li>))}</ul>
       </div>
+    
+  
     );
     
     

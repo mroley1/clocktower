@@ -7,6 +7,7 @@ import { ReferenceData } from '../common/ReferenceData';
 import ScriptBrowser from './scriptBrowser/ScriptBrowser';
 import ScriptViewer from './scriptViewer/ScriptViewer';
 import ScriptData from '../common/ScriptData';
+import { Script } from '../common/Types';
 import jsPDF from 'jspdf';
 
 type MouseEventHandler = React.MouseEvent<HTMLDivElement>;
@@ -22,10 +23,31 @@ function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
     handleNewSave();
   };
 
+  const [selectedScriptID, setSelectedScriptID] = useState<number | null>(1);
   const [selectedScript, setSelectedScript] = useState<ScriptData | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  //get script data
+  useEffect(() => {
+          const fetchScript = async () => {
+            try {
+              const response = await fetch('https://clocktower-api-2-clocktower-api.apps.okd4.csh.rit.edu/api/scripts/' + selectedScriptID);
+              if (!response.ok) throw new Error('Failed to fetch script');
+      
+              const data: ScriptData = await response.json();
+              setSelectedScript(data);
+              
+            } catch (err: any) {
+              console.error(err);
+              setError(err.message || 'Unknown error');
+            }
+          };
+      
+          fetchScript();
+        }, [selectedScriptID]);
 
   const handleMouseDown = () => {
     setIsDragging(true);
@@ -52,7 +74,7 @@ function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
     doc.text(title, 10, 20);
   
     doc.setFontSize(12);
-    selectedScript.data.forEach((role, index) => {
+    selectedScript.roles.forEach((role, index) => {
       doc.text(`- ${role}`, 10, 30 + index * 8); // vertical spacing
     });
   
@@ -77,6 +99,14 @@ function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
     URL.revokeObjectURL(url);
   };
   
+  const handleNewScript = () => {
+    // Logic to create a new script
+    setSelectedScriptID(-1); // Set to -1 to indicate a new script
+    let newScript: ScriptData = {name: "New Script", author: "Author", roles: []};
+    setSelectedScript(newScript); // Set the new script as selected
+    setEditMode(!editMode); // Toggle edit mode
+  }
+
   return (
     <>
       <Menu quitScriptMenu={quitScriptMenu} ></Menu>
@@ -88,10 +118,10 @@ function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
         {/* Sidebar */}
         <div className={styles.scriptList}>
           <div className={styles.headerButtons} style={{ width: sidebarWidth }}>
-              <button>Create New Script</button>
+              <button onClick={handleNewScript}>Create New Script</button>
               <button>Upload JSON</button>
           </div>
-          <ScriptBrowser onScriptSelect={setSelectedScript} selectedScript={selectedScript} />
+          <ScriptBrowser setSelectedScriptID={setSelectedScriptID} selectedScriptID={selectedScriptID} />
         </div>
         {/* Divider */}
         <div
