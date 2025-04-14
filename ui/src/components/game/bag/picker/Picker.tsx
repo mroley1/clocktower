@@ -8,6 +8,7 @@ import Selector from './Selector';
 import { ReferenceData } from '@/components/common/ReferenceData';
 import { ReferenceContext } from '../../Game';
 import { BagItem } from '../Bag';
+import { decomposeClassMakeup } from '../../utility/decomposeClassMakeup';
 
 const classes = [ClassType.TOWNSFOLK, ClassType.OUTSIDER, ClassType.MINION, ClassType.DEMON]
     
@@ -109,13 +110,15 @@ function Picker({playerCount, bagItems, setBagItems}: PickerProps) {
         infoIsVisible
     }
     
+    const breakdown = decomposeClassMakeup(bagItems.map(bagItem => bagItem.roleData), playerCount, classes)
+    
     return (
         <div className={styles.picker}>
             <PickerContext.Provider value={pickerContext}>
                 <div className={styles.sliding_panels}>
                     <div className={styles.columns} data-showing={!isDown} >
                         <div className={styles.container}>
-                            {columns.map((column, i) => <Column key={i} roles={column} setIsDownFunc={setIsDownFunc}></Column>)}
+                            {columns.map((column, i) => <Column key={i} roles={column} breakdown={breakdown} setIsDownFunc={setIsDownFunc}></Column>)}
                         </div>
                     </div>
                     <div className={styles.switching_divider} onClick={toggleIsDown} data-is-down={isDown}></div>

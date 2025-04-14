@@ -6,47 +6,45 @@ import { BagItem } from '../Bag';
 import { useContext } from 'react';
 import { ReferenceContext } from '../../Game';
 import { ColumnFormat, PickerContext } from './Picker';
+import { BreakdownFormat, decomposeClassMakeup } from '../../utility/decomposeClassMakeup';
 
-
-const ExpectedClassNumberBreakdown = {
-    town: [0, 0, 0, 0, 0, 3, 3, 5, 5, 5, 7, 7, 7, 9, 9, 9],
-    out:  [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 2, 0, 1, 2],
-    min:  [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3],
-    dem:  [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-}
 
 interface ColumnProps {
     roles: ColumnFormat
+    breakdown: BreakdownFormat[]
     setIsDownFunc: (state: boolean) => void
 }
-function Column({roles, setIsDownFunc}: ColumnProps) {
+function Column({roles, breakdown, setIsDownFunc}: ColumnProps) {
     
-    const {playerCount, selectedRole, setSelectedRole, closeInfo, infoIsVisible} = useContext(PickerContext)
+    const {bagItems, playerCount, selectedRole, setSelectedRole, closeInfo, infoIsVisible} = useContext(PickerContext)
     
-    function getExpectedClassNumberBreakdown() {
-        switch (roles.classType) {
-            case ClassType.TOWNSFOLK:
-                return ExpectedClassNumberBreakdown.town[playerCount]
-            case ClassType.OUTSIDER:
-                return ExpectedClassNumberBreakdown.out[playerCount]
-            case ClassType.MINION:
-                return ExpectedClassNumberBreakdown.min[playerCount]
-            case ClassType.DEMON:
-                return ExpectedClassNumberBreakdown.dem[playerCount]
-            default:
-                return 0
+    const expectedClassNumberBreakdown = breakdown.find(ledger => ledger.classType == roles.classType)!
+    
+    function ratioColor() {
+        if ((expectedClassNumberBreakdown.extra[0] || expectedClassNumberBreakdown.extra[1]) && playerCount != bagItems.length) {
+            return "unbalanced"
         }
-    }
-    const expectedClassNumberBreakdown = getExpectedClassNumberBreakdown()
-    
-    function ratioColor(numerator: number, denominator: number) {
-        if (numerator == denominator) {
-            return "good"
-        } else if (numerator > denominator) {
+        const lower = expectedClassNumberBreakdown?.expected + expectedClassNumberBreakdown.extra[0]
+        const upper = expectedClassNumberBreakdown?.expected + expectedClassNumberBreakdown.extra[1]
+        if (quantity < lower) {
+            return "default"
+        } else if (quantity > upper) {
             return "bad"
         } else {
-            return "default"
+            return "good"
         }
+    }
+    
+    function ratioFormat() {
+        let trailing = ""
+        if (expectedClassNumberBreakdown.extra[0] || expectedClassNumberBreakdown.extra[1]) {
+            if (Math.abs(expectedClassNumberBreakdown.extra[0]) == expectedClassNumberBreakdown.extra[1]) {
+                trailing = `±${expectedClassNumberBreakdown.extra[1]}`
+            } else {
+                trailing = `+${expectedClassNumberBreakdown.extra[1]} ${expectedClassNumberBreakdown.extra[0]}`
+            }
+        }
+        return `${quantity}/${expectedClassNumberBreakdown.expected}${trailing}`
     }
     
     const quantity = roles.roles.reduce((previous, current) => {
@@ -55,12 +53,13 @@ function Column({roles, setIsDownFunc}: ColumnProps) {
     
     return (
         <div className={styles.column} onClick={closeInfo}>
-            <div className={styles.header} onClick={()=>{setIsDownFunc(false)}} data-color={ratioColor(quantity, expectedClassNumberBreakdown)}>
+            <div className={styles.header} onClick={()=>{setIsDownFunc(false)}} data-color={ratioColor()}>
                 {ClassType[roles.classType]}
                 <br></br>
                 <div className={styles.ratio}>
-                    {quantity}/{expectedClassNumberBreakdown}
+                    {ratioFormat()}
                 </div>
+                <RequiredDropdown requiredRoleIds={expectedClassNumberBreakdown.required}></RequiredDropdown>
             </div>
             <div className={styles.body}>
                 {roles.roles.map((bagItem) => (
@@ -104,3 +103,23 @@ function Item({bagItem, setSelectedRole, closeInfo, highlight}: ItemProps) {
         </div>
     )
 }
+
+interface RequiredDropdownProps {
+    requiredRoleIds: string[]
+}
+function RequiredDropdown({requiredRoleIds}: RequiredDropdownProps) {
+    
+    console.log(requiredRoleIds)
+    
+    if (!requiredRoleIds.length) {
+        return null
+    } else {
+        return (
+            <div className={styles.required_dropdown_container}>
+                <div className={styles.dropdown}></div>
+            </div>
+        )
+    }
+}
+
+// {requiredRoleIds.map((roleId) => <div key={roleId}>{roleId}</div>)}

@@ -46,6 +46,11 @@ export namespace ReferenceData {
     
     export type Interaction = InteractionJSON & InteractionAdditions
     
+    export interface ChangeMakeup {
+        classType: ClassType
+        alter: number[]|number|string
+    }
+    
     export interface RoleData {
         id: string
         name: string
@@ -55,7 +60,7 @@ export namespace ReferenceData {
         interactions: Interaction[]
         first_night_desc: string,
         other_night_desc: string,
-        change_makeup: [],
+        change_makeup: ChangeMakeup[],
         hide_face: boolean
     }
     export class Roles {

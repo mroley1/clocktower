@@ -75,6 +75,28 @@
                         &[data-color="bad"] {
                             background-color: rgb(60, 0, 0);
                         }
+                        
+                        &[data-color="unbalanced"] {
+                            background-color: rgb(60, 0, 60);
+                        }
+                        
+                        .required_dropdown_container {
+                            position: absolute;
+                            right: 10px;
+                            top: 30%;
+                            height: 40%;
+                            aspect-ratio: 1;
+                            background-color: black;
+                            mask-image: url(../../../../assets/info-circle-solid.svg);
+                            mask-position: center;
+                            mask-size: contain;
+                            cursor: pointer;
+                            transition: background-color 0.3s linear;
+                            
+                            &:hover {
+                                background-color: rgb(20, 20, 20);
+                            }
+                        }
                     }
                     
                     .body {

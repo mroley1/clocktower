@@ -19,7 +19,7 @@ function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
   
   const [gameState, setGameState] = useState(gameSettings as any as GameData)
   
-  const [scriptJSON, setScriptJSON] = useState(require('../../data/scripts/trouble_brewing.json'));
+  const [scriptJSON, setScriptJSON] = useState(require('../../data/scripts/bad_moon_rising.json'));
   
   const referenceData = useMemo(() => {
     const script = new ReferenceData.Script(scriptJSON);
@@ -79,6 +79,10 @@ function Content() {
     setInitalSetup(false)
   }
   
+  function openInitialSetup() {
+    setInitalSetup(true)
+  }
+  
   if (initalSetup) {
     return ( // * inital bag setup
       <div>
@@ -89,7 +93,7 @@ function Content() {
     return ( // * proper game
       <>
         <Players></Players>
-        <Menu></Menu>
+        <Menu openInitialSetup={openInitialSetup}></Menu>
         <Setup></Setup>
       </>
     )

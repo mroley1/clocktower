@@ -335,7 +335,6 @@ export namespace StateManager {
                 const q = this._controller.gameState.bag.quantity
                 const radT = (2 * Math.PI) / q
                 for (let n = 0; n < q; n++) {
-                    console.log(n)
                     this._controller.gameStateJSON?.players.push(Player.create(undefined, displace(n * radT)));
                 }
             })
@@ -384,6 +383,7 @@ export namespace StateManager {
             return this.activeEffects(playerId).filter(effect => Interaction.visibleEffects.includes(effect))
         }
         
+        // roles that still need to be picked off of the bag list
         public leftInBag() {
             const unaccountedForRoles = this.players().map(player => player.id)
             return this._controller.gameState.bag.roles.filter(role => {
