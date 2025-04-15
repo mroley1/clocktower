@@ -5,6 +5,8 @@ import Menu from './menu/Menu';
 import { ReferenceData } from '../common/ReferenceData';
 import Players from './players/Players';
 import Setup from './setup/Setup';
+import { useLoaderData, useNavigate } from 'react-router';
+import { saveGameData } from '../API';
 
 
 export const GameContext = createContext({} as GameData)
@@ -13,8 +15,20 @@ export const ControllerContext = createContext({} as StateManager.Controller)
 
 export const ReferenceContext = createContext({} as ReferenceData.ContextFormat)
 
-interface GameProps {gameSettings: GameDataJSON, history: HistoryJSON, saveGame: (gameDataJSON: GameDataJSON, history: HistoryJSON)=>void, quitGame: ()=>void}
-function Game({gameSettings, history, saveGame, quitGame}: GameProps) {
+interface GameProps {gameSettings: GameDataJSON, history: HistoryJSON}
+function Game({gameSettings, history}: GameProps) {
+  
+  let saveGame = (gameDataJSON: GameDataJSON, history: HistoryJSON) => {
+    saveGameData(gameDataJSON, history)
+  }
+  const navigate = useNavigate();
+  let quitGame = () => {
+    navigate("/")
+  }
+  
+  const loaderData = useLoaderData();
+  gameSettings = loaderData.data;
+  history = loaderData.history;
   
   const [gameState, setGameState] = useState(gameSettings as any as GameData)
   
