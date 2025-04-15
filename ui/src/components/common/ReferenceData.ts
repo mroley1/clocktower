@@ -15,7 +15,6 @@ export namespace ReferenceData {
         jinxes: Jinxes
         fabled: Fabled
         utilies: {
-            saveGame: (gameDataJSON: GameDataJSON) => void,
             quitGame: () => void
         }
     }
@@ -35,6 +34,10 @@ export namespace ReferenceData {
         
         hasRoleName(roleName: string) {
             return this._roleNames.includes(roleName)
+        }
+        
+        get json() {
+            return this.script
         }
     }
     

@@ -40,6 +40,6 @@ export interface GameDataJSONTag {
     name: string
     gameProgression: number
     playerRoles: string[]
-    script: ScriptData|undefined
+    script: ScriptData
     created: number
 }

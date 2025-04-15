@@ -7,6 +7,7 @@ import Players from './players/Players';
 import Setup from './setup/Setup';
 import { useLoaderData, useNavigate } from 'react-router';
 import { saveGameData } from '../API';
+import ScriptData from '../common/ScriptData';
 
 
 export const GameContext = createContext({} as GameData)
@@ -15,25 +16,24 @@ export const ControllerContext = createContext({} as StateManager.Controller)
 
 export const ReferenceContext = createContext({} as ReferenceData.ContextFormat)
 
-interface GameProps {gameSettings: GameDataJSON, history: HistoryJSON}
-function Game({gameSettings, history}: GameProps) {
+
+function Game() {
   
-  let saveGame = (gameDataJSON: GameDataJSON, history: HistoryJSON) => {
-    saveGameData(gameDataJSON, history)
-  }
   const navigate = useNavigate();
-  let quitGame = () => {
-    navigate("/")
-  }
+  
   
   const loaderData = useLoaderData();
-  gameSettings = loaderData.data;
-  history = loaderData.history;
+  const gameSettings = loaderData.data;
+  const history = loaderData.history;
+  const scriptData = loaderData.scriptData; //! currently in wrong format
   
   const [gameState, setGameState] = useState(gameSettings as any as GameData)
   
   const [scriptJSON, setScriptJSON] = useState(require('../../data/scripts/trouble_brewing.json'));
   
+  let quitGame = () => {
+    navigate("/")
+  }
   const referenceData = useMemo(() => {
     const script = new ReferenceData.Script(scriptJSON);
     const roles = new ReferenceData.Roles(script);
@@ -44,7 +44,6 @@ function Game({gameSettings, history}: GameProps) {
     const fabled = new ReferenceData.Fabled();
     return {
     utilies: {
-      saveGame,
       quitGame
     },
     roles,
@@ -56,7 +55,7 @@ function Game({gameSettings, history}: GameProps) {
     fabled,
   } as ReferenceData.ContextFormat}, [scriptJSON])
   
-  const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, history, gameSettings, saveGame, referenceData), [])
+  const stateManager = useMemo(() => new StateManager.Controller(gameState, setGameState, history, gameSettings, referenceData), [])
   
   const [building, setBuilding] = useState(true);
   

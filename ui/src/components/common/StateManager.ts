@@ -9,6 +9,7 @@ import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
 import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
 import { _Global } from "./reactStates/_Global";
+import { saveGameData } from "../API";
 
 export namespace StateManager {
     
@@ -26,20 +27,20 @@ export namespace StateManager {
         private setgameState: React.Dispatch<React.SetStateAction<GameData>>
         
         gameStateJSON: GameDataJSON
+        referenceData: ReferenceData.ContextFormat
         historyController: History
         aggregateData: AggregateData
         
-        private saveGameFunc: (gameDataJSON: GameDataJSON, history: HistoryJSON) => void
         private inBatchBuild = false;
         
         private usedUUIDs = new Set<string>()
         private instanceMap = new Map<string, {json: BaseReactState, instance: Object}>()
         
-        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, history: HistoryJSON, gameStateJSON: GameDataJSON, saveGame: (gameDataJSON: GameDataJSON, history: HistoryJSON) => void, referenceData: ReferenceData.ContextFormat) {
+        constructor(gameState: GameData, setGameState: React.Dispatch<React.SetStateAction<GameData>>, history: HistoryJSON, gameStateJSON: GameDataJSON, referenceData: ReferenceData.ContextFormat) {
             this.gameState = gameState;
             this.setgameState = setGameState;
             this.gameStateJSON = gameStateJSON;
-            this.saveGameFunc = saveGame;
+            this.referenceData = referenceData
             this.historyController = new History(history.head, history.transactions)
             this.aggregateData = new AggregateData(this, referenceData)
         }
@@ -96,7 +97,7 @@ export namespace StateManager {
         // take game state and history and pass to game save function
         public saveGame() {
             if (this.gameStateJSON) {
-                this.saveGameFunc(this.gameStateJSON, this.historyController.json())
+                saveGameData(this.gameStateJSON, this.historyController.json(), this.referenceData.script.json)
             }
         }
         

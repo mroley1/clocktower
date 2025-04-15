@@ -20,12 +20,12 @@ function App() {
   
   const navigate = useNavigate();
   
-  function saveGame(gameDataJSON: GameDataJSON, history: HistoryJSON) {
-    saveGameData(gameDataJSON, history)
+  function saveGame(gameDataJSON: GameDataJSON, history: HistoryJSON, scriptData: ScriptData) {
+    saveGameData(gameDataJSON, history, scriptData)
   }
   
-  function handleNewSave(script?: ScriptData | null) {
-    newSave().then(newValue => {
+  function handleNewSave(script: ScriptData) {
+    newSave(script).then(newValue => {
       const newSaves = structuredClone(saves)
       if(script){newValue.script = script}       
       newSaves.push(newValue)
@@ -56,14 +56,13 @@ function App() {
   }
   
   if (loadedGame) {
-    return <Game gameSettings={loadedGame.data} history={loadedGame.history}></Game>
+    return <Game></Game>
   }else if(loadedScript == "b"){
-    return <ScriptMenu quitScriptMenu={quitScriptMenu} handleNewSave={handleNewSave}></ScriptMenu>
+    return <ScriptMenu></ScriptMenu>
   }else {
     return <div>
       <br></br>
       <br></br>
-      <button onClick={() => handleNewSave()}>new save</button>
       <button onClick={handleScriptMenu}>script menu</button>
       <br></br>
       {saves.map((save) => 

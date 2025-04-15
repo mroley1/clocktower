@@ -5,17 +5,28 @@ import ScriptBrowser from './scriptBrowser/ScriptBrowser';
 import ScriptViewer from './scriptViewer/ScriptViewer';
 import ScriptData from '../common/ScriptData';
 import jsPDF from 'jspdf';
+import { newSave } from '../API';
+import { useNavigate } from 'react-router';
 
-interface ScriptMenuProps {
-  quitScriptMenu: ()=>void;
-  handleNewSave: (script: ScriptData | null)=>void
-}
-function ScriptMenu({quitScriptMenu, handleNewSave}: ScriptMenuProps){
+function ScriptMenu(){
   //make center line draggable
+  
+  const navigate = useNavigate();
+  
+  const quitScriptMenu = () => {
+    navigate("/")
+  }
+  
+  const handleNewSave = (script: ScriptData) => {
+    newSave(script).then(tag => navigate("/" + tag.gameID))
+  }
 
   const handleNewSaveButton = () => {
-    handleNewSave(selectedScript);
+    if (selectedScript) {
+      handleNewSave(selectedScript);
+    }
   };
+  
   //Id of the selected script, used for the API
   const [selectedScriptID, setSelectedScriptID] = useState<number | null>(null);
   //Actual script data, used for displaying the script and information about it, as well as downloading pdf and json
