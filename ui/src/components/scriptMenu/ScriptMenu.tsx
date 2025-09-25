@@ -5,7 +5,7 @@ import ScriptBrowser from './scriptBrowser/ScriptBrowser';
 import ScriptViewer from './scriptViewer/ScriptViewer';
 import ScriptData from '../common/ScriptData';
 import jsPDF from 'jspdf';
-import { newSave } from '../API';
+import { newSave } from '../Saves';
 import { useNavigate } from 'react-router';
 
 function ScriptMenu(){

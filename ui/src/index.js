@@ -4,15 +4,25 @@ import './index.scss';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router";
-import { getSaveData } from './components/API';
+import { getSaveData, getSaves } from './components/Saves';
 import Game from './components/game/Game';
+import ScriptMenu from './components/scriptMenu/ScriptMenu';
 
 const router = createBrowserRouter([
   {
     children: [
       {
         index: true,
+        loader: async ({ params }) => {
+          return {
+            saves: await getSaves()
+          }
+        },
         Component: App
+      },
+      {
+        path: "script",
+        Component: ScriptMenu
       },
       {
         children: [

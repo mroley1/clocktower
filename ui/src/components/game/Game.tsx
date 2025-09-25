@@ -6,7 +6,7 @@ import { ReferenceData } from '../common/ReferenceData';
 import Players from './players/Players';
 import Setup from './setup/Setup';
 import { useLoaderData, useNavigate } from 'react-router';
-import { saveGameData } from '../API';
+import { saveGameData } from '../Saves';
 import ScriptData from '../common/ScriptData';
 
 
