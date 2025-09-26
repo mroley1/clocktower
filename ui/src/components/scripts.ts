@@ -1,0 +1,195 @@
+import { GameDataJSON, GameDataJSONTag, HistoryJSON } from "./common/GameData"
+import ScriptData from "./common/ScriptData"
+import Version from "./Version"
+
+export function getScripts() {
+    
+}
+
+const dbPromise = initDatabase()
+
+function newSaveJSON(): ScriptData {
+    return {
+        author: "",
+        name: "",
+        description: "",
+        created: Date.now(),
+        lastUpdated: Date.now(),
+        version: new Version(null),
+        roles: [],
+        customization: {}
+    }
+}
+  
+function genSaveJsonTag(gameDataJSON: GameDataJSON, script: ScriptData): GameDataJSONTag {
+    return {
+        name: gameDataJSON.metadata.name,
+        gameID: gameDataJSON.metadata.gameID,
+        gameProgression: gameDataJSON.gameProgression.progressId,
+        playerRoles: gameDataJSON.players.filter(player => player.role).map(player => player.role!),
+        script: script,
+        created: gameDataJSON.metadata.created
+    }
+}
+  
+function dbIdNew() {
+    const current = localStorage.getItem("dbCurrentIndex")
+    if (!current) {
+        localStorage.setItem("dbCurrentIndex", "0")
+        return 0
+    } else {
+        const next = parseInt(current) + 1
+        localStorage.setItem("dbCurrentIndex", next.toString())
+        return next
+    }
+}
+
+export function initDatabase() {
+    return new Promise<IDBDatabase>((resolve, reject) => {
+        const DBOpenRequest = indexedDB.open("storedGameStates")
+        
+        DBOpenRequest.onerror = (err) => {
+            reject(err)
+        }
+        
+        DBOpenRequest.onsuccess = () => {
+            resolve(DBOpenRequest.result)
+        }
+        
+        DBOpenRequest.onupgradeneeded = (event: any) => {
+            const db = event.target.result as IDBDatabase
+            if (db) {
+                
+                db.onerror = (err) => {
+                    console.error(err)
+                }
+                
+                const savesObjectStore = db.createObjectStore("saves")
+                
+                savesObjectStore.createIndex('tag', 'tag', {unique: false})
+                savesObjectStore.createIndex('data', 'data', {unique: false})
+                savesObjectStore.createIndex('history', 'history', {unique: false})
+                savesObjectStore.createIndex('script', 'script', {unique: false})
+                
+                resolve(db)
+            } else {
+                reject(event)
+            }
+        }
+    })
+}
+
+export function getSaves(): Promise<GameDataJSONTag[]> {
+    return dbPromise.then(db => {
+        const objectStore = db.transaction('saves').objectStore('saves')
+    
+        return new Promise<GameDataJSONTag[]>((resolve, reject) => {
+            
+            let saves: GameDataJSONTag[] = []
+            
+            const cursor = objectStore.openCursor()
+            
+            if (cursor) {
+            cursor.onsuccess = (event: any) => {
+                const result = event.target.result
+                if (!result) {
+                    resolve(saves)
+                } else {
+                    saves.push(result.value.tag);
+                    result.continue()
+                }
+            }
+            
+            cursor.onerror = (err) => {
+                reject(err)
+            }
+            }
+        })
+    })
+}
+
+export function newSave(scriptData: ScriptData) {
+    return dbPromise.then(db => {
+        return new Promise<GameDataJSONTag>((resolve, reject) => {
+            const transaction = db.transaction(['saves'], 'readwrite')
+            
+            const data = newSaveJSON()
+            const tag = genSaveJsonTag(data, scriptData)
+            const history: HistoryJSON = {head: 0, transactions: []}
+            const newItem = {
+                data,
+                tag,
+                history,
+                scriptData
+            }
+            
+            const objectStore = transaction.objectStore('saves')
+            const objectStoreRequest = objectStore.add(newItem, data.metadata.gameID)
+            
+            objectStoreRequest.onsuccess = () => {
+                resolve(newItem.tag)
+            }
+            
+            objectStoreRequest.onerror = (err) => {
+                console.error(newItem)
+                reject(err)
+            }
+            
+            transaction.commit()
+        })
+    })
+}
+
+export async function getSaveData(gameID: number): Promise<{data: GameDataJSON, history: HistoryJSON, scriptData: ScriptData}> {
+
+    return dbPromise.then(db => {
+        return new Promise<{data: GameDataJSON, history: HistoryJSON, scriptData: ScriptData}>((resolve, reject) => {
+            
+            const transaction = db.transaction(['saves'], 'readonly')
+            
+            const objectStore = transaction.objectStore('saves')
+            const objectStoreRequest = objectStore.get(gameID)
+            
+            objectStoreRequest.onsuccess = (event: any) => {
+                const result = event.target.result
+                resolve({data: result.data as GameDataJSON, history: result.history, scriptData: result.scriptData})
+            }
+            
+            objectStoreRequest.onerror = (err) => {
+                reject(err)
+            }
+            
+            transaction.commit()
+        })
+    })
+}
+
+export function saveGameData(gameData: GameDataJSON, history: HistoryJSON, scriptData: ScriptData): Promise<void> {
+    return dbPromise.then(db => {
+        return new Promise<void>((resolve, reject) => {
+            
+            const transaction = db.transaction(['saves'], 'readwrite')
+            
+            const tag = genSaveJsonTag(gameData, scriptData)
+            const newItem = {
+                data: gameData,
+                tag,
+                history,
+                scriptData
+            }
+            
+            const objectStore = transaction.objectStore('saves')
+            const objectStoreRequest = objectStore.put(newItem, gameData.metadata.gameID)
+            
+            objectStoreRequest.onsuccess = () => {
+                resolve()
+            }
+            
+            objectStoreRequest.onerror = (err) => {
+                reject(err)
+            }
+            
+            transaction.commit()
+        })
+    })
+}

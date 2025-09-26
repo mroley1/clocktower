@@ -9,7 +9,7 @@ import { Metadata } from "./reactStates/Metadata";
 import { ReferenceData } from "./ReferenceData";
 import { getExpireeFromLength, isExpireeExpired } from "./GameProgressionTranslator";
 import { _Global } from "./reactStates/_Global";
-import { saveGameData } from "../Saves";
+import { saveGameData } from "../saves";
 
 export namespace StateManager {
     

@@ -5,7 +5,7 @@ import ScriptBrowser from './scriptBrowser/ScriptBrowser';
 import ScriptViewer from './scriptViewer/ScriptViewer';
 import ScriptData from '../common/ScriptData';
 import jsPDF from 'jspdf';
-import { newSave } from '../Saves';
+import { newSave } from '../saves';
 import { useNavigate } from 'react-router';
 
 function ScriptMenu(){
@@ -144,8 +144,8 @@ function ScriptMenu(){
   const handleNewScript = () => {
     // Logic to create a new script
     setSelectedScriptID(-1); // Set to -1 to indicate a new script
-    let newScript: ScriptData = {name: "New Script", author: "Author", roles: []};
-    setSelectedScript(newScript); // Set the new script as selected
+    // let newScript: ScriptData = {name: "New Script", author: "Author", roles: []};
+    // setSelectedScript(newScript); // Set the new script as selected
     setEditMode(true); // Enable Edit Mode
   }
 

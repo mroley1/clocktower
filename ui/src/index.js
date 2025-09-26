@@ -4,7 +4,7 @@ import './index.scss';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router";
-import { getSaveData, getSaves } from './components/Saves';
+import { getSaveData, getSaves } from './components/saves';
 import Game from './components/game/Game';
 import ScriptMenu from './components/scriptMenu/ScriptMenu';
 

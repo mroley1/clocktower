@@ -22,7 +22,12 @@ function App() {
     <button onClick={handleScriptMenu}>script menu</button>
     <br></br>
     {loaderData.saves.map((save) => 
-      <div key={save.gameID} onClick={()=>{handleLoadSave(save.gameID)}}>{JSON.stringify(save)}</div>
+      <div
+        key={save.gameID}
+        onClick={()=>{handleLoadSave(save.gameID)}}
+      >
+          {JSON.stringify(save)}
+      </div>
     )}
   </div>
 }
